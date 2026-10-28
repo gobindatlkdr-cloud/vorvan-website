@@ -19,3 +19,9 @@ jobs:
         run: node --check assets/site.js
       - name: Validate static website security and local links
         run: python3 scripts/check_site.py
+      - name: Install Deno for backend type checking
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Type-check authenticated AI guidance backend
+        run: deno check backend/ai-guidance/index.ts
