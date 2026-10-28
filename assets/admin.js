@@ -110,6 +110,59 @@ function box(title,description,status,link,label){
  if(link){const a=el("a","",label||"Open official console ↗");a.href=link;a.target="_blank";a.rel="noopener noreferrer";b.append(a)}
  return b;
 }
+
+function field(form,labelText,tag,opts={}){
+ const id="entry-"+form.dataset.kind+"-"+(opts.key||labelText).replace(/[^a-z]/gi,"-");
+ const label=el("label","",labelText);label.htmlFor=id;
+ const input=el(tag);input.id=id;input.name=opts.key||"";if(opts.required)input.required=true;
+ if(opts.maxLength)input.maxLength=opts.maxLength;
+ if(opts.placeholder)input.placeholder=opts.placeholder;
+ if(tag==="select"){for(const [value,text] of (opts.options||[])){const op=el("option","",text);op.value=value;input.append(op)}}
+ append(form,label,input);return input;
+}
+function tracker(container,area){
+ const isPartner=area==="partners";const endpoint=isPartner?"/partners":"/support-cases";
+ const pane=el("article","panel-box");
+ const title=el("h2","",isPartner?"Institutional partnership tracker":"General support case tracker");
+ const desc=el("p","",isPartner?"Internal bank/NBFC outreach status; direct LSP and direct API only. No customer data.":"Internal website, partner and security issues only; never record customer personal/financial data.");
+ const form=el("form","");form.dataset.kind=area;
+ let name=field(form,isPartner?"Institution name":"Case subject","input",{key:isPartner?"organization_name":"subject",required:true,maxLength:120,placeholder:"No customer information"});
+ let kind=field(form,isPartner?"Institution type":"Category","select",{key:isPartner?"institution_type":"category",options:isPartner?[["bank","Bank"],["nbfc","NBFC"],["technology","Technology provider"]]:[["website","Website"],["partner","Partner support"],["security","Security"],["general","General"]]});
+ let track=isPartner?field(form,"Partnership route","select",{key:"partnership_track",options:[["direct_lsp","Formal LSP"],["direct_api","Direct lending API"]]}):null;
+ let notes=field(form,"Operational notes only","textarea",{key:"notes",maxLength:500,placeholder:"Never add PAN, Aadhaar, OTP, borrower KYC, bureau report or passwords"});
+ const submit=el("button","primary",isPartner?"Add institution":"Add case");submit.type="submit";form.append(submit);
+ const list=el("div","tracker-list","Loading…");
+ form.addEventListener("submit",async e=>{
+  e.preventDefault();submit.disabled=true;
+  try{
+   const body=isPartner?{organization_name:name.value.trim(),institution_type:kind.value,partnership_track:track.value,notes:notes.value}:{subject:name.value.trim(),category:kind.value,notes:notes.value};
+   await call(endpoint,"POST",body);name.value="";notes.value="";await loadEntries();
+   message("dashboard-message","Record saved. Personal/customer data must not be stored in this tracker.",true);
+  }catch(err){message("dashboard-message",err.message||"Save failed")}finally{submit.disabled=false}
+ });
+ async function loadEntries(){
+  try{
+   const result=await call(endpoint);list.replaceChildren();
+   const entries=(isPartner?result.partners:result.cases)||[];
+   if(!entries.length){list.append(el("p","subtitle","No records yet."));return}
+   for(const obj of entries){
+    const card=el("article","task"),left=el("div"),title=el("strong","",isPartner?obj.organization_name:obj.subject);
+    const details=el("div","details",obj.notes||"No additional details");
+    const type=el("span","meta",isPartner?(obj.institution_type.toUpperCase()+" · "+obj.partnership_track):obj.category.toUpperCase());
+    append(left,title,details,type);
+    const select=el("select");select.setAttribute("aria-label","Change status for "+title.textContent);
+    const stages=isPartner?["research","contacted","meeting","due_diligence","contracting","onboarded","paused"]:["open","in_progress","closed"];
+    for(const st of stages){const op=el("option","",st.replaceAll("_"," "));op.value=st;op.selected=(obj[isPartner?"stage":"status"]===st);select.append(op)}
+    select.disabled=state.role==="auditor";
+    select.addEventListener("change",async()=>{select.disabled=true;try{await call(endpoint+"/"+encodeURIComponent(obj.id),"PATCH",{[isPartner?"stage":"status"]:select.value});await loadEntries();message("dashboard-message","Record status updated.",true)}catch(err){message("dashboard-message",err.message||"Could not update")}finally{select.disabled=false}});
+    append(card,left,select);list.append(card);
+   }
+  }catch(e){list.textContent="Tracker unavailable: "+(e.message||"Access denied")}
+ }
+ if(state.role==="auditor")form.hidden=true;
+ append(pane,title,desc,form,list);container.append(pane);loadEntries();
+}
+
 function infoPanel(area){
  const container=el("div","panel-grid");
  if(area==="overview"){
@@ -141,6 +194,7 @@ function infoPanel(area){
   }
   mail.append(list);container.append(mail)
  }
+ if(area==="partners"||area==="support")tracker(container,area);
  if(area==="security"){
   const pane=el("article","panel-box");pane.append(el("h2","","Recent task changes"));
   const log=el("div","", "Loading audit history…");pane.append(log);container.append(pane);
