@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Check JavaScript syntax
-        run: node --check assets/site.js
+        run: node --check assets/site.js && node --check assets/admin.js
       - name: Validate static website security and local links
         run: python3 scripts/check_site.py
       - name: Install Deno for backend type checking
@@ -24,4 +24,4 @@ jobs:
         with:
           deno-version: v2.x
       - name: Type-check authenticated AI guidance backend
-        run: deno check backend/ai-guidance/index.ts
+        run: deno check backend/ai-guidance/index.ts backend/admin-console/index.ts
