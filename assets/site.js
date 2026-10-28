@@ -1,1 +1,40 @@
 (()=>{const btn=document.querySelector('.menu-toggle'),nav=document.querySelector('.nav');if(btn&&nav){btn.addEventListener('click',()=>{const on=nav.classList.toggle('open');btn.setAttribute('aria-expanded',String(on));btn.setAttribute('aria-label',on?'Close navigation':'Open navigation')});document.addEventListener('keydown',e=>{if(e.key==='Escape'){nav.classList.remove('open');btn.setAttribute('aria-expanded','false')}});nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');btn.setAttribute('aria-expanded','false')}))}const year=document.getElementById('year');if(year)year.textContent=new Date().getFullYear();})();
+
+/* VORVAN credit concept: fictional local-only, no network access or data persistence. */
+(() => {
+  'use strict';
+  const root=document.querySelector('[data-experience]');
+  if(!root)return;
+  const scenarios={
+    build:{score:620,mode:'build',en:{name:'Sample profile: Building',profile:'A fictional learning journey focused on better habits.',state:'Sample • Building',headline:'Start with clear, achievable habits.',summary:'Understanding due dates and card balances can support a healthy credit routine.',tipTitle:'Build the basics',tipBody:'Learn what credit reports contain and consider simple reminders for payment dates.',tasks:['Review your sample credit information and understand its sections.','Create a plan to remember every payment due date.','Understand how balances and new enquiries may affect a report.']},bn:{name:'নমুনা প্রোফাইল: উন্নতির পথে',profile:'ভালো আর্থিক অভ্যাস গড়ার কাল্পনিক উদাহরণ।',state:'নমুনা • উন্নতির পথে',headline:'সহজ অভ্যাস দিয়ে শুরু করুন।',summary:'বিলের শেষ তারিখ ও কার্ডের ব্যালান্স বোঝা কাজে আসতে পারে।',tipTitle:'ভিত্তি তৈরি করুন',tipBody:'ক্রেডিট রিপোর্ট কী দেখায় জানুন এবং সময়মতো পেমেন্টের রিমাইন্ডার রাখুন।',tasks:['নমুনা ক্রেডিট তথ্যের বিভাগগুলো বোঝার চেষ্টা করুন।','পেমেন্টের তারিখ মনে রাখার পরিকল্পনা করুন।','ব্যালান্স ও নতুন ঋণ অনুসন্ধান সম্পর্কে জানুন।']},hi:{name:'नमूना प्रोफ़ाइल: शुरुआत',profile:'बेहतर वित्तीय आदतों का काल्पनिक उदाहरण।',state:'नमूना • शुरुआत',headline:'छोटी आदतों से शुरुआत करें।',summary:'भुगतान की तारीखें और कार्ड बैलेंस समझना मददगार हो सकता है।',tipTitle:'मूल बातें समझें',tipBody:'क्रेडिट रिपोर्ट की जानकारी पढ़ें और भुगतान रिमाइंडर पर विचार करें।',tasks:['नमूना क्रेडिट जानकारी के भाग समझें।','भुगतान की तारीखों का ध्यान रखने की योजना बनाएं।','बैलेंस और नई क्रेडिट पूछताछ के प्रभाव के बारे में जानें।']}},
+    steady:{score:742,mode:'steady',en:{name:'Sample profile: Steady',profile:'A sample view of routine credit health and education.',state:'Sample • Steady',headline:'See your credit picture clearly.',summary:'Maintain on-time payment patterns and monitor credit utilisation.',tipTitle:'Track your commitments',tipBody:'Pay dues by their dates, understand your balances, and review information for accuracy.',tasks:['Review your credit information carefully.','Plan payment reminders before due dates.','Understand how utilisation can affect a score.']},bn:{name:'নমুনা প্রোফাইল: স্থিতিশীল',profile:'নিয়মিত ক্রেডিট অভ্যাসের একটি কাল্পনিক চিত্র।',state:'নমুনা • স্থিতিশীল',headline:'ক্রেডিটের চিত্র সহজে বুঝুন।',summary:'সময়ে পেমেন্ট ও ক্রেডিট ব্যবহারের দিকে নজর রাখুন।',tipTitle:'দায়বদ্ধতা ট্র্যাক করুন',tipBody:'বিলের তারিখ, ব্যালান্স ও রিপোর্টে তথ্যের সঠিকতা খেয়াল করুন।',tasks:['ক্রেডিট তথ্য মনোযোগ দিয়ে পর্যালোচনা করুন।','শেষ তারিখের আগেই পেমেন্ট রিমাইন্ডার রাখুন।','ক্রেডিট ব্যবহারের প্রভাব সম্পর্কে জানুন।']},hi:{name:'नमूना प्रोफ़ाइल: स्थिर',profile:'नियमित क्रेडिट आदतों का काल्पनिक उदाहरण।',state:'नमूना • स्थिर',headline:'क्रेडिट तस्वीर को आसानी से समझें।',summary:'समय पर भुगतान करें और क्रेडिट उपयोग पर ध्यान दें।',tipTitle:'जिम्मेदारियां देखें',tipBody:'भुगतान की तारीख, बैलेंस और रिपोर्ट की शुद्धता की समीक्षा करें।',tasks:['क्रेडिट जानकारी ध्यान से देखें।','अंतिम तारीख से पहले भुगतान रिमाइंडर रखें।','क्रेडिट उपयोग के संभावित प्रभाव को समझें।']}},
+    strong:{score:812,mode:'strong',en:{name:'Sample profile: Strong',profile:'A fictional snapshot of sustained positive habits.',state:'Sample • Strong',headline:'Maintain healthy financial habits.',summary:'Even strong profiles can benefit from accurate information and consistent repayment practices.',tipTitle:'Stay informed',tipBody:'Review your reports periodically and plan borrowing based on affordability, not score alone.',tasks:['Keep checking your credit information for accuracy.','Maintain consistent payment and budget habits.','Compare terms carefully before considering any new borrowing.']},bn:{name:'নমুনা প্রোফাইল: ভালো',profile:'দীর্ঘমেয়াদি ভালো অভ্যাসের একটি কাল্পনিক চিত্র।',state:'নমুনা • ভালো',headline:'ভালো আর্থিক অভ্যাস ধরে রাখুন।',summary:'ভালো স্কোর থাকলেও রিপোর্টের সঠিকতা ও নিয়মিত পেমেন্ট জরুরি।',tipTitle:'সচেতন থাকুন',tipBody:'সময়ে সময়ে রিপোর্ট যাচাই করুন; শুধুমাত্র স্কোর নয়, সামর্থ্য দেখেও সিদ্ধান্ত নিন।',tasks:['রিপোর্টের তথ্য ঠিক আছে কি না দেখুন।','পেমেন্ট ও বাজেটের অভ্যাস বজায় রাখুন।','নতুন ঋণের আগে শর্তগুলো ভালো করে পড়ুন।']},hi:{name:'नमूना प्रोफ़ाइल: मजबूत',profile:'लगातार अच्छी आदतों का काल्पनिक उदाहरण।',state:'नमूना • मजबूत',headline:'अच्छी वित्तीय आदतें बनाए रखें।',summary:'अच्छा स्कोर होने पर भी सही रिपोर्ट और नियमित भुगतान ज़रूरी हैं।',tipTitle:'जानकार रहें',tipBody:'समय-समय पर रिपोर्ट देखें और ऋण के बारे में केवल स्कोर के आधार पर निर्णय न लें।',tasks:['क्रेडिट रिपोर्ट में सही जानकारी जांचें।','नियमित भुगतान और बजट की आदत बनाए रखें।','नया ऋण लेने से पहले शर्तें ध्यान से पढ़ें।']}}
+  };
+  const labels={en:{score:'ILLUSTRATIVE SCORE',guidance:'EDUCATION SPOTLIGHT',task:'Suggested learning steps',chip:'General education • Not personalised advice',scenarios:['Building habits','Steady progress','Strong habits']},bn:{score:'কাল্পনিক ক্রেডিট স্কোর',guidance:'সাধারণ আর্থিক শিক্ষা',task:'শেখার সম্ভাব্য ধাপ',chip:'শুধু সাধারণ তথ্য • ব্যক্তিগত পরামর্শ নয়',scenarios:['উন্নতির পথে','স্থিতিশীল অগ্রগতি','ভালো অভ্যাস']},hi:{score:'काल्पनिक क्रेडिट स्कोर',guidance:'सामान्य वित्तीय शिक्षा',task:'सीखने के सुझाए कदम',chip:'केवल सामान्य जानकारी • व्यक्तिगत सलाह नहीं',scenarios:['अच्छी आदतें बनाएं','स्थिर प्रगति','मजबूत आदतें']}};
+  let scenario='steady',lang='en';
+  const get=(selector)=>root.querySelector(selector);
+  function set(selector,value){const node=get(selector);if(node)node.textContent=value;}
+  function render(){
+    const state=scenarios[scenario],copy=state[lang],l=labels[lang];
+    set('[data-demo-score]',String(state.score));
+    set('[data-demo-name]',copy.name);
+    set('[data-demo-profile]',copy.profile);
+    set('[data-demo-state]',copy.state);
+    set('[data-demo-headline]',copy.headline);
+    set('[data-demo-summary]',copy.summary);
+    set('[data-demo-tip-title]',copy.tipTitle);
+    set('[data-demo-tip-body]',copy.tipBody);
+    set('[data-demo-score-label]',l.score);
+    set('[data-demo-guidance-label]',l.guidance);
+    set('[data-demo-task-heading]',l.task);
+    set('[data-demo-chip]',l.chip);
+    const list=get('[data-demo-tasks]');
+    if(list){const frag=document.createDocumentFragment();for(const item of copy.tasks){const li=document.createElement('li');li.textContent=item;frag.append(li)}list.replaceChildren(frag)}
+    const ring=get('[data-demo-ring]');if(ring){ring.classList.remove('is-build','is-steady','is-strong');ring.classList.add('is-'+state.mode)}
+    root.querySelectorAll('[data-scenario]').forEach((button,i)=>{const active=button.dataset.scenario===scenario;button.setAttribute('aria-pressed',String(active));const type=['build','steady','strong'][i];const labelIndex=['build','steady','strong'].indexOf(type);if(button.lastChild?.nodeType===3)button.lastChild.textContent=' '+l.scenarios[labelIndex]});
+    root.querySelectorAll('[data-lang]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.lang===lang)));
+  }
+  root.querySelectorAll('[data-scenario]').forEach(button=>button.addEventListener('click',()=>{if(scenarios[button.dataset.scenario]){scenario=button.dataset.scenario;render()}}));
+  root.querySelectorAll('[data-lang]').forEach(button=>button.addEventListener('click',()=>{if(labels[button.dataset.lang]){lang=button.dataset.lang;render()}}));
+  render();
+})();
