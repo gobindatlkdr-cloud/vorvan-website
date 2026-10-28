@@ -31,7 +31,7 @@ jobs:
             sleep 10
           done
 
-          for resource in assets/site.css assets/site.js assets/favicon.svg experience.html solutions.html partners.html about.html contact.html privacy.html terms.html; do
+          for resource in assets/site.css assets/site.js assets/favicon.svg assets/partner-portal.css experience.html solutions.html partners.html partner-desk.html about.html contact.html privacy.html terms.html; do
             status=$(curl -L -sS -m 20 -A "VORVAN-site-health-check" -o /dev/null -w '%{http_code}' "$BASE$resource")
             echo "$resource: HTTP $status"
             if [[ "$status" != "200" ]]; then
@@ -44,4 +44,18 @@ jobs:
             echo "FAIL: Interactive concept page marker missing."
             exit 1
           fi
+          partner=$(curl -fsSL -m 20 "$BASE""partner-desk.html")
+          if ! grep -q "BANK / NBFC PARTNER DESK" <<< "$partner" || ! grep -q 'disabled aria-disabled="true"' <<< "$partner"; then
+            echo "FAIL: Partner desk missing or disabled-by-default UI not present."
+            exit 1
+          fi
+          echo "PASS: Bank/NBFC portal is live and customer-action controls stay disabled."
+          AI_URL="https://kukfpsqujlutlgwndplh.supabase.co/functions/v1/ai-guidance"
+          ai_status=$(curl -sS -m 20 -o /dev/null -w '%{http_code}' "$AI_URL")
+          echo "Unauthenticated AI endpoint status: HTTP $ai_status"
+          if [[ "$ai_status" != "401" ]]; then
+            echo "FAIL: AI endpoint did not reject anonymous access."
+            exit 1
+          fi
+          echo "PASS: AI endpoint rejects unauthenticated access; no secret keys used."
           echo "PASS: All checked live resources and the interactive demo marker respond successfully."
