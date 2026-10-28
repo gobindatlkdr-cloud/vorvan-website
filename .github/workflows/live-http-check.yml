@@ -31,7 +31,7 @@ jobs:
             sleep 10
           done
 
-          for resource in assets/site.css assets/site.js assets/favicon.svg assets/partner-portal.css experience.html solutions.html partners.html partner-desk.html about.html contact.html privacy.html terms.html; do
+          for resource in assets/site.css assets/site.js assets/favicon.svg assets/partner-portal.css experience.html solutions.html partners.html partner-desk.html admin.html assets/admin.js assets/admin.css about.html contact.html privacy.html terms.html; do
             status=$(curl -L -sS -m 20 -A "VORVAN-site-health-check" -o /dev/null -w '%{http_code}' "$BASE$resource")
             echo "$resource: HTTP $status"
             if [[ "$status" != "200" ]]; then
@@ -58,4 +58,16 @@ jobs:
             exit 1
           fi
           echo "PASS: AI endpoint rejects unauthenticated access; no secret keys used."
+          admin_page=$(curl -fsSL -m 20 "$BASE""admin.html")
+          if ! grep -q 'id="mfa-form"' <<< "$admin_page" || ! grep -q 'id="panel-nav"' <<< "$admin_page"; then
+            echo "FAIL: Admin MFA and separate section navigation is missing."
+            exit 1
+          fi
+          admin_status=$(curl -sS -m 20 -o /dev/null -w '%{http_code}' "https://kukfpsqujlutlgwndplh.supabase.co/functions/v1/admin-console/overview")
+          echo "Unauthenticated admin backend HTTP $admin_status"
+          if [[ "$admin_status" != "401" ]]; then
+            echo "FAIL: Unauthorized request not blocked on Admin API."
+            exit 1
+          fi
+          echo "PASS: Admin page published and API rejects anonymous access."
           echo "PASS: All checked live resources and the interactive demo marker respond successfully."
