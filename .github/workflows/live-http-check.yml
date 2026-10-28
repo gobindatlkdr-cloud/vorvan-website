@@ -1,0 +1,42 @@
+name: Live website URL verification
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-live-site:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check HTTPS website and asset responses
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="https://gobindatlkdr-cloud.github.io/vorvan-website/"
+          for attempt in $(seq 1 12); do
+            code_and_url=$(curl -L -sS -m 20 -A "VORVAN-site-health-check" -o /tmp/vorvan.html -w '%{http_code} %{url_effective}' "$BASE" || true)
+            echo "Attempt $attempt: $code_and_url"
+            if [[ "$code_and_url" == "200 $BASE" ]] && grep -q 'VORVAN' /tmp/vorvan.html; then
+              echo "PASS: HTML returns 200 on the correct GitHub Pages URL without redirecting."
+              break
+            fi
+            if [[ "$attempt" == "12" ]]; then
+              echo "FAIL: Website unavailable or redirected unexpectedly."
+              exit 1
+            fi
+            sleep 10
+          done
+
+          for resource in assets/site.css assets/site.js assets/favicon.svg privacy.html terms.html; do
+            status=$(curl -L -sS -m 20 -A "VORVAN-site-health-check" -o /dev/null -w '%{http_code}' "$BASE$resource")
+            echo "$resource: HTTP $status"
+            if [[ "$status" != "200" ]]; then
+              exit 1
+            fi
+          done
+
+          echo "PASS: All checked live resources respond successfully."
