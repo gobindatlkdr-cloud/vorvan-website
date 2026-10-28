@@ -25,16 +25,16 @@ for page in PAGES:
         issue(f"{page.name}: missing referrer restriction")
     if page.name == "admin.html":
         # Admin login/MFA forms are allowed; privileged actions are server-checked.
-        if re.search(r"<(?:iframe|object|embed)\\b", html, re.I):
+        if re.search(r"<(?:iframe|object|embed)\b", html, re.I):
             issue("admin.html: frame/embed is not permitted")
         if 'https://kukfpsqujlutlgwndplh.supabase.co' not in html:
             issue("admin.html: expected restricted Supabase connect-src")
-    elif re.search(r"<(?:form|iframe|object|embed)\\b", html, re.I):
+    elif re.search(r"<(?:form|iframe|object|embed)\b", html, re.I):
         issue(f"{page.name}: form, frame or embed is not permitted")
     if re.search(r'\s(?:style|on[a-z]+)\s*=', html, re.I):
         issue(f"{page.name}: inline style or event handler blocked by CSP")
-    allowed_script = r'assets/(?:site|admin)\\.js' if page.name == "admin.html" else r'assets/site\\.js'
-    for script in re.findall(r'<script\\b[^>]*>', html, re.I):
+    allowed_script = r'assets/(?:site|admin)\.js' if page.name == "admin.html" else r'assets/site\.js'
+    for script in re.findall(r'<script\b[^>]*>', html, re.I):
         if not re.search(r'src="' + allowed_script + r'"', script):
             issue(f"{page.name}: unexpected script")
     for match in re.finditer(r'\b(?:src|href)="([^"]+)"', html):
