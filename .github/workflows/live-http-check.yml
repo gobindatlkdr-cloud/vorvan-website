@@ -69,5 +69,15 @@ jobs:
             echo "FAIL: Unauthorized request not blocked on Admin API."
             exit 1
           fi
+          preflight=$(curl -sS -m 20 -o /dev/null -w '%{http_code}' -X OPTIONS \
+            -H 'Origin: https://gobindatlkdr-cloud.github.io' \
+            -H 'Access-Control-Request-Method: GET' \
+            -H 'Access-Control-Request-Headers: authorization, apikey, content-type' \
+            "https://kukfpsqujlutlgwndplh.supabase.co/functions/v1/admin-console/overview")
+          echo "Admin browser CORS preflight: HTTP $preflight"
+          if [[ "$preflight" != "204" ]]; then
+            echo "FAIL: Admin CORS preflight blocked; interactive browser login would fail."
+            exit 1
+          fi
           echo "PASS: Admin page published and API rejects anonymous access."
           echo "PASS: All checked live resources and the interactive demo marker respond successfully."
