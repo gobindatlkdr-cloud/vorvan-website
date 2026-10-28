@@ -31,7 +31,7 @@ jobs:
             sleep 10
           done
 
-          for resource in assets/site.css assets/site.js assets/favicon.svg privacy.html terms.html; do
+          for resource in assets/site.css assets/site.js assets/favicon.svg experience.html solutions.html partners.html about.html contact.html privacy.html terms.html; do
             status=$(curl -L -sS -m 20 -A "VORVAN-site-health-check" -o /dev/null -w '%{http_code}' "$BASE$resource")
             echo "$resource: HTTP $status"
             if [[ "$status" != "200" ]]; then
@@ -39,4 +39,9 @@ jobs:
             fi
           done
 
-          echo "PASS: All checked live resources respond successfully."
+          demo_page=$(curl -fsSL -m 20 "$BASE""experience.html")
+          if ! grep -q "data-experience" <<< "$demo_page"; then
+            echo "FAIL: Interactive concept page marker missing."
+            exit 1
+          fi
+          echo "PASS: All checked live resources and the interactive demo marker respond successfully."
