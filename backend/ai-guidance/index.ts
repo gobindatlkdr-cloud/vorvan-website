@@ -73,8 +73,22 @@ async function isRealAuthenticatedUser(req: Request): Promise<boolean> {
 async function input(req: Request): Promise<null | { scenario: Scenario; locale: Language; mode: "demo" }> {
   if (req.headers.get("content-type")?.split(";")[0].trim().toLowerCase() !== "application/json") return null;
   if (Number(req.headers.get("content-length") || 0) > maxBodyBytes || !req.body) return null;
-  const body = await req.text();
-  if (new TextEncoder().encode(body).length > maxBodyBytes) return null;
+  const reader = req.body.getReader();
+  const chunks: Uint8Array[] = []; let bytes = 0;
+  try {
+    while (true) {
+      const next = await reader.read();
+      if (next.done) break;
+      bytes += next.value.byteLength;
+      if (bytes > maxBodyBytes) { await reader.cancel().catch(() => {}); return null; }
+      chunks.push(next.value);
+    }
+  } catch { return null; }
+  finally { reader.releaseLock(); }
+  const buffer = new Uint8Array(bytes); let offset = 0;
+  for (const chunk of chunks) { buffer.set(chunk, offset); offset += chunk.byteLength; }
+  let body = "";
+  try { body = new TextDecoder("utf-8",{fatal:true}).decode(buffer); } catch { return null; }
   let payload: unknown;
   try { payload = JSON.parse(body); } catch { return null; }
   if (!payload || typeof payload !== "object" || Array.isArray(payload)) return null;
