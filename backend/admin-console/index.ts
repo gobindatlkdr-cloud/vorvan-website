@@ -150,6 +150,59 @@ Deno.serve(async(req:Request):Promise<Response>=>{
       await audit(admin.userId,"task_updated",match[1]);
       return json(req,200,{ok:true,task:data[0]});
     }
+
+    // Private operational partner tracker (never handles borrower data or financial decisions).
+    if(req.method==="GET"&&path==="/partners"){
+      const q=await db("/rest/v1/vorvan_admin_partner_pipeline?select=id,organization_name,institution_type,partnership_track,stage,notes,updated_at&order=updated_at.desc&limit=100");
+      return q?.ok?json(req,200,{ok:true,partners:await q.json()}):fail(req,503,"partners_unavailable");
+    }
+    if(req.method==="POST"&&path==="/partners"){
+      const x=await requestBody(req);
+      if(!x||Object.keys(x).some(k=>!["organization_name","institution_type","partnership_track","notes"].includes(k)))return fail(req,400,"invalid_partner_input");
+      const name=x.organization_name,type=x.institution_type,track=x.partnership_track,notes=x.notes??"";
+      if(typeof name!=="string"||name.trim().length<3||name.length>120||!["bank","nbfc","technology"].includes(String(type))||!["direct_lsp","direct_api"].includes(String(track))||typeof notes!=="string"||notes.length>500)return fail(req,400,"invalid_partner_input");
+      const q=await db("/rest/v1/vorvan_admin_partner_pipeline","POST",{organization_name:name.trim(),institution_type:type,partnership_track:track,notes,stage:"research"});
+      if(!q?.ok)return fail(req,503,"partner_write_unavailable");
+      const rows=await q.json();await audit(admin.userId,"partner_record_created",rows?.[0]?.id||null);
+      return json(req,201,{ok:true,partner:rows?.[0]||null});
+    }
+    const partnerMatch=/^\/partners\/([\da-f-]{36})$/i.exec(path);
+    if(req.method==="PATCH"&&partnerMatch&&UUID.test(partnerMatch[1])){
+      const x=await requestBody(req);
+      if(!x||!Object.keys(x).length||Object.keys(x).some(k=>!["stage","notes"].includes(k)))return fail(req,400,"invalid_partner_update");
+      if(x.stage!==undefined&&!["research","contacted","meeting","due_diligence","contracting","onboarded","paused"].includes(String(x.stage)))return fail(req,400,"invalid_partner_stage");
+      if(x.notes!==undefined&&(typeof x.notes!=="string"||x.notes.length>500))return fail(req,400,"invalid_notes");
+      const q=await db("/rest/v1/vorvan_admin_partner_pipeline?id=eq."+encodeURIComponent(partnerMatch[1]),"PATCH",{...x,updated_at:new Date().toISOString()});
+      if(!q?.ok)return fail(req,503,"partner_write_unavailable");
+      const rows=await q.json();if(!Array.isArray(rows)||rows.length!==1)return fail(req,404,"partner_not_found");
+      await audit(admin.userId,"partner_record_updated",partnerMatch[1]);return json(req,200,{ok:true,partner:rows[0]});
+    }
+    // Internal general support desk, strictly no customer credentials or financial documents.
+    if(req.method==="GET"&&path==="/support-cases"){
+      const q=await db("/rest/v1/vorvan_admin_support_cases?select=id,subject,category,status,notes,updated_at&order=updated_at.desc&limit=100");
+      return q?.ok?json(req,200,{ok:true,cases:await q.json()}):fail(req,503,"cases_unavailable");
+    }
+    if(req.method==="POST"&&path==="/support-cases"){
+      const x=await requestBody(req);
+      if(!x||Object.keys(x).some(k=>!["subject","category","notes"].includes(k)))return fail(req,400,"invalid_case_input");
+      const title=x.subject,category=x.category,notes=x.notes??"";
+      if(typeof title!=="string"||title.trim().length<3||title.length>120||!["website","partner","security","general"].includes(String(category))||typeof notes!=="string"||notes.length>500)return fail(req,400,"invalid_case_input");
+      const q=await db("/rest/v1/vorvan_admin_support_cases","POST",{subject:title.trim(),category,notes,status:"open"});
+      if(!q?.ok)return fail(req,503,"case_write_unavailable");
+      const rows=await q.json();await audit(admin.userId,"support_case_created",rows?.[0]?.id||null);
+      return json(req,201,{ok:true,case:rows?.[0]||null});
+    }
+    const caseMatch=/^\/support-cases\/([\da-f-]{36})$/i.exec(path);
+    if(req.method==="PATCH"&&caseMatch&&UUID.test(caseMatch[1])){
+      const x=await requestBody(req);
+      if(!x||!Object.keys(x).length||Object.keys(x).some(k=>!["status","notes"].includes(k)))return fail(req,400,"invalid_case_update");
+      if(x.status!==undefined&&!["open","in_progress","closed"].includes(String(x.status)))return fail(req,400,"invalid_case_status");
+      if(x.notes!==undefined&&(typeof x.notes!=="string"||x.notes.length>500))return fail(req,400,"invalid_notes");
+      const q=await db("/rest/v1/vorvan_admin_support_cases?id=eq."+encodeURIComponent(caseMatch[1]),"PATCH",{...x,updated_at:new Date().toISOString()});
+      if(!q?.ok)return fail(req,503,"case_write_unavailable");
+      const rows=await q.json();if(!Array.isArray(rows)||rows.length!==1)return fail(req,404,"case_not_found");
+      await audit(admin.userId,"support_case_updated",caseMatch[1]);return json(req,200,{ok:true,case:rows[0]});
+    }
     return fail(req,404,"route_not_found");
   }catch{return fail(req,500,"internal_error")}
 });
