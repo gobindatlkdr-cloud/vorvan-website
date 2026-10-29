@@ -11,3 +11,19 @@
 .panel-box form input,.panel-box form select,.panel-box form textarea{width:100%;padding:11px;border:1px solid #ccd8e4;border-radius:10px;background:#fff;color:#1c324e;min-width:0}
 .panel-box form .primary{margin-top:13px}
 .tracker-list{display:grid;gap:10px}.tracker-list .task{padding:13px;grid-template-columns:minmax(0,1fr) auto}.tracker-list .task select{font-size:11px}
+
+/* VORVAN burgundy design consistency (visual only; no auth or API changes). */
+:root{--navy:#4c1532;--navy2:#7f1849;--accent:#921349;--accent2:#b11a5d;--teal:#edbfd5;--ink:#432c3b;--muted:#806b7b;--line:#ebdfe7;--surface:#fff8fc}
+.admin-header{background:linear-gradient(120deg,#78123e,#a51657)}
+.brand-mark{background:linear-gradient(140deg,#bd2367,#7e0d43)}
+.environment{color:#ffecf5;border-color:#ffe0ef5c}
+.login-card{border-color:#f1dfea;box-shadow:0 20px 60px #8f18501a}
+.login-side .security-symbol{color:#9a1850}
+.login-side h2{color:#59213c}
+.primary{background:linear-gradient(125deg,#8f1248,#b22465);box-shadow:0 10px 24px #98225a26}
+.workspace-sidebar{background:linear-gradient(155deg,#531832,#7b204e)}
+.workspace-sidebar nav button.selected{background:#ffffff20;border-color:#f9d6ea40}
+.panel-box,.metric{border-color:#f0dfe9}
+.panel-box .status.live{background:#f7e6ef;color:#8a1f55;border-color:#edc6d8}
+.admin-footer{background:#4e1530}
+.small-button{border-color:#e7cadb;color:#7e1749}
