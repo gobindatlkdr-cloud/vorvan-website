@@ -1,0 +1,60 @@
+name: VORVAN read-only custom domain readiness
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/domain-readiness.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  inspect-public-dns:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Inspect current public DNS without modifying domain or email
+        shell: bash
+        run: |
+          set -u
+          echo "READ ONLY: no DNS or Zoho changes will be made."
+          domain=vorvan.co.in
+          if ! command -v dig >/dev/null 2>&1; then
+            echo "Installing dnsutils in runner environment (not a DNS change)"
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq dnsutils
+          fi
+          echo "::group::Nameservers (authoritative provider)"
+          dig +time=3 +tries=1 +short NS "$domain" || true
+          echo "::endgroup::"
+          echo "::group::Current root A records"
+          dig +time=3 +tries=1 +short A "$domain" || true
+          echo "::endgroup::"
+          echo "::group::Current www CNAME and A records"
+          dig +time=3 +tries=1 +short CNAME "www.$domain" || true
+          dig +time=3 +tries=1 +short A "www.$domain" || true
+          echo "::endgroup::"
+          echo "::group::Mail MX routing (view only)"
+          dig +time=3 +tries=1 +short MX "$domain" || true
+          echo "::endgroup::"
+          echo "::group::Email DNS presence (not showing TXT contents)"
+          for host in "$domain" "_dmarc.$domain"; do
+            count=$(dig +time=3 +tries=1 +short TXT "$host" | wc -l)
+            echo "$host has $count public TXT response line(s)"
+          done
+          echo "::endgroup::"
+          echo "::group::Public website HTTPS status"
+          for name in "$domain" "www.$domain"; do
+            code=$(curl -sS -L -m 15 -o /dev/null -w '%{http_code}' "https://$name/" || true)
+            url=$(curl -sS -L -m 15 -o /dev/null -w '%{url_effective}' "https://$name/" || true)
+            echo "$name: HTTPS status=$code, final URL=$url"
+          done
+          echo "::endgroup::"
+          echo "::group::GitHub Pages expected A records"
+          echo "185.199.108.153"
+          echo "185.199.109.153"
+          echo "185.199.110.153"
+          echo "185.199.111.153"
+          echo "www CNAME expected: gobindatlkdr-cloud.github.io"
+          echo "::endgroup::"
+          echo "Report complete. No nameserver, MX, SPF, DKIM or DMARC settings were touched."
