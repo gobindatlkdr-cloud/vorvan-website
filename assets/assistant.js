@@ -36,5 +36,22 @@ for(const b of root.querySelectorAll("[data-guide-topic]"))b.addEventListener("c
 function sendMessage(){const text=field.value.trim();if(!text||text.length>240||busy)return;field.value="";add(text,true);ask(null,text)}
 send.addEventListener("click",sendMessage);
 field.addEventListener("keydown",(e)=>{if(e.key==="Enter"){e.preventDefault();sendMessage()}});
+// Search bar in the hero opens the same free, live assistant with the visitor's question.
+const quick=document.querySelector("[data-vv-search]");
+const quickButton=document.querySelector("[data-vv-search-submit]");
+function quickAsk(){
+ if(!quick||!popup||busy)return;
+ const question=quick.value.trim();
+ if(!question)return;
+ if(question.length>240){add(labels[lang.value].privacy);return}
+ open(true);
+ quick.value="";
+ field.value=question;
+ sendMessage();
+}
+if(quick&&quickButton){
+ quickButton.addEventListener("click",quickAsk);
+ quick.addEventListener("keydown",event=>{if(event.key==="Enter"){event.preventDefault();quickAsk()}});
+}
 lang.addEventListener("change",greeting);greeting();
 })();
