@@ -182,15 +182,15 @@ function infoPanel(area){
   support:[["Business Gmail","Company inbox is currently the only confirmed live mailbox.","manual_email","https://mail.google.com"],["Grievance channel","Use existing Gmail until official domain mail records are tested.","pending"]],
   security:[["Authentication","Password + verified email + authenticator-app MFA (AAL2) required.","published"],["Public website security","Github Actions checks and CSP are defence in depth, not a penetration test.","review_required","https://github.com/gobindatlkdr-cloud/vorvan-website/actions"],["Audit history","Task create/update operations are logged server-side.","published"]],
   website:[["Published website","GitHub Pages currently serves the company site over HTTPS.","published","https://gobindatlkdr-cloud.github.io/vorvan-website/"],["Bought domain: vorvan.co.in","Purchased via Domain India; nameservers and HTTPS connection not yet verified.","dns_pending","https://domainindia.com/client/domains"],["Repository","Edit and deploy website source through GitHub.","published","https://github.com/gobindatlkdr-cloud/vorvan-website"]],
-  email:[["Domain email not yet configured","Avoid advertising these addresses until MX/SPF/DKIM/DMARC are live and verified.","dns_pending"],["Recommended provider","Zoho Mail free custom domain if eligible, or Cloudflare free inbound forwarding only.","pending","https://www.zoho.com/mail/"]],
+  email:[["Five Zoho company addresses","Admin, Partnerships, Support and Legal mailboxes, plus Info alias to Admin; user verified SPF/DKIM/DMARC and mail delivery.","published"],["Website domain mapping","vorvan.co.in website DNS and HTTPS cutover are separate from company email and still pending.","dns_pending","https://github.com/gobindatlkdr-cloud/vorvan-website/settings/pages"]],
   compliance:[["Regulatory approval","RBI digital lending and lender contract review pending.","locked"],["Privacy & legal documents","Informational templates; professional review required before customer launch.","review_required","https://gobindatlkdr-cloud.github.io/vorvan-website/privacy.html"]]
  };
  for(const v of extras[area]||[])container.append(box(...v));
  if(area==="email"){
-  const mail=el("article","panel-box");append(mail,el("h2","","Planned @vorvan.co.in addresses"),el("p","","Not active mailboxes — setup requires provider verification and DNS changes."));
+  const mail=el("article","panel-box");append(mail,el("h2","","Company @vorvan.co.in addresses"),el("p","","Email setup verified by company administrator; DNS and website-host mapping are separate."));
   const list=el("div","mail-list");
-  for(const p of ["info","partnerships","support","security","admin"]){
-   const line=el("div","mail-line");append(line,el("strong","",p+"@vorvan.co.in"),el("span","","NOT ACTIVE"));list.append(line)
+  for(const p of ["admin","partnerships","support","legal","info"]){
+   const line=el("div","mail-line");append(line,el("strong","",p+"@vorvan.co.in"),el("span","","EMAIL CONFIGURED"));list.append(line)
   }
   mail.append(list);container.append(mail)
  }
