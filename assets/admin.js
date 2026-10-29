@@ -5,7 +5,7 @@ const API="https://kukfpsqujlutlgwndplh.supabase.co";
 const PUB="sb_publishable_6KyGNqt8CGNlE8vCBdtalA_Ayhfo-Rj";
 const AUTH=API+"/auth/v1";
 const EDGE=API+"/functions/v1/admin-console";
-const COMPANY="vorvan.pvt.ltd@gmail.com";
+const COMPANY="admin@vorvan.co.in";
 const AREAS={
  overview:["Operations overview","Readiness, approvals and actions across the company"],
  partners:["Bank / NBFC Partners","Direct LSP and API collaboration; customer requests remain disabled"],
@@ -52,7 +52,7 @@ async function signup(){
   const redirect=encodeURIComponent("https://gobindatlkdr-cloud.github.io/vorvan-website/admin.html");
   await auth("/signup?redirect_to="+redirect,"POST",{email:COMPANY,password},false);
   $("password").value="";
-  message("login-message","Account registration requested. Open the confirmation email in vorvan.pvt.ltd@gmail.com and verify it; then return here to sign in. If you already registered, use Sign in.",true);
+  message("login-message","Account registration requested. Open the confirmation email in admin@vorvan.co.in and verify it; then return here to sign in. If you already registered, use Sign in.",true);
  }catch(e){message("login-message",e.message||"Signup unavailable. Check Supabase Auth settings.")}
 }
 async function startMfa(){
