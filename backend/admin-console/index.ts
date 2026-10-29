@@ -90,7 +90,7 @@ const moduleInfo=[
   {id:"customers",name:"Customer Operations",state:"locked",help:"No live KYC, bureau data, payments or lender applications."},
   {id:"support",name:"Support",state:"manual_email",help:"Company Gmail; no customer attachments/PII."},
   {id:"security",name:"Security",state:"review_required",help:"Verified role, MFA and audit log; formal penetration test pending."},
-  {id:"email",name:"Domain Email",state:"dns_pending",help:"@vorvan.co.in mailboxes are not verified or activated."},
+  {id:"email",name:"Department Mail",state:"published",help:"Zoho domain mail: admin, partnerships, support, legal; Info alias to Admin. User-verified SPF/DKIM/DMARC and mail flow."},
   {id:"compliance",name:"Regulatory Review",state:"pending",help:"RBI/lender agreements and legal/privacy review outstanding."}
 ];
 async function audit(userId:string,action:string,target:string|null){
@@ -115,7 +115,7 @@ Deno.serve(async(req:Request):Promise<Response>=>{
       const tasks=await q.json();
       const counters:Record<string,number>={todo:0,in_progress:0,blocked:0,done:0};
       if(Array.isArray(tasks))for(const t of tasks){if(t?.status in counters)counters[t.status]++}
-      return json(req,200,{ok:true,role:admin.role,modules:moduleInfo,counters,tasks,domain:"vorvan.co.in",domain_connected:false,domain_email_active:false,customer_actions_enabled:false});
+      return json(req,200,{ok:true,role:admin.role,modules:moduleInfo,counters,tasks,domain:"vorvan.co.in",domain_connected:false,domain_email_active:true,customer_actions_enabled:false});
     }
     if(req.method==="GET"&&path==="/modules")return json(req,200,{ok:true,modules:moduleInfo});
     if(req.method==="GET"&&path==="/tasks"){
