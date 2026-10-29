@@ -65,6 +65,60 @@ const hints:Record<Topic,string[]> ={
  unknown:[]
 };
 const topics:Topic[]=["partnership","api","credit","support","legal","contact"];
+
+/* More useful partnership Q&A without any paid model or provider key.
+ * These are carefully scoped answers, not open-ended generative AI. */
+const partnerAnswers: Record<string, { topic: Topic; terms: string[]; text:Record<Lang,string> }> = {
+ sandbox:{topic:"api",terms:["sandbox","test api","test environment","api key","স্যান্ডবক্স","স্যান্ডবক্সে","परीक्षण एपीआई"],
+   text:{
+    en:"For a direct lender API sandbox discussion, please email partnerships@vorvan.co.in from your official bank/NBFC email. Suggested agenda: available endpoints and documentation, authentication, test users, webhook callbacks, data fields, security requirements and commercial evaluation. VORVAN does not have active sandbox access on this public site.",
+    bn:"Direct lender API স্যান্ডবক্স নিয়ে partnerships@vorvan.co.in-এ আপনার অফিসিয়াল Bank/NBFC মেইল থেকে যোগাযোগ করুন। আলোচনার বিষয়: API documentation, authentication, test users, webhook, ডেটা ফিল্ড, security ও commercial evaluation। এই পাবলিক সাইটে sandbox access চালু নেই।",
+    hi:"Direct lender API sandbox के लिए आधिकारिक बैंक/NBFC ईमेल से partnerships@vorvan.co.in पर संपर्क करें। API documentation, authentication, test users, webhook, data fields, सुरक्षा और commercial evaluation पर चर्चा हो सकती है। सार्वजनिक साइट पर sandbox access सक्रिय नहीं है।"
+   }},
+ onboarding:{topic:"partnership",terms:["onboarding","onboard","register as lsp","become partner","partner registration","অনবোর্ড","পार्टনার হতে","ऑनबोर्ड"],
+   text:{
+    en:"VORVAN is exploring direct formal LSP partnerships and lending API integrations, not DSA or lead-referral arrangements. To begin an institutional assessment, email partnerships@vorvan.co.in with the institution name, work contact, proposed scope and preferred discussion time. Due diligence, agreement, compliance and technical approval are required before any activation.",
+    bn:"VORVAN সরাসরি formal LSP ও lending API অংশীদারত্ব নিয়ে আলোচনা করছে—DSA বা lead referral নয়। শুরু করতে partnerships@vorvan.co.in-এ প্রতিষ্ঠানের নাম, অফিসিয়াল যোগাযোগ, প্রস্তাবিত কাজ ও আলোচনার সময় পাঠান। সক্রিয় করার আগে due diligence, agreement ও technical/compliance approval লাগবে।",
+    hi:"VORVAN सीधे औपचारिक LSP और lender API साझेदारी पर चर्चा करता है, DSA/lead-referral नहीं। शुरुआत के लिए partnerships@vorvan.co.in पर संस्था, कार्य-संपर्क, प्रस्तावित दायरा और बैठक की सुविधा बताएं। सक्रियण से पहले उचित जांच, अनुबंध और तकनीकी/अनुपालन स्वीकृति आवश्यक है।"
+   }},
+ documents:{topic:"partnership",terms:["document","paperwork","due diligence","agreement","contract","মৌলিক কাগজ","ডকুমেন্ট","চুক্তি","दस्तावेज","समझौता"],
+   text:{
+    en:"The initial partnership call can cover company background, product architecture, security approach and proposed LSP/API scope. The bank/NBFC may then specify KYB, corporate, information-security, outsourcing and legal documents for due diligence. Do not email borrower KYC or customer credit records. Write to partnerships@vorvan.co.in.",
+    bn:"প্রথম পার্টনারশিপ কলে কোম্পানির পরিচিতি, অ্যাপ আর্কিটেকচার, নিরাপত্তার পরিকল্পনা ও LSP/API scope আলোচনা করা যায়। এরপর Bank/NBFC due diligence-এর জন্য KYB, corporate, security, outsourcing ও legal নথি চাইতে পারে। গ্রাহকের KYC/CIBIL ডেটা সাধারণ মেইলে পাঠাবেন না। যোগাযোগ: partnerships@vorvan.co.in।",
+    hi:"पहली साझेदारी कॉल में कंपनी परिचय, ऐप architecture, सुरक्षा और LSP/API scope पर बात हो सकती है। बैंक/NBFC अपनी जाँच के अनुसार KYB, corporate, security, outsourcing और कानूनी दस्तावेज़ मांग सकता है। ग्राहक KYC/CIBIL रिकॉर्ड सामान्य ईमेल में न भेजें। partnerships@vorvan.co.in पर लिखें।"
+   }},
+ pricing:{topic:"partnership",terms:["pricing","charges","commission","fees","commercial","revenue share","খরচ","চার্জ","কমিশন","ফি","शुल्क","कीमत"],
+   text:{
+    en:"Commercial terms for a direct LSP/API partnership are not publicly set or agreed. Ask the institution about setup fees, sandbox costs, usage charges, servicing responsibilities, SLAs, data obligations and contract duration. VORVAN's website itself does not charge to send an enquiry. Email partnerships@vorvan.co.in.",
+    bn:"Direct LSP/API-এর commercial rate এখন পাবলিকভাবে নির্ধারিত নয়। আলোচনায় setup fee, sandbox cost, usage charge, SLA, data responsibility ও contract term জিজ্ঞাসা করুন। ওয়েবসাইটে enquiry পাঠাতে কোনো VORVAN fee নেই। যোগাযোগ: partnerships@vorvan.co.in।",
+    hi:"Direct LSP/API के commercial शुल्क सार्वजनिक रूप से तय नहीं हैं। बातचीत में setup fee, sandbox cost, usage charges, SLA, data obligations और contract duration पूछें। वेबसाइट पर enquiry भेजने के लिए VORVAN शुल्क नहीं लेता। partnerships@vorvan.co.in पर लिखें।"
+   }},
+ compliance:{topic:"security",terms:["rbi","compliance","privacy","data security","audit","consent","regulation","security review","নিয়ম","নিয়ম","সিকিউরিটি","সম্মতি","अनुपालन","सुरक्षा","सहमति"],
+   text:{
+    en:"Any live LSP/API workflow requires partner-led legal and regulatory assessment, documented customer consent, appropriate data safeguards, clear responsibilities, grievance routing, audit controls and independent security testing. This website does not collect financial data or grant lender access. Contact partnerships@vorvan.co.in for institutional scope or legal@vorvan.co.in for policy questions.",
+    bn:"লাইভ LSP/API চালুর আগে lender-এর legal/regulatory review, গ্রাহকের যথাযথ consent, data security, পরিষ্কার দায়িত্ব, grievance ব্যবস্থা, audit ও independent security testing দরকার। এই সাইটে আর্থিক ডেটা সংগ্রহ বা lender access নেই। Institutional discussion: partnerships@vorvan.co.in; legal: legal@vorvan.co.in।",
+    hi:"लाइव LSP/API प्रक्रिया के लिए ऋणदाता की कानूनी/नियामकीय समीक्षा, ग्राहक की उचित सहमति, डेटा सुरक्षा, स्पष्ट जिम्मेदारियाँ, शिकायत व्यवस्था, audit और स्वतंत्र सुरक्षा परीक्षण आवश्यक हैं। यह साइट ग्राहक वित्तीय डेटा नहीं लेती। साझेदारी: partnerships@vorvan.co.in, नीति: legal@vorvan.co.in।"
+   }},
+ meeting:{topic:"partnership",terms:["meeting","schedule call","book a call","demo call","appointment","মিটিং","কল করব","ফোনে কথা","बैठक","कॉल"],
+   text:{
+    en:"For a bank/NBFC discovery call, email partnerships@vorvan.co.in with your institution, official contact, direct LSP or API discussion objective and a few proposed time slots. Our team reviews enquiries manually; the website cannot book a confirmed meeting.",
+    bn:"Bank/NBFC-এর সঙ্গে introductory call-এর জন্য partnerships@vorvan.co.in-এ প্রতিষ্ঠানের নাম, অফিসিয়াল যোগাযোগ, LSP না API আলোচনার উদ্দেশ্য এবং কয়েকটি সম্ভাব্য সময় পাঠান। মেইল ম্যানুয়ালি রিভিউ হয়; সাইট থেকে confirmed meeting বুক হয় না।",
+    hi:"बैंक/NBFC कॉल के लिए partnerships@vorvan.co.in पर संस्था, आधिकारिक संपर्क, LSP या API का उद्देश्य और संभावित समय लिखें। ईमेल की समीक्षा मैन्युअल है; वेबसाइट से पक्की मीटिंग बुक नहीं होती।"
+   }},
+ integration:{topic:"api",terms:["webhook","callback","token","oauth","api integration","integrate","endpoint","sdk","technical flow","ইন্টিগ্রেশন","ওয়েবহুক","एकीकरण"],
+   text:{
+    en:"A potential direct lender API integration would need agreed authentication, sandbox documentation, consented data fields, application handoff, callback/webhook validation, error states and audit controls. No live integration is provided on the public site. Contact partnerships@vorvan.co.in to request a technical discovery discussion.",
+    bn:"সম্ভাব্য direct lender API integration-এ authentication, sandbox docs, consented data field, application handoff, webhook/callback verification, error state ও audit control নিয়ে আলোচনা দরকার। পাবলিক সাইটে live integration নেই। Technical discussion-এর জন্য partnerships@vorvan.co.in-এ মেইল করুন।",
+    hi:"संभावित direct lender API integration में authentication, sandbox docs, सहमति-युक्त data fields, application handoff, webhook validation, error states और audit controls तय करने होंगे। सार्वजनिक साइट पर लाइव integration नहीं है। partnerships@vorvan.co.in पर तकनीकी चर्चा के लिए लिखें।"
+   }}
+};
+function detailedAnswer(message:string,language:Lang){
+ const q=message.toLowerCase().normalize("NFKC");
+ for(const item of Object.values(partnerAnswers)){
+   if(item.terms.some(term=>q.includes(term)))return {topic:item.topic,reply:item.text[language]};
+ }
+ return null;
+}
 function topicOf(message:string):Topic{const normalized=message.toLowerCase();for(const candidate of [...topics,"customer","security","location","domain"] as Topic[])if(hints[candidate].some(h=>normalized.includes(h)))return candidate;return "unknown"}
 function respond(req:Request,status:number,value:Record<string,unknown>):Response {
   const headers=new Headers({"content-type":"application/json; charset=utf-8","cache-control":"no-store,max-age=0","x-content-type-options":"nosniff","vary":"origin"});
@@ -92,9 +146,10 @@ Deno.serve(async(req:Request)=>{
  // Avoid collecting or processing sensitive identifiers even transiently.
  const message=value.message||"";
  if(/(?:\d[ -]?){8,}|[^\s@]+@[^\s@]+\.[^\s@]+/.test(message))return respond(req,400,{error:"please_remove_personal_information"});
- const topic=(value.topic||topicOf(message)) as Topic;
+ const specific = value.topic ? null : detailedAnswer(message,lang);
+ const topic=(value.topic||specific?.topic||topicOf(message)) as Topic;
  return respond(req,200,{
-  reply:answer[lang][topic],topic,engine:"guided_knowledge_base_v1",
+  reply:specific?.reply||answer[lang][topic],topic,engine:"guided_knowledge_base_v2",
   ai_model:false,personal_data_saved:false,links:topics,official_emails:EMAIL,
   note:"Informational guidance only; no live bureau, KYC, lending decision or LLM."
  });
