@@ -33,7 +33,7 @@ for page in PAGES:
         issue(f"{page.name}: form, frame or embed is not permitted")
     if re.search(r'\s(?:style|on[a-z]+)\s*=', html, re.I):
         issue(f"{page.name}: inline style or event handler blocked by CSP")
-    allowed_script = r'assets/(?:site|admin)\.js' if page.name == "admin.html" else r'assets/site\.js'
+    allowed_script = r'assets/(?:site|admin)\.js' if page.name == "admin.html" else r'assets/(?:site|assistant)\.js'
     for script in re.findall(r'<script\b[^>]*>', html, re.I):
         if not re.search(r'src="' + allowed_script + r'"', script):
             issue(f"{page.name}: unexpected script")
@@ -49,7 +49,7 @@ for page in PAGES:
         if path and not (ROOT / path).is_file():
             issue(f"{page.name}: missing local target: {path}")
 
-for source in [ROOT / "assets" / "site.js", ROOT / "assets" / "site.css"]:
+for source in [ROOT / "assets" / "site.js", ROOT / "assets" / "site.css", ROOT / "assets" / "refresh.css"]:
     if not source.is_file():
         issue(f"Missing {source.relative_to(ROOT)}")
         continue
