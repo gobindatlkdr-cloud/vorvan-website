@@ -58,10 +58,27 @@ jobs:
           response=$(curl -fsSL -m 20 -X POST -H 'Content-Type: application/json' \
             -H 'Origin: https://gobindatlkdr-cloud.github.io' \
             -d '{"language":"en","topic":"partnership"}' "$assistant_url")
-          if ! grep -q 'partnerships@vorvan.co.in' <<< "$response" || ! grep -q 'guided_knowledge_base_v1' <<< "$response"; then
+          if ! grep -q 'partnerships@vorvan.co.in' <<< "$response" || ! grep -q 'guided_knowledge_base_v2' <<< "$response"; then
             echo "FAIL: Public guided assistant did not return a valid partnership response."
             exit 1
           fi
+          sandbox_response=$(curl -fsSL -m 20 -X POST -H 'Content-Type: application/json' \
+            -H 'Origin: https://gobindatlkdr-cloud.github.io' \
+            -d '{"language":"en","message":"Can we discuss lender API sandbox onboarding?"}' "$assistant_url")
+          if ! grep -q 'sandbox' <<< "$sandbox_response" || ! grep -q 'partnerships@vorvan.co.in' <<< "$sandbox_response"; then
+            echo "FAIL: assistant did not give a contextual lender sandbox response."
+            exit 1
+          fi
+          homepage=$(curl -fsSL -m 20 "$BASE")
+          if ! grep -q 'data-vv-tab="lsp"' <<< "$homepage" || ! grep -q 'vv-utility' <<< "$homepage"; then
+            echo "FAIL: The new top bar or interactive service navigation is missing."
+            exit 1
+          fi
+          if grep -E -q '\$\{email\.part\}' <<< "$homepage"; then
+            echo "FAIL: unresolved partnership address template in homepage."
+            exit 1
+          fi
+          echo "PASS: Burgundy navigation and contextual LSP/API guide validated."
           echo "PASS: Five departmental mailboxes and live guide response verified."
           echo "PASS: Bank/NBFC portal is live and customer-action controls stay disabled."
           AI_URL="https://kukfpsqujlutlgwndplh.supabase.co/functions/v1/ai-guidance"
