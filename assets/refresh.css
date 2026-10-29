@@ -15,3 +15,133 @@
 
 /* Keep inline vector artwork contained inside the fictional hero dashboard. */
 .vv-big-symbol svg{width:60px;height:60px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+
+/* VORVAN brand refinement 2026-10-29: own burgundy/pearl banking language.
+   Reference used for color hierarchy only; no third-party graphics, text or marks. */
+:root{
+  --vv-ink:#302635;--vv-quiet:#746a79;--vv-cream:#fffaff;
+  --vv-white:#ffffff;--vv-line:#ecdee8;--vv-blue:#99184f;--vv-blue2:#760b3b;
+  --vv-peach:#ffecdf;--vv-lime:#e8f5e9;--vv-cyan:#f3e8ff;--vv-rose:#ffe4f0;
+  --vv-burgundy:#8e114b;--vv-berry:#b51b66;--vv-plum:#60314f;
+}
+body{background:#fff;color:#342b37}
+.vv-wrap{width:min(1240px,calc(100% - 70px))}
+.site-header{background:#fff;border-bottom:1px solid #ecdee8;box-shadow:0 3px 18px #6f174008}
+.vv-utility{background:linear-gradient(105deg,#821043,#a01652);color:#fff}
+.vv-utility .vv-wrap{display:flex;gap:18px;align-items:center;justify-content:space-between;min-height:37px}
+.vv-utility small{font-size:10px;font-weight:760;letter-spacing:.13em}
+.vv-utility nav{display:flex;gap:23px;align-items:center}
+.vv-utility nav a{font-size:11px;font-weight:660;color:#ffe8f3}
+.vv-utility nav a:hover{text-decoration:underline;color:#fff}
+.header-inner{height:88px}
+.logo-mark{background:linear-gradient(145deg,#a91b5b,#77113f);border-radius:13px;box-shadow:0 8px 22px #85104324}
+.logo-copy strong{color:#8d164c;font-weight:900;letter-spacing:.12em}
+.logo-copy small{color:#9e7b8d;font-weight:790}
+.nav{gap:24px}
+.nav>a{font-weight:800;color:#3f3544;letter-spacing:.008em;font-size:12px;padding:9px 1px;border-bottom:3px solid transparent}
+.nav>a:hover,.nav>a.active{border-bottom-color:#a61d5d;color:#861444}
+.nav>a.vv-nav-cta{background:#8b1348;color:white;padding:11px 19px;border:0;border-radius:10px;box-shadow:0 9px 20px #8c174524}
+.nav>a.vv-nav-cta:hover{background:#a11c58}
+.vv-hero{
+ background:
+ radial-gradient(ellipse at 86% 14%,#f8bfe6aa 0%,transparent 38%),
+ radial-gradient(ellipse at 12% 100%,#f8ecff 0%,transparent 60%),
+ linear-gradient(113deg,#fff8fd 5%,#f7f2fa 48%,#ffe9f6 100%);
+ position:relative
+}
+.vv-hero::after{
+ content:"";position:absolute;pointer-events:none;right:-8%;bottom:-120px;
+ height:260px;width:30%;border-radius:52% 48% 0 0;background:#ffffff9b;
+ transform:rotate(-12deg)
+}
+.vv-hero-inner{padding-top:85px;padding-bottom:76px;position:relative;z-index:1;gap:55px}
+.vv-hero h1{font-size:clamp(46px,5.35vw,80px);font-weight:750;letter-spacing:-.064em;color:#29252c}
+.vv-hero h1 span{color:var(--vv-burgundy);font-weight:850}
+.vv-eyebrow{color:#a11252;font-size:11px;letter-spacing:.18em}
+.vv-hero p,.vv-page-hero p{color:#62596c}
+.vv-button{background:linear-gradient(115deg,#8d0d49,#b32164);border-radius:11px;box-shadow:0 12px 26px #89184d20}
+.vv-button:hover{background:#780a3b}
+.vv-button.vv-outline{border-color:#e5bfd1;color:#8d164c;background:#fffafc;box-shadow:none}
+.vv-button.vv-outline:hover{background:#ffedf5}
+.vv-caption{color:#8e7b90!important}
+.vv-wash{background:linear-gradient(120deg,#ffdfef,#f1ddef 53%,#ffece6);border-radius:45% 55% 50% 50%}
+.vv-dashboard{transform:rotate(-1deg);border:1px solid #ead9e3;box-shadow:0 27px 70px #63264425}
+.vv-dashboard-top{color:#522e45}.vv-small-tag{background:#fce8f0;color:#99154d}
+.vv-big-symbol{background:linear-gradient(160deg,#ffe7f0,#f8dced);color:#9b1754}
+.vv-graph span{background:#eed4e1}.vv-graph span:nth-child(6),.vv-graph span:nth-child(7){background:#af2b6a}
+.vv-float-note{background:#8b1048;color:#fff}
+.vv-dash-chip{background:#fff4f9}.vv-dashboard-graph p{color:#7e6779}
+.vv-hero-display{min-height:420px}
+.vv-section{padding:90px 0}
+.vv-section.alt{background:#fcf4f9}
+.vv-section.pale{background:#fff9fc}
+.vv-section.dark{background:#551736}
+.vv-heading h2,.vv-text h2{color:#332935}
+.vv-card{border:1px solid #f0e2e9;box-shadow:0 11px 30px #78214a07;border-radius:20px;padding:31px;transition:transform .2s ease,box-shadow .2s ease}
+.vv-card:hover{transform:translateY(-3px);box-shadow:0 16px 32px #75204712}
+.vv-card h3{color:#4f2b42}
+.vv-card a,.vv-inline-link,.vv-copy a{color:#a01955}
+.vv-card .vv-icon{background:#f5e8fa;color:#8d205b}
+.vv-icon.peach{background:#fff0e8;color:#a35449}
+.vv-icon.mint{background:#e9f2ec;color:#487762}
+.vv-icon.rose{background:#ffecf2;color:#a32268}
+.vv-feature-illustration{background:linear-gradient(135deg,#fae7f0,#f6ecf7);border-radius:26px}
+.vv-flow-step{border-color:#f0dce6;color:#513047}
+.vv-flow-step span{background:#f9e4f0;color:#921f58}
+.vv-flow-step:last-child{background:#88234e}
+.vv-trustline{background:#fff;border-block-color:#f0e4ec}
+.vv-trust-row strong{color:#8b2050}
+.vv-email-row{border-color:#efdee9}
+.vv-email-row a{color:#911b52;border-color:#e9c6d8}
+.vv-email-row a:hover{background:#fff3fa}
+.vv-page-hero{
+ background:radial-gradient(circle at 85% 22%,#f6c9e797,transparent 30%),linear-gradient(110deg,#fffafd,#f9ebf6);
+ padding:84px 0 90px
+}
+.vv-page-hero h1{color:#332330}
+.vv-status-pill{background:#fff0df;color:#98612b}
+.vv-status-pill.ready{background:#f8e9f0;color:#8b2352}
+.vv-about-location{background:#f6e4ed;color:#85224c}
+.vv-cta{background:linear-gradient(115deg,#fff4fa,#f8e7f2)}
+.vv-cta h2{color:#632243}
+.vv-footer{background:linear-gradient(125deg,#4d1533,#300f24)}
+.vv-footer .logo-mark{background:#fff4f9;color:#891747}
+.vv-footer .logo-copy strong{color:#fff}.vv-footer .logo-copy small{color:#f6cadf}
+.vv-footer h4{color:#ffdfeb}.vv-footer-links a{color:#f0cfdf}
+.vv-chat-launch{background:linear-gradient(130deg,#891246,#b61d66);box-shadow:0 15px 31px #7f16483d}
+.vv-chat-launch:hover{background:#790e3e}
+.vv-chat-head{background:linear-gradient(130deg,#861347,#ab205d)}
+.vv-msg{background:#fff0f7;color:#60314a}.vv-msg.visitor{background:#f6d5e6;color:#661642}
+.vv-chat-row button{background:#9a1652}.vv-chat-options button{border-color:#ecc7d8;color:#841c4c}
+.vv-chat-options button:hover{background:#fff0f7}
+.vv-info-note{background:#fff7fc;border-color:#ecd2e0;color:#6c4559}
+.vv-askbar{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #efd0df;box-shadow:0 14px 35px #8b205413;border-radius:16px;padding:8px 9px 8px 18px;max-width:520px;margin-top:25px}
+.vv-askbar .vv-ask-spark{color:#ae2462;font-size:19px}
+.vv-askbar input{min-width:0;flex:1;border:0;outline:none;font-size:13px;color:#4c3447;background:transparent;padding:9px 2px}
+.vv-askbar button{border:0;color:#fff;background:#911747;border-radius:10px;font-weight:790;font-size:12px;padding:12px 16px}
+.vv-tab-zone{background:#fff;padding:26px 0 26px}
+.vv-tab-intro{font-size:12px;letter-spacing:.14em;color:#9e2757;font-weight:850;margin:0 0 12px}
+.vv-tab-list{display:flex;flex-wrap:wrap;align-items:center;gap:3px;border-bottom:1px solid #e6cbdc}
+.vv-tab-list button{background:transparent;border:0;border-bottom:3px solid transparent;padding:14px 18px;color:#7e687b;font-size:13px;font-weight:760}
+.vv-tab-list button[aria-selected="true"]{color:#8e1449;border-bottom-color:#a91659}
+.vv-tab-list button:hover{color:#8e1449}
+.vv-tab-panel{background:linear-gradient(110deg,#fff7fb,#fff,#fbf5ff);border:1px solid #f0e3ec;border-radius:16px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:25px;padding:23px 27px;margin-top:20px}
+.vv-tab-panel[hidden]{display:none}
+.vv-tab-panel h3{font-size:21px;letter-spacing:-.025em;margin:0 0 5px;color:#55223e}
+.vv-tab-panel p{font-size:13px;margin:0;color:#796475;line-height:1.55}
+.vv-tab-panel a{display:inline-flex;border-radius:9px;background:#92194e;color:white;font-size:12px;font-weight:770;padding:11px 17px;white-space:nowrap}
+.vv-partner-intro{background:#fff8fc;border-left:4px solid #a52360;padding:19px 23px;color:#63465a;border-radius:0 14px 14px 0}
+.vv-partner-steps{counter-reset:steps;display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.vv-partner-step{background:#fff;border:1px solid #eddce7;border-radius:17px;padding:25px}
+.vv-partner-step span{font-size:12px;color:#a71655;font-weight:850}
+.vv-partner-step h3{font-size:17px;margin:11px 0 8px;color:#572842}
+.vv-partner-step p{color:#726577;font-size:13px;line-height:1.7;margin:0}
+.vv-mini-faq{max-width:840px}
+.vv-mini-faq details{border-bottom:1px solid #eadce5;padding:18px 4px}
+.vv-mini-faq summary{font-weight:800;color:#5c3049;cursor:pointer}
+.vv-mini-faq p{font-size:14px;color:#765f70;line-height:1.7}
+@media(max-width:1050px){.vv-wrap{width:calc(100% - 44px)}.vv-partner-steps{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:820px){.nav{top:113px}.site-header .header-inner{height:77px}.vv-hero-inner{padding:67px 0}.vv-hero-display{min-height:350px}.vv-utility .vv-wrap{min-height:36px}.vv-utility nav{gap:12px}.vv-utility nav a{font-size:10px}}
+@media(max-width:550px){.vv-wrap{width:calc(100% - 32px)}.vv-utility .vv-wrap{justify-content:center}.vv-utility small{display:none}.vv-utility nav a{font-size:9px}.vv-hero h1{font-size:45px}.vv-tab-panel{grid-template-columns:1fr;padding:20px}.vv-tab-panel a{justify-self:start}.vv-tab-list button{padding:11px 10px;font-size:11px}.vv-partner-steps{grid-template-columns:1fr}.vv-askbar{max-width:100%}.vv-askbar button{padding:12px 10px}}
+@media(prefers-reduced-motion:reduce){.vv-card{transition:none}}
