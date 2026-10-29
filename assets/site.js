@@ -38,3 +38,31 @@
   root.querySelectorAll('[data-lang]').forEach(button=>button.addEventListener('click',()=>{if(labels[button.dataset.lang]){lang=button.dataset.lang;render()}}));
   render();
 })();
+
+/* Accessible homepage product tabs (banking-style separation, no libraries). */
+(()=>{
+  "use strict";
+  const buttons=[...document.querySelectorAll("[data-vv-tab]")];
+  if(!buttons.length)return;
+  const select=(selected,focus)=>{
+    for(const b of buttons){
+      const active=b===selected;
+      b.setAttribute("aria-selected",String(active));
+      b.tabIndex=active?0:-1;
+      const p=document.querySelector('[data-vv-panel="'+b.dataset.vvTab+'"]');
+      if(p)p.hidden=!active;
+    }
+    if(focus)selected.focus();
+  };
+  for(const b of buttons){
+    b.addEventListener("click",()=>select(b,false));
+    b.addEventListener("keydown",(event)=>{
+      if(!["ArrowRight","ArrowLeft","Home","End"].includes(event.key))return;
+      event.preventDefault();
+      const i=buttons.indexOf(b);
+      const j=event.key==="Home"?0:event.key==="End"?buttons.length-1:
+        (i+(event.key==="ArrowRight"?1:-1)+buttons.length)%buttons.length;
+      select(buttons[j],true);
+    });
+  }
+})();
