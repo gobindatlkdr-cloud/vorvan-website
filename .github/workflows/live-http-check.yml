@@ -31,7 +31,7 @@ jobs:
             sleep 10
           done
 
-          for resource in assets/site.css assets/site.js assets/favicon.svg assets/partner-portal.css experience.html solutions.html partners.html partner-desk.html admin.html assets/admin.js assets/admin.css about.html contact.html privacy.html terms.html; do
+          for resource in assets/site.css assets/site.js assets/assistant.js assets/refresh.css assets/favicon.svg assets/partner-portal.css experience.html solutions.html partners.html partner-desk.html admin.html assets/admin.js assets/admin.css about.html contact.html privacy.html terms.html; do
             status=$(curl -L -sS -m 20 -A "VORVAN-site-health-check" -o /dev/null -w '%{http_code}' "$BASE$resource")
             echo "$resource: HTTP $status"
             if [[ "$status" != "200" ]]; then
@@ -45,10 +45,24 @@ jobs:
             exit 1
           fi
           partner=$(curl -fsSL -m 20 "$BASE""partner-desk.html")
-          if ! grep -q "BANK / NBFC PARTNER DESK" <<< "$partner" || ! grep -q 'disabled aria-disabled="true"' <<< "$partner"; then
+          if ! grep -q "INSTITUTIONAL DESK" <<< "$partner" || ! grep -q 'disabled aria-disabled="true"' <<< "$partner"; then
             echo "FAIL: Partner desk missing or disabled-by-default UI not present."
             exit 1
           fi
+          contact_page=$(curl -fsSL -m 20 "$BASE""contact.html")
+          if ! grep -q 'partnerships@vorvan.co.in' <<< "$contact_page" || ! grep -q 'legal@vorvan.co.in' <<< "$contact_page" || ! grep -q 'admin@vorvan.co.in' <<< "$contact_page"; then
+            echo "FAIL: Five company mailboxes were not reflected in public contact page."
+            exit 1
+          fi
+          assistant_url="https://kukfpsqujlutlgwndplh.supabase.co/functions/v1/site-assistant"
+          response=$(curl -fsSL -m 20 -X POST -H 'Content-Type: application/json' \
+            -H 'Origin: https://gobindatlkdr-cloud.github.io' \
+            -d '{"language":"en","topic":"partnership"}' "$assistant_url")
+          if ! grep -q 'partnerships@vorvan.co.in' <<< "$response" || ! grep -q 'guided_knowledge_base_v1' <<< "$response"; then
+            echo "FAIL: Public guided assistant did not return a valid partnership response."
+            exit 1
+          fi
+          echo "PASS: Five departmental mailboxes and live guide response verified."
           echo "PASS: Bank/NBFC portal is live and customer-action controls stay disabled."
           AI_URL="https://kukfpsqujlutlgwndplh.supabase.co/functions/v1/ai-guidance"
           ai_status=$(curl -sS -m 20 -o /dev/null -w '%{http_code}' "$AI_URL")
