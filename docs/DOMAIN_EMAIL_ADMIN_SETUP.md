@@ -1,6 +1,6 @@
 # VORVAN: vorvan.co.in — domain, website & departmental email rollout
 
-Last reviewed: 28 October 2026. Domain reported purchased from **Domain India**. DNS control and email hosting have NOT yet been verified. Do not advertise any @vorvan.co.in address as active until an actual external mailbox test succeeds.
+Last reviewed: 29 October 2026. Domain purchased from **Domain India**. **Zoho mail confirmed by user**: SPF and DKIM verified, Gmail SPF/DKIM/DMARC PASS, MFA tested for users, and inbound/outbound and Info-alias delivery tested. GitHub Pages custom-domain DNS/HTTPS status is **not yet confirmed**. Keep website DNS changes separate from working email records.
 
 ## Ownership and registrar
 
@@ -22,28 +22,21 @@ Only AFTER determining the authoritative DNS provider:
 - Enable **Enforce HTTPS** only when GitHub has issued the certificate. Test the root and www addresses for HTTPS and correct site content, plus Gmail/SMTP deliveries.
 - Do not add a `CNAME` file prematurely; the earlier `vorvan.o` configuration made the old GitHub Pages URL redirect to an unusable domain.
 
-## Departmental emails — desired, NOT YET ACTIVE
+## Departmental emails — active (user-verified, 29 October 2026)
 
-`info@vorvan.co.in`
-`partnerships@vorvan.co.in`
-`support@vorvan.co.in`
-`security@vorvan.co.in`
-`admin@vorvan.co.in`
+- `admin@vorvan.co.in` — Zoho mailbox
+- `partnerships@vorvan.co.in` — Zoho mailbox, direct Bank/NBFC LSP/API outreach
+- `support@vorvan.co.in` — Zoho mailbox
+- `legal@vorvan.co.in` — Zoho mailbox
+- `info@vorvan.co.in` — alias routed to Admin inbox
 
-Option A: Zoho Mail's Forever Free custom-domain plan, if eligible for the account/data center. Documentation: https://www.zoho.com/mail/custom-domain-email.html . The user owns the domain; connect the existing domain in Zoho's Admin Console. After receiving exact provider-generated values:
+User reports SPF Verified, DKIM Verified and enabled, DMARC verified, Gmail headers showing SPF/DKIM/DMARC PASS, each mail user's MFA login tested, Info alias outgoing and incoming tests successful, and domain expiry/DNS backup reviewed. This reflects the user's completed tests, not a fresh independent network verification by the model.
 
-1. Verify ownership by provider-specific TXT/CNAME.
-2. Set MX records supplied by that **specific** Zoho region/account (avoid copying records from unrelated Zoho data centers).
-3. Set one consolidated SPF TXT record appropriate for the outbound provider.
-4. Enable DKIM signing and publish its selector record.
-5. Publish DMARC, initially with monitoring and then tighten based on legitimate mail sources.
-6. Create separate mailboxes or grouped aliases (free-plan limits/availability may vary). Require MFA for all actual mailbox users.
-7. Perform independent inbound AND outbound email tests, including reply-to and SPF/DKIM/DMARC alignment checks.
-8. Only then replace the temporary Gmail contact links on the public website with verified company email addresses.
+Never create a separate `security@vorvan.co.in` mailbox or claim it active until the company explicitly does so. Direct legal/security correspondence to `legal@vorvan.co.in`.
 
-Option B: Cloudflare Free Email Routing (inbound forwarding only, not normal arbitrary-recipient outbound sending). Requires Cloudflare DNS. The user's current Domain India nameservers must be checked, DNS records migrated carefully if changing nameservers. Info: https://developers.cloudflare.com/email-service/get-started/route-emails/
+**Important:** Do not change the current Zoho MX/SPF/DKIM/DMARC records while connecting the WEBSITE. Website A/CNAME records and Zoho email records have separate purposes.
 
-**Never** claim `@vorvan.co.in` mailboxes are live solely because the domain is registered. Free hosting may have quotas or regional restrictions; paid yearly domain renewal still applies.
+If later moving email provider, preserve the existing addresses by migrating mailboxes/aliases and the matching MX/DKIM/SPF/DMARC configuration under your owned `vorvan.co.in` domain.
 
 ## Separate secure Admin Control Center
 
