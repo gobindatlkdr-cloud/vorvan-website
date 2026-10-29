@@ -42,7 +42,7 @@ If later moving email provider, preserve the existing addresses by migrating mai
 
 Published route: `https://gobindatlkdr-cloud.github.io/vorvan-website/admin.html` — **not** an automatically private page. Security depends entirely on authenticated backend authorization.
 
-- First-time setup uses verified company email `vorvan.pvt.ltd@gmail.com`; no admin Supabase Auth user was present when this panel was created.
+- First-time setup uses the owner company mailbox `admin@vorvan.co.in` (the old Gmail owner allowlist entry has been disabled; 0 Auth users at changeover).
 - Supabase Auth account must be confirmed by email; then enable authenticator-app TOTP MFA.
 - Admin Edge Function rejects all data access without a valid verified user, an admin allowlist entry and Auth JWT `aal2`.
 - Admin work items and logs live in RLS-enabled tables and are not directly granted to anonymous or authenticated PostgREST clients.
