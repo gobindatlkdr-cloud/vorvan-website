@@ -523,3 +523,154 @@ body{background:#fff;color:#342b37}
   animation:none!important
  }
 }
+
+
+/* APPROVED VYN CONCEPT 3 — ruby/pearl floating companion and premium chat.
+ * Website mascot implemented in authored SVG + first-party CSS animations.
+ * Avoid third-party robot artwork, trackers, heavy 3D libraries and autoplay media. */
+#vv-assistant .bian-launch{
+ width:80px;height:91px;right:13px;bottom:11px;min-width:80px;
+ padding:0;background:transparent!important;box-shadow:none!important;
+ display:flex;align-items:center;justify-content:center;border:0
+}
+#vv-assistant .bian-launch:hover{transform:translateY(-2px)}
+#vv-assistant .bian-launch .vyn-mascot-wrap{width:80px;height:91px;filter:drop-shadow(0 8px 10px #7d1a4847)}
+#vv-assistant .vyn-mascot{width:100%;height:100%;display:block;overflow:visible}
+#vv-assistant .vyn-hover-core{
+ animation:vyn3-float 4.2s ease-in-out infinite;
+ transform-origin:85px 112px
+}
+#vv-assistant .vyn-shadow{animation:vyn3-shadow 4.2s ease-in-out infinite;transform-origin:84px 179px}
+#vv-assistant .vyn-wave-arm{
+ transform-box:fill-box;transform-origin:82% 100%;
+ animation:vyn3-wave 3.6s ease-in-out infinite;will-change:transform
+}
+#vv-assistant .vyn-wave-palm{
+ transform-box:fill-box;transform-origin:68% 87%;
+ animation:vyn3-palm .85s ease-in-out infinite alternate
+}
+#vv-assistant .vyn-wave-trail{
+ stroke-dasharray:4 7;
+ opacity:.7;animation:vyn3-wave-trace 3.6s ease-in-out infinite
+}
+#vv-assistant .vyn-animated-eyes{
+ transform-box:fill-box;transform-origin:center;
+ animation:vyn3-blink 5.7s ease-in-out infinite
+}
+#vv-assistant .vyn-hoverlight{animation:vyn3-glow 2.1s ease-in-out infinite alternate}
+#vv-assistant .vyn-chest-name{font-weight:800;letter-spacing:-.5px}
+#vv-assistant .bian-chat{
+ width:min(354px,calc(100vw - 20px));height:min(484px,calc(100dvh - 24px));
+ border-radius:24px;border:1px solid #ebcbdc;
+ box-shadow:0 28px 78px #5310323b;overflow:hidden;background:#fffafd
+}
+#vv-assistant .bian-chat .vv-chat-head{
+ min-height:73px;padding:13px 16px;color:#fff;
+ background:linear-gradient(112deg,#65022f,#a6004f 70%,#b11560);
+ border-bottom:0;gap:9px
+}
+#vv-assistant .bian-chat .vv-chat-head strong{color:white;font-size:18px;letter-spacing:.01em}
+#vv-assistant .bian-chat .vv-chat-head small{color:#ffe3f0;font-size:10.5px}
+#vv-assistant .bian-head-avatar{
+ width:41px;height:41px;overflow:visible;border-radius:14px;
+ background:#ffffff22;border:1px solid #ffd5eb65;box-shadow:0 2px 9px #33092229
+}
+#vv-assistant .bian-head-avatar .vyn-mascot-wrap{
+ width:43px;height:46px;transform:translateY(-2px);
+ filter:drop-shadow(0 2px 3px #420e3030)
+}
+#vv-assistant .bian-heading{
+ grid-template-columns:43px minmax(0,1fr);gap:0 11px;align-items:center
+}
+#vv-assistant .bian-chat .vv-chat-close{
+ background:transparent;color:#fff;border-color:#ffcbe3a6;font-size:19px;
+ min-width:30px;height:31px;border-radius:9px
+}
+#vv-assistant .bian-chat .vv-chat-close:hover{background:#ffffff21}
+#vv-assistant .bian-chat .vv-chat-language{
+ background:#ffffff1d;color:#fff;border:1px solid #ffffff6b;
+ border-radius:10px;max-width:82px;font-weight:700
+}
+#vv-assistant .bian-chat .vv-chat-transcript{
+ background:radial-gradient(ellipse at 0 0,#fef0f9 0,transparent 60%),#fffafd;
+ padding:19px 14px 11px
+}
+#vv-assistant .bian-chat .bian-message-avatar{
+ background:linear-gradient(135deg,#fcdae9,#f1ddf6);color:#920748;
+ border:1px solid #e7c0d5;font-weight:900
+}
+#vv-assistant .bian-chat .vv-msg{
+ border-radius:16px 16px 16px 5px;border-color:#f0e4ee;
+ color:#392638;background:linear-gradient(130deg,#fff,#f8f1f8);
+ padding:11px 13px;line-height:1.55;font-size:13px;white-space:pre-line
+}
+#vv-assistant .bian-chat .vv-msg.visitor{
+ background:#f7d8e8;border-color:#e8c1d6;color:#681641
+}
+#vv-assistant .bian-chat .bian-language-choices{
+ margin:7px 0 12px 31px;gap:7px
+}
+#vv-assistant .bian-chat .bian-language-choice{
+ min-height:40px;font-size:12px;border-radius:13px;
+ color:#9d1451;border-color:#e8b9d0;font-weight:800;
+ background:#fff
+}
+#vv-assistant .bian-chat .bian-language-choice:hover,
+#vv-assistant .bian-chat .bian-language-choice:focus-visible{
+ background:#a40b50;color:white;border-color:#a40b50
+}
+#vv-assistant .bian-chat .vv-chat-options{
+ padding:11px 12px;gap:7px;background:#fff7fb;border-top:1px solid #f4e3ed
+}
+#vv-assistant .bian-chat .vv-chat-options button{
+ background:white;color:#8b1a4b;border:1px solid #e8c8d9;border-radius:12px
+}
+#vv-assistant .bian-chat .vv-chat-row{
+ padding:10px 12px;border-top:1px solid #f1e3eb;background:#fff
+}
+#vv-assistant .bian-chat .vv-chat-row input{
+ border-radius:12px;font-size:12.5px;background:#fffafc;border-color:#ead6e1
+}
+#vv-assistant .bian-chat .vv-chat-row button{
+ background:linear-gradient(120deg,#86013d,#ae155c);
+ color:white;border-radius:12px;font-size:12px;font-weight:800
+}
+#vv-assistant .bian-chat .vv-chat-note{background:#fff;color:#9b7488;font-size:9px;padding:7px 13px 11px}
+@keyframes vyn3-float{
+ 0%,100%{transform:translateY(2px) rotate(-1.5deg)}
+ 50%{transform:translateY(-5px) rotate(1.5deg)}
+}
+@keyframes vyn3-shadow{
+ 0%,100%{opacity:.18;transform:scaleX(1)}
+ 50%{opacity:.09;transform:scaleX(.72)}
+}
+/* The arm lifts, visibly waves right-left twice, then settles momentarily. */
+@keyframes vyn3-wave{
+ 0%,9%,94%,100%{transform:rotate(0)}
+ 18%{transform:rotate(-28deg)}
+ 30%{transform:rotate(17deg)}
+ 42%{transform:rotate(-27deg)}
+ 54%{transform:rotate(19deg)}
+ 66%{transform:rotate(-24deg)}
+ 78%{transform:rotate(14deg)}
+}
+@keyframes vyn3-palm{from{transform:rotate(-8deg)}to{transform:rotate(12deg)}}
+@keyframes vyn3-wave-trace{
+ 0%,8%,91%,100%{opacity:0}
+ 20%,70%{opacity:.84}
+}
+@keyframes vyn3-blink{
+ 0%,47%,51%,100%{transform:scaleY(1)}
+ 49%{transform:scaleY(.15)}
+}
+@keyframes vyn3-glow{from{opacity:.52}to{opacity:1}}
+@media(max-width:550px){
+ #vv-assistant .bian-launch{width:68px;height:80px;min-width:68px;right:8px;bottom:9px}
+ #vv-assistant .bian-launch .vyn-mascot-wrap{width:68px;height:80px}
+ #vv-assistant .bian-chat{right:8px;bottom:8px;height:min(460px,calc(100dvh - 16px))}
+}
+@media(prefers-reduced-motion:reduce){
+ #vv-assistant .vyn-hover-core,#vv-assistant .vyn-shadow,#vv-assistant .vyn-wave-arm,
+ #vv-assistant .vyn-wave-palm,#vv-assistant .vyn-wave-trail,#vv-assistant .vyn-animated-eyes,
+ #vv-assistant .vyn-hoverlight{animation:none!important}
+}
