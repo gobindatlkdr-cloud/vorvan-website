@@ -24,4 +24,4 @@ jobs:
         with:
           deno-version: v2.x
       - name: Type-check authenticated AI guidance backend
-        run: deno check backend/ai-guidance/index.ts backend/admin-console/index.ts backend/site-assistant/index.ts
+        run: deno check backend/ai-guidance/index.ts backend/admin-console/index.ts backend/site-assistant/index.ts backend/admin-mfa-recovery/index.ts
