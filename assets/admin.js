@@ -80,7 +80,7 @@ function displayAuthenticatorQr(qr){
   const raw=qr.trim();
   if(/^data:image\/svg\+xml(?:;[^,]*)?,/i.test(raw))uri=raw;
   else if(/^data:image\/png;base64,/i.test(raw))uri=raw;
-  else if(raw.length<=500000&&(/^(?:<\\?xml[\\s\\S]*?<svg\\b|<svg\\b)/i.test(raw)))
+  else if(raw.length<=500000&&(raw.startsWith("<svg")||raw.startsWith("<?xml")))
     uri="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(raw);
  }
  if(!uri){visible("mfa-qr-error",true);return false}
