@@ -110,30 +110,48 @@ async function startMfa(){
  }
 }
 async function restartPendingMfa(){
-  const button=$("mfa-reset-pending");
-  button.disabled=true;
-  try{
-    const user=await auth("/user","GET",undefined,true);
-    if(user.email?.toLowerCase()!==COMPANY)throw Error("Wrong administrator account.");
-    const factors=Array.isArray(user.factors)?user.factors:[];
-    if(factors.some(x=>x.factor_type==="totp"&&x.status==="verified")){
-      throw Error("A verified MFA is present. It cannot be reset here.");
-    }
-    const pending=factors.filter(x=>x.factor_type==="totp"&&x.status==="unverified");
-    if(pending.length!==1||!pending[0].id)throw Error("Incomplete factor not found. Please sign out and back in.");
-    await auth("/factors/"+encodeURIComponent(pending[0].id),"DELETE",undefined,true);
-    const result=await auth("/factors","POST",{factor_type:"totp",friendly_name:"VORVAN Admin renewed"},true);
-    state.mfaFactor=result.id;
-    const qr=result.totp?.qr_code||"";
-    $("mfa-secret").textContent=result.totp?.secret||"";
-    if(qr.startsWith("data:image/svg+xml")){$("mfa-qr").src=qr;visible("mfa-qr",true)}
-    else visible("mfa-qr",false);
-    visible("mfa-setup",true);visible("mfa-pending-help",false);
-    $("mfa-code").value="";
-    $("mfa-explanation").textContent="Scan the NEW QR code in your authenticator app. Enter the 6-digit code from the NEW entry, not the old one.";
-    message("mfa-message","A new MFA enrollment is ready. Keep the old authenticator entry until this one is verified.",true);
-  }catch(e){message("mfa-message",e.message||"MFA setup recovery failed.")}
-  finally{button.disabled=false}
+ const button=$("mfa-reset-pending");button.disabled=true;
+ message("mfa-message","Checking the signed-in owner's incomplete MFA setup…");
+ try{
+  if(!state.access)throw Error("Please sign in again.");
+  const res=await fetch(API+"/functions/v1/admin-mfa-recovery",{
+   method:"POST",headers:authHeaders(true),body:JSON.stringify({action:"reset_unverified_totp"}),cache:"no-store"
+  });
+  const response=await res.json().catch(()=>({}));
+  if(!res.ok){
+   const codes={
+    verified_mfa_protected:"A verified MFA is registered. You must use the existing authenticator; recovery cannot remove it.",
+    pending_mfa_not_single:"No single incomplete MFA setup was found. Sign out and sign in again.",
+    login_required:"Your sign-in has expired. Sign out and sign in again.",
+    owner_permission_required:"The verified company owner account is required.",
+    recovery_not_configured:"Server recovery is unavailable. Contact the website administrator."
+   };
+   throw Error(codes[response.code]||("Recovery could not finish: "+(response.code||res.status)));
+  }
+  // Auth provider has now removed only the incomplete factor.
+  // Create a fresh enrollment using the user's current authenticated session.
+  state.mfaFactor="";
+  $("mfa-code").value="";
+  $("mfa-secret").textContent="";
+  $("mfa-qr").removeAttribute("src");
+  visible("mfa-setup",false);
+  const fresh=await auth("/factors","POST",{factor_type:"totp",friendly_name:"VORVAN Admin new setup"},true);
+  if(typeof fresh.id!=="string"||!fresh.id)throw Error("New MFA enrollment failed. Sign out and sign in again.");
+  state.mfaFactor=fresh.id;
+  state.mfaSetup=true;
+  const qr=fresh.totp?.qr_code||"";
+  $("mfa-secret").textContent=fresh.totp?.secret||"";
+  if(typeof qr==="string"&&qr.startsWith("data:image/svg+xml")){
+    $("mfa-qr").src=qr;visible("mfa-qr",true);
+  }else visible("mfa-qr",false);
+  visible("mfa-setup",true);
+  visible("mfa-pending-help",false);
+  $("mfa-explanation").textContent="This is a NEW authenticator setup. Scan this new QR code, or enter the new secret into Google Authenticator. Enter the code from this new entry, not the old one.";
+  message("mfa-message","New MFA enrollment created. Verify it with the NEW Google Authenticator entry.",true);
+ }catch(e){
+  visible("mfa-pending-help",true);
+  message("mfa-message",e.message||"Recovery failed. Do not share an authenticator code.");
+ }finally{button.disabled=false}
 }
 async function verifyMfa(event){
  event.preventDefault();message("mfa-message","");
