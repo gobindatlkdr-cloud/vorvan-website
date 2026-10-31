@@ -50,6 +50,13 @@ jobs:
             echo "$name: HTTPS status=$code, final URL=$url"
           done
           echo "::endgroup::"
+          echo "::group::HTTP-to-HTTPS and www canonical redirects"
+          for name in "$domain" "www.$domain"; do
+            head=$(curl -sS -I -m 15 -o /dev/null -w '%{http_code} %{redirect_url}' "http://$name/" || true)
+            ssl=$(curl -sS -L -m 15 -o /dev/null -w '%{http_code} %{url_effective} %{ssl_verify_result}' "https://$name/" || true)
+            echo "$name: plain-HTTP=$head ; HTTPS=$ssl"
+          done
+          echo "::endgroup::"
           echo "::group::GitHub Pages expected A records"
           echo "185.199.108.153"
           echo "185.199.109.153"
