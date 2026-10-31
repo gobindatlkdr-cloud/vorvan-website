@@ -49,7 +49,7 @@ async function signup(){
  const password=$("password").value;
  if(password.length<12){message("login-message","Enter a unique password of at least 12 characters, then choose Create account.");return}
  try{
-  const redirect=encodeURIComponent("https://gobindatlkdr-cloud.github.io/vorvan-website/admin.html");
+  const redirect=encodeURIComponent("https://vorvan.co.in/admin.html");
   await auth("/signup?redirect_to="+redirect,"POST",{email:COMPANY,password},false);
   $("password").value="";
   message("login-message","Account registration requested. Open the confirmation email in admin@vorvan.co.in and verify it; then return here to sign in. If you already registered, use Sign in.",true);
