@@ -46,20 +46,20 @@ const mascot=(variant="dock")=>{
  const bodyMask="vyn-body-mask-"+variant;
  const handClip="vyn-hand-clip-"+variant;
  const asset="assets/vyn-reference.webp";
- return \`<span class="vyn-mascot-wrap" aria-hidden="true"><svg class="vyn-mascot vyn-photo-mascot" viewBox="0 0 435 559" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
+ return `<span class="vyn-mascot-wrap" aria-hidden="true"><svg class="vyn-mascot vyn-photo-mascot" viewBox="0 0 435 559" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
  <defs>
-   <clipPath id="\${handClip}" clipPathUnits="userSpaceOnUse"><path d="\${arm}"/></clipPath>
-   <mask id="\${bodyMask}" maskUnits="userSpaceOnUse" x="0" y="0" width="435" height="559">
-     <rect x="0" y="0" width="435" height="559" fill="white"/><path d="\${arm}" fill="black"/>
+   <clipPath id="${handClip}" clipPathUnits="userSpaceOnUse"><path d="${arm}"/></clipPath>
+   <mask id="${bodyMask}" maskUnits="userSpaceOnUse" x="0" y="0" width="435" height="559">
+     <rect x="0" y="0" width="435" height="559" fill="white"/><path d="${arm}" fill="black"/>
    </mask>
  </defs>
  <g class="vyn-photo-float">
-  <image class="vyn-photo-body" href="\${asset}" x="0" y="0" width="435" height="559" mask="url(#\${bodyMask})" preserveAspectRatio="none"/>
+  <image class="vyn-photo-body" href="${asset}" x="0" y="0" width="435" height="559" mask="url(#${bodyMask})" preserveAspectRatio="none"/>
   <g class="vyn-photo-wave">
-   <image href="\${asset}" x="0" y="0" width="435" height="559" clip-path="url(#\${handClip})" preserveAspectRatio="none"/>
+   <image href="${asset}" x="0" y="0" width="435" height="559" clip-path="url(#${handClip})" preserveAspectRatio="none"/>
   </g>
  </g>
- </svg></span>\`;
+ </svg></span>`;
 };
 // All inserted markup above is static and owned by this first-party application.
 launch.classList.add("bian-launch");
