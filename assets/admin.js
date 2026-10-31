@@ -31,7 +31,7 @@ async function auth(path,method="GET",body=undefined,session=true){
  return result;
 }
 function setTokens(result){if(result.access_token){state.access=result.access_token;state.refresh=result.refresh_token||state.refresh}}
-function clearSession(){state.access="";state.refresh="";state.mfaFactor="";state.user=null;state.tasks=[];state.modules=[];state.role="";$("password").value="";$("mfa-code").value="";$("mfa-secret").textContent="";$("mfa-qr").removeAttribute("src");visible("mfa-setup",false);visible("dashboard-view",false);visible("mfa-view",false);visible("login-view",true);visible("logout",false)}
+function clearSession(){state.access="";state.refresh="";state.mfaFactor="";state.user=null;state.tasks=[];state.modules=[];state.role="";$("password").value="";$("signup-password").value="";$("signup-confirm").value="";$("mfa-code").value="";$("mfa-secret").textContent="";$("mfa-qr").removeAttribute("src");visible("mfa-setup",false);visible("dashboard-view",false);visible("mfa-view",false);visible("signup-view",false);visible("login-view",true);visible("logout",false)}
 async function login(event){
  event.preventDefault();message("login-message","");
  const password=$("password").value;
@@ -45,15 +45,31 @@ async function login(event){
   await startMfa();
  }catch(e){clearSession();message("login-message",e.message||"Sign-in failed.")}
 }
-async function signup(){
- const password=$("password").value;
- if(password.length<12){message("login-message","Enter a unique password of at least 12 characters, then choose Create account.");return}
+function openSignup(){
+ message("login-message","");message("signup-message","");
+ $("password").value="";
+ visible("login-view",false);visible("signup-view",true);
+ $("signup-password").focus();
+}
+function backToSignin(){
+ $("signup-password").value="";$("signup-confirm").value="";
+ visible("signup-view",false);visible("login-view",true);$("password").focus();
+}
+async function signup(event){
+ event.preventDefault();
+ message("signup-message","");
+ const password=$("signup-password").value;
+ const confirmation=$("signup-confirm").value;
+ if(password.length<12){message("signup-message","Create a password with at least 12 characters (letters, numbers and symbols are allowed).");return}
+ if(password!==confirmation){message("signup-message","Password and Confirm Password must be identical.");return}
+ const button=$("signup-submit");button.disabled=true;
  try{
   const redirect=encodeURIComponent("https://vorvan.co.in/admin.html");
   await auth("/signup?redirect_to="+redirect,"POST",{email:COMPANY,password},false);
-  $("password").value="";
-  message("login-message","Account registration requested. Open the confirmation email in admin@vorvan.co.in and verify it; then return here to sign in. If you already registered, use Sign in.",true);
- }catch(e){message("login-message",e.message||"Signup unavailable. Check Supabase Auth settings.")}
+  $("signup-password").value="";$("signup-confirm").value="";
+  message("signup-message","Registration request submitted. Check the Zoho inbox for admin@vorvan.co.in and use Supabase's email confirmation link. After verification, choose Back to sign in. If no message arrives, check Spam and your Supabase Auth email settings.",true);
+ }catch(e){message("signup-message",e.message||"Account registration could not be completed.")}
+ finally{button.disabled=false}
 }
 async function startMfa(){
  visible("login-view",false);visible("dashboard-view",false);visible("mfa-view",true);
@@ -228,7 +244,9 @@ async function addTask(event){
  }catch(e){message("dashboard-message",e.message)}
 }
 $("signin-form").addEventListener("submit",login);
-$("signup").addEventListener("click",signup);
+$("signup-open").addEventListener("click",openSignup);
+$("signup-form").addEventListener("submit",signup);
+$("signup-back").addEventListener("click",backToSignin);
 $("mfa-form").addEventListener("submit",verifyMfa);
 $("mfa-cancel").addEventListener("click",clearSession);
 $("logout").addEventListener("click",()=>{const jwt=state.access;clearSession();if(jwt)fetch(AUTH+"/logout",{method:"POST",headers:{"apikey":PUB,authorization:"Bearer "+jwt}}).catch(()=>{});});
