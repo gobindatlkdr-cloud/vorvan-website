@@ -156,7 +156,8 @@ async function restartPendingMfa(){
 async function verifyMfa(event){
  event.preventDefault();message("mfa-message","");
  const code=$("mfa-code").value.trim();
- if(!/^\d{6}$/.test(code)||!state.mfaFactor){message("mfa-message","Enter a valid six-digit authenticator code.");return}
+ if(!/^\d{6}$/.test(code)){message("mfa-message","Enter exactly six digits from the Authenticator app.");return}
+ if(!state.mfaFactor){visible("mfa-pending-help",true);message("mfa-message","No active MFA setup is selected. Use Reset incomplete MFA below to generate a new QR code.");return}
  try{
   const id=encodeURIComponent(state.mfaFactor);
   const chall=await auth("/factors/"+id+"/challenge","POST",{},true);
