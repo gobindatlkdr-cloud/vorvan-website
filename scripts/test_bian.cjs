@@ -1,4 +1,4 @@
-/* Offline synthetic DOM test for Bian's first-party chat flow. No external services. */
+/* Offline synthetic DOM test for Vyn's first-party chat flow. No external services. */
 "use strict";
 const assert=require("node:assert/strict");
 const fs=require("node:fs");
@@ -48,6 +48,12 @@ const source=fs.readFileSync("assets/assistant.js","utf8");
 vm.runInNewContext(source,context,{timeout:2500});
 assert.match(launch.innerHTML,/bian-figure/);
 assert.match(launch.innerHTML,/bian-arm-right/);
+assert.match(launch.innerHTML,/bian-hand"><b><\/b><b><\/b><b><\/b><\/i>/,"Vyn's hand must have visible fingers");
+assert.doesNotMatch(launch.innerHTML,/Hi!|bian-hi/,"Vyn must greet with a waving hand, not a text bubble");
+assert.match(launch.innerHTML,/>Vyn<\/span>/,"Launcher label must be Vyn");
+assert.equal(headStrong.textContent,"Vyn","Chat header must be Vyn");
+assert.match(source,/Hello, I am Vyn/,"Greeting must introduce Vyn");
+assert.doesNotMatch(source,/Bian/,"No old bot name may remain in UI source");
 assert.equal(topics.hidden,true);
 launch.ev.click();
 assert.equal(panel.hidden,false);
@@ -69,8 +75,15 @@ setImmediate(()=>{
  close.ev.click();
  assert.equal(panel.hidden,true);
  const css=fs.readFileSync("assets/refresh.css","utf8");
+ const wave=css.slice(css.indexOf("@keyframes vyn-raised-hand-wave"));
+ assert.ok(wave.includes("14%{transform:rotate(-31deg)}"),"The hand must raise");
+ assert.ok(wave.includes("24%{transform:rotate(33deg)}"),"The hand must wave left/right");
+ assert.ok(wave.includes("34%{transform:rotate(-31deg)}"),"The hand must wave back");
+ assert.ok(css.includes("#vv-assistant .bian-hand b:nth-child(3)"),"The waving hand must include distinct fingers");
+ assert.ok(css.includes("@keyframes vyn-palm-tilt"),"The palm should move independently");
+ assert.ok(css.includes("@media(prefers-reduced-motion:reduce)"),"Reduced-motion preference must be respected");
  for(const marker of ["@keyframes bian-wave","@keyframes bian-hover","prefers-reduced-motion","bian-language-choice","bian-launch"]){
   assert.ok(css.includes(marker),"Missing CSS marker "+marker);
  }
- console.log("Bian assistant tests passed: animated mascot, launcher, language-first chat, API handoff and close.");
+ console.log("Vyn assistant tests passed: animated mascot, launcher, language-first chat, API handoff and close.");
 });
