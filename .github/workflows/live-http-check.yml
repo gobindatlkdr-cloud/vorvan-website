@@ -90,7 +90,7 @@ jobs:
           fi
           echo "PASS: AI endpoint rejects unauthenticated access; no secret keys used."
           admin_page=$(curl -fsSL -m 20 "$BASE""admin.html")
-          if ! grep -q 'id="mfa-form"' <<< "$admin_page" || ! grep -q 'id="panel-nav"' <<< "$admin_page"; then
+          if ! grep -q 'id="mfa-form"' <<< "$admin_page" || ! grep -q 'id="panel-nav"' <<< "$admin_page" || ! grep -q 'id="signup-form"' <<< "$admin_page" || ! grep -q 'id="signup-confirm"' <<< "$admin_page"; then
             echo "FAIL: Admin MFA and separate section navigation is missing."
             exit 1
           fi
