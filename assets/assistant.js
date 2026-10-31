@@ -37,76 +37,29 @@ const labels={
  }
 };
 const languageNames={en:"English",bn:"বাংলা",hi:"हिंदी"};
-/* Vyn — approved Concept 3 adapted into an original SVG/CSS robot.
- * Separately animated waving arm, eyes, hover and antenna. No copied artwork.
- * The two SVG instances use unique paint-server IDs. */
+/* The visible character is taken directly from the Vyn image supplied by
+ * the site owner, not recreated as an approximate SVG robot. The transparent
+ * screenshot-derived WebP retains the original 3D helmet, visor, wave, and
+ * Vyn chest wordmark. SVG masks let the real left arm wave independently. */
 const mascot=(variant="dock")=>{
- const id=(name)=>"vyn-"+name+"-"+variant;
- return `<span class="vyn-mascot-wrap" aria-hidden="true">
- <svg class="vyn-mascot" viewBox="0 0 170 190" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
+ const arm="M 0 270 L 10 257 L 25 249 L 40 251 L 60 247 L 85 270 L 97 297 L 104 325 L 114 338 L 132 357 L 149 375 L 148 401 L 128 425 L 99 425 L 78 413 L 64 400 L 50 385 L 33 377 L 17 358 L 2 334 L -2 302 Z";
+ const bodyMask="vyn-body-mask-"+variant;
+ const handClip="vyn-hand-clip-"+variant;
+ const asset="assets/vyn-reference.webp";
+ return \`<span class="vyn-mascot-wrap" aria-hidden="true"><svg class="vyn-mascot vyn-photo-mascot" viewBox="0 0 435 559" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
  <defs>
-  <radialGradient id="${id("shell")}" cx="38%" cy="19%" r="85%"><stop offset="0" stop-color="#ffffff"/><stop offset=".47" stop-color="#fff6fc"/><stop offset=".83" stop-color="#eac7da"/><stop offset="1" stop-color="#ae638e"/></radialGradient>
-  <linearGradient id="${id("rim")}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffb7d9"/><stop offset=".28" stop-color="#a82061"/><stop offset=".66" stop-color="#6b153f"/><stop offset="1" stop-color="#f6a1c4"/></linearGradient>
-  <linearGradient id="${id("visor")}" x1=".18" y1="0" x2=".82" y2="1"><stop offset="0" stop-color="#4c203d"/><stop offset=".3" stop-color="#170e1e"/><stop offset=".8" stop-color="#2b1127"/><stop offset="1" stop-color="#692243"/></linearGradient>
-  <radialGradient id="${id("faceglow")}" cx="50%" cy="70%" r="75%"><stop offset="0" stop-color="#e75499" stop-opacity=".22"/><stop offset="1" stop-color="#190c1d" stop-opacity="0"/></radialGradient>
-  <linearGradient id="${id("pink")}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffb6d8"/><stop offset=".34" stop-color="#d92778"/><stop offset="1" stop-color="#6d133b"/></linearGradient>
-  <radialGradient id="${id("orb")}" cx="33%" cy="22%" r="72%"><stop offset="0" stop-color="#ffcae1"/><stop offset=".38" stop-color="#d61d6b"/><stop offset="1" stop-color="#620d37"/></radialGradient>
-  <filter id="${id("eyeglow")}" x="-70%" y="-120%" width="240%" height="340%"><feGaussianBlur stdDeviation="2"/></filter>
+   <clipPath id="\${handClip}" clipPathUnits="userSpaceOnUse"><path d="\${arm}"/></clipPath>
+   <mask id="\${bodyMask}" maskUnits="userSpaceOnUse" x="0" y="0" width="435" height="559">
+     <rect x="0" y="0" width="435" height="559" fill="white"/><path d="\${arm}" fill="black"/>
+   </mask>
  </defs>
- <ellipse class="vyn-shadow" cx="84" cy="179" rx="42" ry="5" fill="#7b3155" opacity=".18"/>
- <g class="vyn-hover-core">
-  <!-- Wave hand at left; pivots at shoulder, independent of head/body. -->
-  <g class="vyn-wave-joint" transform="translate(53 128)">
-   <g class="vyn-wave-arm">
-    <path d="M-1 -1 Q-23 -9 -29 -32" stroke="#7d164a" stroke-width="19" stroke-linecap="round" fill="none"/>
-    <path d="M-1 -1 Q-23 -9 -29 -32" stroke="url(#${id("shell")})" stroke-width="14" stroke-linecap="round" fill="none"/>
-    <path d="M-22 -30 Q-27 -38 -35 -39" fill="none" stroke="#a63371" stroke-width="6" stroke-linecap="round"/>
-    <g class="vyn-wave-palm">
-     <path d="M-38 -43 C-43 -48 -49 -61 -46 -65 C-44 -68 -40 -67 -37 -61 L-33 -55 L-38 -72 Q-40 -80 -35 -81 Q-30 -82 -28 -75 L-24 -62 L-27 -81 Q-29 -88 -23 -89 Q-17 -89 -16 -82 L-13 -65 L-14 -78 Q-15 -85 -10 -85 Q-5 -84 -5 -77 L-4 -58 Q5 -66 9 -60 Q13 -53 5 -43 L-9 -30 Q-21 -25 -29 -30 Z" fill="url(#${id("rim")})" stroke="#fff1f9" stroke-width="2.5" stroke-linejoin="round"/>
-     <path d="M-31 -39 Q-22 -34 -14 -40" fill="none" stroke="#ffa5cd" stroke-opacity=".72" stroke-width="2.5" stroke-linecap="round"/>
-     <ellipse cx="-32" cy="-66" rx="2" ry="3" fill="#fff2f7" opacity=".7"/>
-    </g>
-   </g>
+ <g class="vyn-photo-float">
+  <image class="vyn-photo-body" href="\${asset}" x="0" y="0" width="435" height="559" mask="url(#\${bodyMask})" preserveAspectRatio="none"/>
+  <g class="vyn-photo-wave">
+   <image href="\${asset}" x="0" y="0" width="435" height="559" clip-path="url(#\${handClip})" preserveAspectRatio="none"/>
   </g>
-  <path class="vyn-wave-trail" d="M12 45 Q1 53 3 68 M24 43 Q14 48 13 57" fill="none" stroke="#dc4a8e" stroke-width="3" stroke-linecap="round"/>
-  <!-- Right arm rests, reinforcing the greeting pose. -->
-  <path d="M115 125 Q136 131 143 149" stroke="#75103c" stroke-width="21" stroke-linecap="round" fill="none"/>
-  <path d="M115 125 Q136 131 143 149" stroke="url(#${id("shell")})" stroke-width="16" stroke-linecap="round" fill="none"/>
-  <ellipse cx="144" cy="151" rx="12" ry="13" fill="url(#${id("rim")})" stroke="#fff3fa" stroke-width="2"/>
-  <!-- Floating torso with rose-metal trim, lower hoverlight and central name plate. -->
-  <path d="M58 117 Q86 109 112 118 Q129 129 122 156 Q116 171 86 173 Q57 170 51 155 Q44 132 58 117Z" fill="url(#${id("shell")})" stroke="url(#${id("rim")})" stroke-width="3.2"/>
-  <path d="M56 149 Q86 167 118 149" fill="none" stroke="#ffffff" stroke-opacity=".75" stroke-width="3"/>
-  <path d="M72 172 Q86 180 102 172" fill="none" stroke="#ec3b85" stroke-width="5" stroke-linecap="round" class="vyn-hoverlight"/>
-  <rect class="vyn-chest" x="61" y="132" width="51" height="28" rx="11" fill="url(#${id("visor")})" stroke="#d35a93" stroke-width="2.2"/>
-  <text class="vyn-chest-name" x="86.5" y="151.5" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="18" font-weight="800" fill="#fff8fb">Vyn</text>
-  <!-- Rounded helmet, ruby circular ear-pods, pink neck ring. -->
-  <ellipse cx="86" cy="114" rx="23" ry="9" fill="url(#${id("rim")})" stroke="#fff9fc" stroke-width="2"/>
-  <ellipse cx="35" cy="80" rx="13" ry="25" fill="url(#${id("rim")})" stroke="#ffe8f4" stroke-width="2.5"/>
-  <ellipse cx="137" cy="80" rx="13" ry="25" fill="url(#${id("rim")})" stroke="#ffe8f4" stroke-width="2.5"/>
-  <ellipse cx="35" cy="80" rx="6.2" ry="13" fill="#7b1547" stroke="#fc8cbf" stroke-width="2"/>
-  <ellipse cx="137" cy="80" rx="6.2" ry="13" fill="#7b1547" stroke="#fc8cbf" stroke-width="2"/>
-  <ellipse cx="137" cy="79" rx="2" ry="7" fill="#fff5fc" opacity=".66"/>
-  <path d="M47 43 Q54 32 69 29 Q100 22 124 41 Q139 55 140 78 Q141 109 124 118 Q104 126 85 126 Q57 125 44 113 Q34 101 36 77 Q36 53 47 43 Z" fill="url(#${id("shell")})" stroke="url(#${id("rim")})" stroke-width="3.4"/>
-  <path d="M51 43 Q69 30 90 34" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".85"/>
-  <path d="M42 83 Q44 111 62 116" fill="none" stroke="#b5568c" stroke-width="3" opacity=".5"/>
-  <!-- Translucent deep plum visor with delighted expressive eyes. -->
-  <rect x="46" y="51" width="81" height="62" rx="29" fill="url(#${id("visor")})" stroke="#9b356d" stroke-width="3"/>
-  <rect x="48" y="54" width="77" height="56" rx="27" fill="url(#${id("faceglow")})"/>
-  <path d="M58 62 Q82 49 116 63" fill="none" stroke="#fff8fd" stroke-opacity=".23" stroke-width="3.5" stroke-linecap="round"/>
-  <g class="vyn-animated-eyes" fill="none" stroke="#ff9cdb" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
-   <path d="M59 88 Q68 71 77 88"/><path d="M94 88 Q103 72 113 88"/>
-  </g>
-  <g fill="none" stroke="#ff95d1" stroke-width="8" opacity=".32" filter="url(#${id("eyeglow")})">
-   <path d="M59 88 Q68 71 77 88"/><path d="M94 88 Q103 72 113 88"/>
-  </g>
-  <path d="M80 99 Q87 104 94 99" fill="none" stroke="#f86cb4" stroke-width="2.4" stroke-linecap="round"/>
-  <!-- Miniature glossy antenna with orbit ring, exclusive Vyn signature. -->
-  <path d="M84 29 L84 17" stroke="#762045" stroke-width="6" stroke-linecap="round"/>
-  <ellipse cx="84" cy="19" rx="15" ry="5" transform="rotate(-14 84 19)" fill="none" stroke="#f6a6cb" stroke-width="2.4" opacity=".88"/>
-  <circle cx="84" cy="13" r="10" fill="url(#${id("orb")})" stroke="#ffe8f4" stroke-width="1.5"/>
-  <ellipse cx="80.5" cy="9.5" rx="3.4" ry="2.8" fill="#fff7fc" opacity=".7"/>
  </g>
- </svg></span>`;
+ </svg></span>\`;
 };
 // All inserted markup above is static and owned by this first-party application.
 launch.classList.add("bian-launch");
