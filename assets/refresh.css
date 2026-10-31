@@ -245,7 +245,7 @@ body{background:#fff;color:#342b37}
 #vv-assistant .bian-spark-two{
  right:3px;top:24px;height:5px;transform:rotate(-16deg);animation-delay:.3s
 }
-#vv-assistant .bian-open .bian-launch{display:none}
+#vv-assistant.bian-open .bian-launch{display:none}
 #vv-assistant .bian-chat{
  bottom:18px;right:21px;width:min(352px,calc(100vw - 22px));
  height:min(456px,calc(100dvh - 35px));border-radius:22px;
@@ -256,10 +256,12 @@ body{background:#fff;color:#342b37}
  background:linear-gradient(111deg,#fff9fc,#fff3f8);
  color:#442037;border-bottom:1px solid #efdce7
 }
-#vv-assistant .bian-heading{display:flex;align-items:center;gap:10px;min-width:0}
+#vv-assistant .bian-heading{display:grid;grid-template-columns:38px minmax(0,1fr);grid-template-rows:auto auto;column-gap:10px;align-items:center;min-width:0}
 #vv-assistant .bian-heading>strong{font-size:15px;font-weight:850;letter-spacing:.015em}
+#vv-assistant .bian-heading>strong{grid-column:2;grid-row:1;align-self:end}
+#vv-assistant .bian-heading>small{grid-column:2;grid-row:2;align-self:start}
 #vv-assistant .bian-heading small{color:#3f8d61;font-weight:700;font-size:10px}
-#vv-assistant .bian-head-avatar{display:grid;place-items:center;flex:none;
+#vv-assistant .bian-head-avatar{grid-column:1;grid-row:1/3;display:grid;place-items:center;flex:none;
  width:38px;height:38px;background:#ffe4f0;border-radius:13px;overflow:hidden}
 #vv-assistant .bian-head-avatar .bian-figure{
  transform:scale(.52);animation:bian-head-hover 3s ease-in-out infinite;
