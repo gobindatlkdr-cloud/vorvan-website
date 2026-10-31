@@ -35,7 +35,7 @@ for page in PAGES:
         issue(f"{page.name}: inline style or event handler blocked by CSP")
     allowed_script = r'assets/(?:site|admin)\.js' if page.name == "admin.html" else r'assets/(?:site|assistant)\.js'
     for script in re.findall(r'<script\b[^>]*>', html, re.I):
-        if not re.search(r'src="' + allowed_script + r'"', script):
+        if not re.search(r'src="' + allowed_script + r'(?:\?v=[A-Za-z0-9_-]+)?"', script):
             issue(f"{page.name}: unexpected script")
     for match in re.finditer(r'\b(?:src|href)="([^"]+)"', html):
         href = match.group(1)
