@@ -75,6 +75,9 @@ async function startMfa(){
  visible("login-view",false);visible("dashboard-view",false);visible("mfa-view",true);
  message("mfa-message","");
  $("mfa-code").value="";
+ state.mfaFactor="";
+ visible("mfa-setup",false);
+ visible("mfa-pending-help",false);
  try{
   const factors=Array.isArray(state.user?.factors)?state.user.factors:[];
   const verified=factors.find(f=>f.factor_type==="totp"&&f.status==="verified");
@@ -89,6 +92,8 @@ async function startMfa(){
     message("mfa-message","Existing incomplete MFA setup detected.",true);
     return;
   }
+  // Offer recovery even if the Auth user response omits an unverified factor.
+  visible("mfa-pending-help",true);
   const result=await auth("/factors","POST",{factor_type:"totp",friendly_name:"VORVAN Admin"},true);
   state.mfaFactor=result.id;state.mfaSetup=true;
   const secret=result.totp?.secret||"";
@@ -96,9 +101,13 @@ async function startMfa(){
   const qr=result.totp?.qr_code||"";
   if(typeof qr==="string"&&qr.startsWith("data:image/svg+xml")){$("mfa-qr").src=qr;visible("mfa-qr",true)}
   else visible("mfa-qr",false);
-  visible("mfa-setup",true);
-  $("mfa-explanation").textContent="Set up TOTP in an authenticator app using the code or QR shown below. Then enter the 6-digit code to enable MFA.";
- }catch(e){message("mfa-message",e.message||"Cannot start MFA. Check Supabase Auth MFA settings.")}
+  visible("mfa-setup",true);visible("mfa-pending-help",false);
+  $("mfa-explanation").textContent="Scan this new QR code, then enter the six-digit code from that exact authenticator entry.";
+ }catch(e){
+   visible("mfa-pending-help",true);
+   $("mfa-explanation").textContent="Your MFA setup could not continue. Use the recovery button below to replace a single incomplete authenticator registration.";
+   message("mfa-message",e.message||"Incomplete MFA setup detected. Use recovery below.");
+ }
 }
 async function restartPendingMfa(){
   const button=$("mfa-reset-pending");
