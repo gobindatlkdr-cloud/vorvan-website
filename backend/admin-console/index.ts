@@ -84,11 +84,11 @@ function pathOf(req:Request):string|null{
   return null;
 }
 const moduleInfo=[
-  {id:"website",name:"Corporate Website",state:"published",help:"GitHub Pages live. vorvan.co.in custom DNS not yet confirmed."},
+  {id:"website",name:"Corporate Website",state:"published",help:"Official https://vorvan.co.in website live, GitHub Pages deployment complete and HTTPS verified."},
   {id:"partners",name:"Bank/NBFC Partner Desk",state:"enquiry_only",help:"Email enquiries; customer transactions disabled."},
   {id:"ai",name:"AI Guidance",state:"demo_only",help:"Authenticated rules-based fictional demo, not a live AI/LLM credit decision."},
   {id:"customers",name:"Customer Operations",state:"locked",help:"No live KYC, bureau data, payments or lender applications."},
-  {id:"support",name:"Support",state:"manual_email",help:"Company Gmail; no customer attachments/PII."},
+  {id:"support",name:"Support",state:"manual_email",help:"Zoho support@vorvan.co.in mailbox active; enquiries handled manually. Do not collect or record customer financial data."},
   {id:"security",name:"Security",state:"review_required",help:"Verified role, MFA and audit log; formal penetration test pending."},
   {id:"email",name:"Department Mail",state:"published",help:"Zoho domain mail: admin, partnerships, support, legal; Info alias to Admin. User-verified SPF/DKIM/DMARC and mail flow."},
   {id:"compliance",name:"Regulatory Review",state:"pending",help:"RBI/lender agreements and legal/privacy review outstanding."}
@@ -115,7 +115,7 @@ Deno.serve(async(req:Request):Promise<Response>=>{
       const tasks=await q.json();
       const counters:Record<string,number>={todo:0,in_progress:0,blocked:0,done:0};
       if(Array.isArray(tasks))for(const t of tasks){if(t?.status in counters)counters[t.status]++}
-      return json(req,200,{ok:true,role:admin.role,modules:moduleInfo,counters,tasks,domain:"vorvan.co.in",domain_connected:false,domain_email_active:true,customer_actions_enabled:false});
+      return json(req,200,{ok:true,role:admin.role,modules:moduleInfo,counters,tasks,domain:"vorvan.co.in",domain_connected:true,domain_email_active:true,customer_actions_enabled:false});
     }
     if(req.method==="GET"&&path==="/modules")return json(req,200,{ok:true,modules:moduleInfo});
     if(req.method==="GET"&&path==="/tasks"){
