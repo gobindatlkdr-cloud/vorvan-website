@@ -13,7 +13,7 @@ const AREAS={
  customers:["Customer Operations","Confidential account operations stay locked until approved"],
  support:["Support & Grievances","Issue tracking and business correspondence work queue"],
  security:["Security & Audit","Authentication controls, checks and administrative change history"],
- website:["Website & Domain","GitHub Pages deployment and vorvan.co.in verification plan"],
+ website:["Website & Domain","Live company website, custom-domain HTTPS and GitHub Pages status"],
  email:["Department Emails","Domain-based corporate mailboxes and DNS setup status"],
  compliance:["Legal & Compliance","Review checklist, consents, contracts and compliance readiness"]
 };
@@ -273,14 +273,14 @@ function infoPanel(area){
  }
  const module=state.modules.find(m=>m.id===area);if(module)container.append(box(module.name,module.help,module.state));
  const extras={
-  partners:[["Partner Desk","Public roadmap; partner email links only.","enquiry_only","https://gobindatlkdr-cloud.github.io/vorvan-website/partner-desk.html"],["Partnership approvals","Direct LSP and API only; no referral-only model.","locked","https://supabase.com/dashboard/project/kukfpsqujlutlgwndplh"]],
-  ai:[["Demo Edge Function","JWT-guarded fictional guidance for three credit scenarios.","demo_only","https://supabase.com/dashboard/project/kukfpsqujlutlgwndplh/functions"],["Website Guide","Multilingual, free, live rule-based information assistant is active; no LLM or customer data.","published","https://gobindatlkdr-cloud.github.io/vorvan-website/"],["Production LLM","Not activated; regulated data, model and cost approval required.","locked"]],
+  partners:[["Partner Desk","Public roadmap; partner email links only.","enquiry_only","https://vorvan.co.in/partner-desk.html"],["Partnership approvals","Direct LSP and API only; no referral-only model.","locked","https://supabase.com/dashboard/project/kukfpsqujlutlgwndplh"]],
+  ai:[["Demo Edge Function","JWT-guarded fictional guidance for three credit scenarios.","demo_only","https://supabase.com/dashboard/project/kukfpsqujlutlgwndplh/functions"],["Website Guide","Multilingual, free, live rule-based information assistant is active; no LLM or customer data.","published","https://vorvan.co.in/"],["Production LLM","Not activated; regulated data, model and cost approval required.","locked"]],
   customers:[["Customer profiles","No customers registered or financial information accessible via this console.","locked"],["KYC / Credit report","Consent, vendor contracts and authorisation required.","locked"],["Loan applications","Lender integration disabled.","locked"]],
   support:[["Support mailbox","support@vorvan.co.in on Zoho, user-verified mail delivery.","published","mailto:support@vorvan.co.in"],["Legal and grievances","legal@vorvan.co.in; official private documents should not be sent through ordinary email.","published","mailto:legal@vorvan.co.in"]],
   security:[["Authentication","Password + verified email + authenticator-app MFA (AAL2) required.","published"],["Public website security","Github Actions checks and CSP are defence in depth, not a penetration test.","review_required","https://github.com/gobindatlkdr-cloud/vorvan-website/actions"],["Audit history","Task create/update operations are logged server-side.","published"]],
-  website:[["Published website","GitHub Pages currently serves the company site over HTTPS.","published","https://gobindatlkdr-cloud.github.io/vorvan-website/"],["Bought domain: vorvan.co.in","Purchased via Domain India; nameservers and HTTPS connection not yet verified.","dns_pending","https://domainindia.com/client/domains"],["Repository","Edit and deploy website source through GitHub.","published","https://github.com/gobindatlkdr-cloud/vorvan-website"]],
-  email:[["Five Zoho company addresses","Admin, Partnerships, Support and Legal mailboxes, plus Info alias to Admin; user verified SPF/DKIM/DMARC and mail delivery.","published"],["Website domain mapping","vorvan.co.in website DNS and HTTPS cutover are separate from company email and still pending.","dns_pending","https://github.com/gobindatlkdr-cloud/vorvan-website/settings/pages"]],
-  compliance:[["Regulatory approval","RBI digital lending and lender contract review pending.","locked"],["Privacy & legal documents","Informational templates; professional review required before customer launch.","review_required","https://gobindatlkdr-cloud.github.io/vorvan-website/privacy.html"]]
+  website:[["Published website","Official custom domain is live on GitHub Pages with HTTPS enabled.","published","https://gobindatlkdr-cloud.github.io/vorvan-website/"],["Bought domain: vorvan.co.in","Domain India DNS mapping, four GitHub Pages A records, www CNAME and HTTPS redirects verified.","published","https://vorvan.co.in/"],["Repository","Edit and deploy website source through GitHub.","published","https://github.com/gobindatlkdr-cloud/vorvan-website"]],
+  email:[["Five Zoho company addresses","Admin, Partnerships, Support and Legal mailboxes, plus Info alias to Admin; user verified SPF/DKIM/DMARC and mail delivery.","published"],["Website domain mapping","The website is live on HTTPS; Zoho Mail DNS routing remains separate and configured.","published","https://vorvan.co.in/"]],
+  compliance:[["Regulatory approval","RBI digital lending and lender contract review pending.","locked"],["Privacy & legal documents","Informational templates; professional review required before customer launch.","review_required","https://vorvan.co.in/privacy.html"]]
  };
  for(const v of extras[area]||[])container.append(box(...v));
  if(area==="email"){
