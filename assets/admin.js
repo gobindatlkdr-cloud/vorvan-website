@@ -71,6 +71,24 @@ async function signup(event){
  }catch(e){message("signup-message",e.message||"Account registration could not be completed.")}
  finally{button.disabled=false}
 }
+function displayAuthenticatorQr(qr){
+ const img=$("mfa-qr");
+ const fallback=$("mfa-qr-error");
+ img.removeAttribute("src");visible("mfa-qr",false);visible("mfa-qr-error",false);
+ let uri="";
+ if(typeof qr==="string"){
+  const raw=qr.trim();
+  if(/^data:image\/svg\+xml(?:;[^,]*)?,/i.test(raw))uri=raw;
+  else if(/^data:image\/png;base64,/i.test(raw))uri=raw;
+  else if(raw.length<=500000&&(/^(?:<\\?xml[\\s\\S]*?<svg\\b|<svg\\b)/i.test(raw)))
+    uri="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(raw);
+ }
+ if(!uri){visible("mfa-qr-error",true);return false}
+ img.onload=()=>{visible("mfa-qr",true);visible("mfa-qr-error",false)};
+ img.onerror=()=>{visible("mfa-qr",false);visible("mfa-qr-error",true)};
+ img.src=uri;
+ return true;
+}
 async function startMfa(){
  visible("login-view",false);visible("dashboard-view",false);visible("mfa-view",true);
  message("mfa-message","");
@@ -99,8 +117,8 @@ async function startMfa(){
   const secret=result.totp?.secret||"";
   $("mfa-secret").textContent=secret;
   const qr=result.totp?.qr_code||"";
-  if(typeof qr==="string"&&qr.startsWith("data:image/svg+xml")){$("mfa-qr").src=qr;visible("mfa-qr",true)}
-  else visible("mfa-qr",false);
+  displayAuthenticatorQr(qr);
+  visible("mfa-secret",false);
   visible("mfa-setup",true);visible("mfa-pending-help",false);
   $("mfa-explanation").textContent="Scan this new QR code, then enter the six-digit code from that exact authenticator entry.";
  }catch(e){
@@ -141,9 +159,8 @@ async function restartPendingMfa(){
   state.mfaSetup=true;
   const qr=fresh.totp?.qr_code||"";
   $("mfa-secret").textContent=fresh.totp?.secret||"";
-  if(typeof qr==="string"&&qr.startsWith("data:image/svg+xml")){
-    $("mfa-qr").src=qr;visible("mfa-qr",true);
-  }else visible("mfa-qr",false);
+  displayAuthenticatorQr(qr);
+  visible("mfa-secret",false);
   visible("mfa-setup",true);
   visible("mfa-pending-help",false);
   $("mfa-explanation").textContent="This is a NEW authenticator setup. Scan this new QR code, or enter the new secret into Google Authenticator. Enter the code from this new entry, not the old one.";
@@ -313,6 +330,7 @@ $("signup-form").addEventListener("submit",signup);
 $("signup-back").addEventListener("click",backToSignin);
 $("mfa-form").addEventListener("submit",verifyMfa);
 $("mfa-reset-pending").addEventListener("click",restartPendingMfa);
+$("mfa-reveal-secret").addEventListener("click",()=>{const box=$("mfa-secret");if(!box.textContent)return;visible("mfa-secret",box.hidden);$("mfa-reveal-secret").textContent=box.hidden?"Show manual setup key":"Hide manual setup key"});
 $("mfa-cancel").addEventListener("click",clearSession);
 $("logout").addEventListener("click",()=>{const jwt=state.access;clearSession();if(jwt)fetch(AUTH+"/logout",{method:"POST",headers:{"apikey":PUB,authorization:"Bearer "+jwt}}).catch(()=>{});});
 $("reload").addEventListener("click",async()=>{try{await load();render()}catch(e){message("dashboard-message",e.message)}});
