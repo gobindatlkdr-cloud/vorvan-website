@@ -46,11 +46,14 @@ const context={
 };
 const source=fs.readFileSync("assets/assistant.js","utf8");
 vm.runInNewContext(source,context,{timeout:2500});
-assert.match(launch.innerHTML,/bian-figure/);
-assert.match(launch.innerHTML,/bian-arm-right/);
-assert.match(launch.innerHTML,/bian-hand"><b><\/b><b><\/b><b><\/b><\/i>/,"Vyn's hand must have visible fingers");
-assert.doesNotMatch(launch.innerHTML,/Hi!|bian-hi/,"Vyn must greet with a waving hand, not a text bubble");
-assert.match(launch.innerHTML,/>Vyn<\/span>/,"Launcher label must be Vyn");
+assert.ok(launch.innerHTML.includes('class="vyn-mascot"'),"Mini mascot must be first-party SVG");
+assert.ok(launch.innerHTML.includes('class="vyn-right-limb"'),"Hand must have separate moving arm");
+assert.ok(launch.innerHTML.includes('class="vyn-palm"'),"Palm must be independently articulated");
+assert.ok(launch.innerHTML.includes('class="vyn-chest-name"'),"Center badge required");
+assert.ok(launch.innerHTML.includes('>Vyn</text>'),"Vyn name must appear on chest, not HI");
+assert.ok(!launch.innerHTML.includes("Hi!")&&!launch.innerHTML.includes("bian-figure")&&!launch.innerHTML.includes("bian-launch-name"),"No legacy mascot or text-bubble label");
+assert.ok(launch.innerHTML.includes("vyn-shell-dock"),"SVG dock gradients must be namespaced");
+assert.ok(headLabel.htmlPrefix.includes("vyn-shell-header"),"Header gradients must have different IDs");
 assert.equal(headStrong.textContent,"Vyn","Chat header must be Vyn");
 assert.match(source,/Hello, I am Vyn/,"Greeting must introduce Vyn");
 assert.doesNotMatch(source,/Bian/,"No old bot name may remain in UI source");
@@ -75,15 +78,14 @@ setImmediate(()=>{
  close.ev.click();
  assert.equal(panel.hidden,true);
  const css=fs.readFileSync("assets/refresh.css","utf8");
- const wave=css.slice(css.indexOf("@keyframes vyn-raised-hand-wave"));
- assert.ok(wave.includes("14%{transform:rotate(-31deg)}"),"The hand must raise");
- assert.ok(wave.includes("24%{transform:rotate(33deg)}"),"The hand must wave left/right");
- assert.ok(wave.includes("34%{transform:rotate(-31deg)}"),"The hand must wave back");
- assert.ok(css.includes("#vv-assistant .bian-hand b:nth-child(3)"),"The waving hand must include distinct fingers");
- assert.ok(css.includes("@keyframes vyn-palm-tilt"),"The palm should move independently");
- assert.ok(css.includes("@media(prefers-reduced-motion:reduce)"),"Reduced-motion preference must be respected");
- for(const marker of ["@keyframes bian-wave","@keyframes bian-hover","prefers-reduced-motion","bian-language-choice","bian-launch"]){
-  assert.ok(css.includes(marker),"Missing CSS marker "+marker);
- }
+ const wave=css.slice(css.indexOf("@keyframes vyn-futuristic-wave"));
+ assert.ok(wave.includes("20%{transform:rotate(-22deg)}"),"Arm must swing left");
+ assert.ok(wave.includes("34%{transform:rotate(24deg)}"),"Arm must swing right");
+ assert.ok(wave.includes("48%{transform:rotate(-20deg)}"),"Arm must swing back");
+ assert.ok(css.includes("@keyframes vyn-futuristic-palm"),"Palm moves independently");
+ assert.ok(css.includes("#vv-assistant .vyn-chest-name"),"Name is centered on chest");
+ assert.ok(css.includes("width:64px;height:80px"),"Launcher smaller than previous 78x86 version");
+ assert.ok(css.includes("@media(max-width:550px)"),"Mobile size maintained");
+ assert.ok(css.includes("prefers-reduced-motion:reduce"),"Accessibility reduced motion");
  console.log("Vyn assistant tests passed: animated mascot, launcher, language-first chat, API handoff and close.");
 });
