@@ -15,7 +15,7 @@ const lang=$("[data-guide-language]"),topics=root.querySelector(".vv-chat-option
 const composer=root.querySelector(".vv-chat-row");
 const labels={
  en:{
-  hello:"Hello 👋",intro:"Hello, I am Vyn, your support assistant. I am here to help you.",
+  hello:"Hello 👋",intro:"I am Vyn, your support assistant. I am here to help you.",
   choose:"Please choose your language.",ready:"I'm here to help with VORVAN, direct LSP partnerships, lending APIs and support. Choose a topic or ask a question.",
   fallback:"Vyn's live guide is temporarily unavailable. Please email info@vorvan.co.in.",
   privacy:"Please do not share phone numbers, PAN/Aadhaar, email addresses or personal financial data.",
@@ -117,12 +117,13 @@ popup.setAttribute("aria-label","Vyn — VORVAN website support assistant");
 const head=root.querySelector(".vv-chat-head");
 const heading=head?.querySelector("strong"),subhead=head?.querySelector("small");
 if(heading)heading.textContent="Vyn";
-if(subhead)subhead.textContent="● Available · Guided help";
+if(subhead)subhead.textContent="VORVAN Support Assistant";
 const headingBlock=head?.firstElementChild;
 if(headingBlock){
  headingBlock.classList.add("bian-heading");
  headingBlock.insertAdjacentHTML("afterbegin",'<span class="bian-head-avatar">'+mascot("header")+"</span>");
 }
+send.innerHTML='<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg><span class="vyn-send-label">Send</span>';
 lang.setAttribute("aria-label","Change Vyn chat language");
 close.setAttribute("aria-label","Close Vyn assistant");
 let busy=false;
@@ -151,7 +152,7 @@ function begin(){
  feed.replaceChildren();
  controls(false);
  const l=labels.en;
- add(l.hello);add(l.intro);add(l.choose);
+ add(l.hello+"\n"+l.intro);add(l.choose);
  const choices=document.createElement("div");
  choices.className="bian-language-choices";
  choices.setAttribute("role","group");choices.setAttribute("aria-label","Choose a language");
