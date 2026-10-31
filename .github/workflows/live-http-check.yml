@@ -78,6 +78,17 @@ jobs:
             echo "FAIL: unresolved partnership address template in homepage."
             exit 1
           fi
+          mascot_url="${BASE%/}/assets/vyn-reference.webp"
+          mascot_ct=$(curl -fsSL -m 15 -o /dev/null -w '%{content_type}' "$mascot_url" || true)
+          if [[ "$mascot_ct" != "image/webp" && "$mascot_ct" != "application/octet-stream" ]]; then
+            echo "FAIL: Approved Vyn artwork not served as WebP ($mascot_ct)."
+            exit 1
+          fi
+          if ! grep -q "assistant.js?v=20261031-vyn-reference" <<< "$homepage"; then
+            echo "FAIL: Homepage not referencing latest Vyn assistant version."
+            exit 1
+          fi
+          echo "PASS: Owner-approved Vyn image asset and current assistant published."
           echo "PASS: Burgundy navigation and contextual LSP/API guide validated."
           echo "PASS: Five departmental mailboxes and live guide response verified."
           echo "PASS: Bank/NBFC portal is live and customer-action controls stay disabled."
