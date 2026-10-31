@@ -674,3 +674,58 @@ body{background:#fff;color:#342b37}
  #vv-assistant .vyn-wave-palm,#vv-assistant .vyn-wave-trail,#vv-assistant .vyn-animated-eyes,
  #vv-assistant .vyn-hoverlight{animation:none!important}
 }
+
+/* VYN OWNER-APPROVED EXACT REFERENCE ARTWORK | 2026-10-31
+   The transparent image preserves the owner's provided 3D visual rather than
+   approximating it with shapes. Independent masked-arm and floating motion. */
+#vv-assistant .bian-launch{
+ width:83px;height:107px;min-width:83px;
+ right:11px;bottom:8px;
+ display:flex;align-items:center;justify-content:center;
+ padding:0;background:transparent!important;box-shadow:none!important
+}
+#vv-assistant .bian-launch .vyn-mascot-wrap{
+ width:81px;height:104px;flex:none;
+ filter:drop-shadow(0 6px 8px #5a17343b)
+}
+#vv-assistant .bian-head-avatar .vyn-mascot-wrap{
+ width:34px;height:44px;flex:none;
+ filter:drop-shadow(0 1px 3px #4b11342f)
+}
+#vv-assistant .vyn-photo-float{
+ transform-box:view-box;transform-origin:50% 56%;
+ animation:vyn-photo-hover 3.9s ease-in-out infinite
+}
+#vv-assistant .vyn-photo-wave{
+ transform-box:view-box;transform-origin:136px 390px;
+ animation:vyn-photo-hello-wave 3.4s ease-in-out infinite;
+ will-change:transform
+}
+@keyframes vyn-photo-hover{
+ 0%,100%{transform:translateY(2px) rotate(-1.1deg)}
+ 50%{transform:translateY(-4px) rotate(1.1deg)}
+}
+@keyframes vyn-photo-hello-wave{
+ 0%,9%,91%,100%{transform:rotate(0)}
+ 19%{transform:rotate(-10deg)}
+ 31%{transform:rotate(9deg)}
+ 44%{transform:rotate(-9deg)}
+ 57%{transform:rotate(10deg)}
+ 70%{transform:rotate(-8deg)}
+ 82%{transform:rotate(5deg)}
+}
+#vv-assistant .vyn-photo-mascot{
+ display:block;width:100%;height:100%;overflow:visible
+}
+@media(max-width:550px){
+ #vv-assistant .bian-launch{
+  width:70px;height:91px;min-width:70px;right:7px;bottom:8px
+ }
+ #vv-assistant .bian-launch .vyn-mascot-wrap{
+  width:69px;height:89px
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ #vv-assistant .vyn-photo-float,
+ #vv-assistant .vyn-photo-wave{animation:none!important}
+}
