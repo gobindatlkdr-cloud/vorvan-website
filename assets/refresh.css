@@ -342,3 +342,83 @@ body{background:#fff;color:#342b37}
  #vv-assistant .bian-hi{animation:none!important}
  #vv-assistant .bian-hi{opacity:1}
 }
+
+
+/* VYN waving update — animated arm and articulated open palm, NOT a "Hi" speech bubble.
+   Entire gesture is original CSS: shoulder raises the arm, open hand waves left/right. */
+#vv-assistant .bian-launch .bian-figure{overflow:visible}
+#vv-assistant .bian-arm-right{
+ right:-2px;
+ top:27px;
+ width:10px;
+ height:31px;
+ z-index:8;
+ border-radius:8px;
+ border:2px solid #fff3fa;
+ background:linear-gradient(95deg,#fce0ef 0%,#e998c2 52%,#b95b97 100%);
+ box-shadow:0 2px 5px #6e1b4b45;
+ transform-origin:50% 90%;
+ /* First raise from the side, then sway an open hand back and forth repeatedly. */
+ animation:vyn-raised-hand-wave 5.4s ease-in-out infinite;
+ will-change:transform
+}
+#vv-assistant .bian-hand{
+ position:absolute;top:-11px;left:-5px;
+ width:18px;height:18px;
+ display:block;
+ border:2px solid #d1fff2;
+ border-radius:8px 8px 7px 7px;
+ background:linear-gradient(145deg,#adffe5,#4addb7);
+ box-shadow:0 0 0 1px #237e6840,0 2px 5px #3b9a7d60;
+ transform-origin:50% 87%;
+ animation:vyn-palm-tilt .74s ease-in-out infinite alternate
+}
+#vv-assistant .bian-hand b{
+ display:block;position:absolute;top:-7px;width:5px;height:10px;
+ border-radius:4px 4px 2px 2px;
+ background:#79eed0;border:1px solid #d7fff3
+}
+#vv-assistant .bian-hand b:nth-child(1){left:0;top:-6px;height:9px}
+#vv-assistant .bian-hand b:nth-child(2){left:5px;top:-10px;height:13px}
+#vv-assistant .bian-hand b:nth-child(3){left:10px;top:-6px;height:9px}
+#vv-assistant .bian-hand:after{
+ content:"";position:absolute;left:-6px;top:5px;width:8px;height:6px;
+ border-radius:6px 3px 5px 5px;border:1px solid #d7fff3;
+ background:#8df6d7;transform:rotate(-33deg)
+}
+/* Two light gesture traces appear beside the moving hand, not floating text. */
+#vv-assistant .bian-spark{
+ right:-10px;top:6px;width:3px;height:10px;z-index:7;
+ background:#f09bc5;transform:rotate(35deg);
+ animation:vyn-gesture-spark .68s ease-in-out infinite alternate
+}
+#vv-assistant .bian-spark-two{
+ right:1px;top:0;height:6px;
+ transform:rotate(-27deg);animation-delay:.34s
+}
+@keyframes vyn-raised-hand-wave{
+ 0%,4%{transform:rotate(150deg)}
+ 14%{transform:rotate(-31deg)}
+ 24%{transform:rotate(33deg)}
+ 34%{transform:rotate(-31deg)}
+ 44%{transform:rotate(33deg)}
+ 54%{transform:rotate(-31deg)}
+ 64%{transform:rotate(33deg)}
+ 74%{transform:rotate(-31deg)}
+ 84%{transform:rotate(30deg)}
+ 94%,100%{transform:rotate(150deg)}
+}
+@keyframes vyn-palm-tilt{
+ from{transform:rotate(-9deg)}
+ to{transform:rotate(12deg)}
+}
+@keyframes vyn-gesture-spark{
+ from{opacity:.2;transform:translateX(2px) rotate(-17deg)}
+ to{opacity:1;transform:translateX(-3px) rotate(27deg)}
+}
+@media(prefers-reduced-motion:reduce){
+ #vv-assistant .bian-arm-right,
+ #vv-assistant .bian-hand,
+ #vv-assistant .bian-spark{animation:none!important}
+ #vv-assistant .bian-arm-right{transform:rotate(-24deg)}
+}
