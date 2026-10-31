@@ -34,7 +34,8 @@ Deno.serve(async(req:Request)=>{
  if(origin&&!ALLOWED.has(origin))return reply(req,403,"origin_not_allowed");
  if(req.method==="OPTIONS")return new Response(null,{status:204,headers:headers(req)});
  if(req.method!=="POST")return reply(req,405,"method_not_allowed");
- if(new URL(req.url).pathname!=="/functions/v1/admin-mfa-recovery")return reply(req,404,"not_found");
+ const functionPath=new URL(req.url).pathname.replace(/\/+$/,"");
+ if(!["/functions/v1/admin-mfa-recovery","/admin-mfa-recovery"].includes(functionPath))return reply(req,404,"not_found");
  if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/.test(PROJECT)||!ANON)return reply(req,503,"service_unavailable");
  const authorization=req.headers.get("authorization")||"";
  if(!/^Bearer [A-Za-z0-9._~-]+$/.test(authorization)||authorization.length>4200)return reply(req,401,"login_required");
