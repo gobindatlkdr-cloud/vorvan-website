@@ -19,6 +19,8 @@ jobs:
         run: node --check assets/site.js && node --check assets/admin.js && node --check assets/assistant.js
       - name: Test authenticator QR rendering with synthetic SVG fixtures
         run: node scripts/test_mfa_qr.cjs
+      - name: Test Bian animated assistant and live FAQ handoff (synthetic DOM)
+        run: node scripts/test_bian.cjs
       - name: Validate static website security and local links
         run: python3 scripts/check_site.py
       - name: Install Deno for backend type checking
