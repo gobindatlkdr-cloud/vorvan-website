@@ -79,6 +79,16 @@ async function startMfa(){
   const factors=Array.isArray(state.user?.factors)?state.user.factors:[];
   const verified=factors.find(f=>f.factor_type==="totp"&&f.status==="verified");
   if(verified){state.mfaFactor=verified.id;state.mfaSetup=false;visible("mfa-setup",false);$("mfa-explanation").textContent="Open your existing authenticator app and enter the current 6-digit code.";return}
+  const incomplete=factors.find(f=>f.factor_type==="totp"&&f.status==="unverified");
+  if(incomplete){
+    state.mfaFactor=incomplete.id;
+    state.mfaSetup=true;
+    visible("mfa-setup",false);
+    $("mfa-explanation").textContent="Previous MFA enrollment is incomplete. Enter the code for the previously scanned authenticator entry, or use the recovery option below.";
+    visible("mfa-pending-help",true);
+    message("mfa-message","Existing incomplete MFA setup detected.",true);
+    return;
+  }
   const result=await auth("/factors","POST",{factor_type:"totp",friendly_name:"VORVAN Admin"},true);
   state.mfaFactor=result.id;state.mfaSetup=true;
   const secret=result.totp?.secret||"";
