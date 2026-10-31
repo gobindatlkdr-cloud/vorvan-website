@@ -422,3 +422,104 @@ body{background:#fff;color:#342b37}
  #vv-assistant .bian-spark{animation:none!important}
  #vv-assistant .bian-arm-right{transform:rotate(-24deg)}
 }
+
+
+/* Vyn 2.0 | Original mini futuristic floating orb, NOT a traditional square robot.
+   SVG vector and animation coded from scratch for the VORVAN burgundy palette. */
+#vv-assistant .bian-launch{
+ width:64px;height:80px;right:12px;bottom:10px;min-width:64px;
+ padding:0;display:flex;align-items:center;justify-content:center;
+ filter:none;background:transparent;box-shadow:none
+}
+#vv-assistant .bian-launch-name,#vv-assistant .bian-hi{display:none!important}
+#vv-assistant .vyn-mascot-wrap{
+ width:65px;height:76px;display:block;position:relative;flex:none;
+ filter:drop-shadow(0 7px 10px #62213d3a);
+}
+#vv-assistant .vyn-mascot{
+ width:100%;height:100%;overflow:visible;display:block;isolation:isolate
+}
+#vv-assistant .vyn-hover-core{
+ animation:vyn-floating-body 3.8s cubic-bezier(.45,0,.5,1) infinite;
+ transform-origin:59px 76px
+}
+#vv-assistant .vyn-shadow{
+ animation:vyn-shadow-breathe 3.8s cubic-bezier(.45,0,.5,1) infinite;
+ transform-origin:59px 128px
+}
+#vv-assistant .vyn-right-limb{
+ animation:vyn-futuristic-wave 3.6s ease-in-out infinite;
+ transform-box:fill-box;transform-origin:0% 100%;
+ will-change:transform
+}
+#vv-assistant .vyn-palm{
+ animation:vyn-futuristic-palm 1.05s ease-in-out infinite alternate;
+ transform-box:fill-box;transform-origin:50% 100%;
+}
+#vv-assistant .vyn-animated-eyes{
+ animation:vyn-screen-blink 5.3s ease-in-out infinite;
+ transform-box:fill-box;transform-origin:center
+}
+#vv-assistant .vyn-orbit-dot{
+ animation:vyn-orbit-glow 2.5s ease-in-out infinite
+}
+#vv-assistant .vyn-chest-name{
+ font-weight:800;paint-order:stroke;
+ letter-spacing:-.4px
+}
+#vv-assistant .bian-head-avatar{
+ background:linear-gradient(125deg,#fff3fa,#fae5f0);
+}
+#vv-assistant .bian-head-avatar .vyn-mascot-wrap{
+ width:33px;height:38px;filter:none;transform:none;
+}
+#vv-assistant .bian-head-avatar .vyn-right-limb{
+ animation-duration:4.8s
+}
+#vv-assistant .bian-chat .vv-chat-head{
+ min-height:65px
+}
+@keyframes vyn-floating-body{
+ 0%,100%{transform:translateY(1px) rotate(-1deg)}
+ 50%{transform:translateY(-3px) rotate(1deg)}
+}
+@keyframes vyn-shadow-breathe{
+ 0%,100%{transform:scaleX(1);opacity:.18}
+ 50%{transform:scaleX(.78);opacity:.11}
+}
+/* The arm swings around its shoulder; the palm moves separately. */
+@keyframes vyn-futuristic-wave{
+ 0%,10%,90%,100%{transform:rotate(0deg)}
+ 20%{transform:rotate(-22deg)}
+ 34%{transform:rotate(24deg)}
+ 48%{transform:rotate(-20deg)}
+ 62%{transform:rotate(22deg)}
+ 76%{transform:rotate(-12deg)}
+}
+@keyframes vyn-futuristic-palm{
+ 0%{transform:rotate(-9deg)}
+ 100%{transform:rotate(12deg)}
+}
+@keyframes vyn-screen-blink{
+ 0%,41%,45%,100%{transform:scaleY(1);opacity:1}
+ 43%{transform:scaleY(.16);opacity:.65}
+}
+@keyframes vyn-orbit-glow{
+ 0%,100%{opacity:.4}
+ 50%{opacity:1}
+}
+@media(max-width:550px){
+ #vv-assistant .bian-launch{
+  width:56px;height:72px;right:9px;bottom:10px;min-width:56px;
+ }
+ #vv-assistant .bian-launch .vyn-mascot-wrap{
+  width:57px;height:68px
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ #vv-assistant .vyn-hover-core,#vv-assistant .vyn-shadow,
+ #vv-assistant .vyn-right-limb,#vv-assistant .vyn-palm,
+ #vv-assistant .vyn-animated-eyes,#vv-assistant .vyn-orbit-dot{
+  animation:none!important
+ }
+}
