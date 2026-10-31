@@ -100,6 +100,32 @@ async function startMfa(){
   $("mfa-explanation").textContent="Set up TOTP in an authenticator app using the code or QR shown below. Then enter the 6-digit code to enable MFA.";
  }catch(e){message("mfa-message",e.message||"Cannot start MFA. Check Supabase Auth MFA settings.")}
 }
+async function restartPendingMfa(){
+  const button=$("mfa-reset-pending");
+  button.disabled=true;
+  try{
+    const user=await auth("/user","GET",undefined,true);
+    if(user.email?.toLowerCase()!==COMPANY)throw Error("Wrong administrator account.");
+    const factors=Array.isArray(user.factors)?user.factors:[];
+    if(factors.some(x=>x.factor_type==="totp"&&x.status==="verified")){
+      throw Error("A verified MFA is present. It cannot be reset here.");
+    }
+    const pending=factors.filter(x=>x.factor_type==="totp"&&x.status==="unverified");
+    if(pending.length!==1||!pending[0].id)throw Error("Incomplete factor not found. Please sign out and back in.");
+    await auth("/factors/"+encodeURIComponent(pending[0].id),"DELETE",undefined,true);
+    const result=await auth("/factors","POST",{factor_type:"totp",friendly_name:"VORVAN Admin renewed"},true);
+    state.mfaFactor=result.id;
+    const qr=result.totp?.qr_code||"";
+    $("mfa-secret").textContent=result.totp?.secret||"";
+    if(qr.startsWith("data:image/svg+xml")){$("mfa-qr").src=qr;visible("mfa-qr",true)}
+    else visible("mfa-qr",false);
+    visible("mfa-setup",true);visible("mfa-pending-help",false);
+    $("mfa-code").value="";
+    $("mfa-explanation").textContent="Scan the NEW QR code in your authenticator app. Enter the 6-digit code from the NEW entry, not the old one.";
+    message("mfa-message","A new MFA enrollment is ready. Keep the old authenticator entry until this one is verified.",true);
+  }catch(e){message("mfa-message",e.message||"MFA setup recovery failed.")}
+  finally{button.disabled=false}
+}
 async function verifyMfa(event){
  event.preventDefault();message("mfa-message","");
  const code=$("mfa-code").value.trim();
@@ -258,6 +284,7 @@ $("signup-open").addEventListener("click",openSignup);
 $("signup-form").addEventListener("submit",signup);
 $("signup-back").addEventListener("click",backToSignin);
 $("mfa-form").addEventListener("submit",verifyMfa);
+$("mfa-reset-pending").addEventListener("click",restartPendingMfa);
 $("mfa-cancel").addEventListener("click",clearSession);
 $("logout").addEventListener("click",()=>{const jwt=state.access;clearSession();if(jwt)fetch(AUTH+"/logout",{method:"POST",headers:{"apikey":PUB,authorization:"Bearer "+jwt}}).catch(()=>{});});
 $("reload").addEventListener("click",async()=>{try{await load();render()}catch(e){message("dashboard-message",e.message)}});
