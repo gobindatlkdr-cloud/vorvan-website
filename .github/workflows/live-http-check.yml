@@ -110,5 +110,20 @@ jobs:
             echo "FAIL: Admin CORS preflight blocked; interactive browser login would fail."
             exit 1
           fi
+          if ! grep -q 'id="mfa-reset-pending"' <<< "$admin_page"; then
+            echo "FAIL: Incomplete MFA recovery control is absent from Admin."
+            exit 1
+          fi
+          recovery_status=$(curl -sS -m 20 -o /dev/null -w '%{http_code}' -X POST \
+            -H 'Origin: https://vorvan.co.in' \
+            -H 'Content-Type: application/json' \
+            -d '{"action":"reset_unverified_totp"}' \
+            "https://kukfpsqujlutlgwndplh.supabase.co/functions/v1/admin-mfa-recovery")
+          echo "Recovery endpoint without login HTTP $recovery_status"
+          if [[ "$recovery_status" != "401" ]]; then
+            echo "FAIL: MFA recovery must reject unauthenticated users."
+            exit 1
+          fi
+          echo "PASS: MFA recovery control published and backend rejects requests without login."
           echo "PASS: Admin page published and API rejects anonymous access."
           echo "PASS: All checked live resources and the interactive demo marker respond successfully."
