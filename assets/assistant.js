@@ -1,4 +1,4 @@
-/* Bian — an original animated VORVAN website guide.
+/* Vyn — an original animated VORVAN website guide.
  * CSS-only mascot movement, no GIF or copied third-party artwork.
  * Live replies use VORVAN's free-tier rules-based FAQ backend; no external LLM.
  * No app cookies, saved chat history or client analytics. */
@@ -15,23 +15,23 @@ const lang=$("[data-guide-language]"),topics=root.querySelector(".vv-chat-option
 const composer=root.querySelector(".vv-chat-row");
 const labels={
  en:{
-  hello:"Hello 👋",intro:"Hello, I am Bian, your support assistant. I am here to help you.",
+  hello:"Hello 👋",intro:"Hello, I am Vyn, your support assistant. I am here to help you.",
   choose:"Please choose your language.",ready:"I'm here to help with VORVAN, direct LSP partnerships, lending APIs and support. Choose a topic or ask a question.",
-  fallback:"Bian's live guide is temporarily unavailable. Please email info@vorvan.co.in.",
+  fallback:"Vyn's live guide is temporarily unavailable. Please email info@vorvan.co.in.",
   privacy:"Please do not share phone numbers, PAN/Aadhaar, email addresses or personal financial data.",
   topics:{partnership:"LSP partnership",api:"Lending API",credit:"Credit app",support:"Support",legal:"Legal",contact:"Emails"}
  },
  bn:{
-  hello:"হ্যালো 👋",intro:"আমি Bian, VORVAN-এর সাপোর্ট অ্যাসিস্ট্যান্ট। আপনাকে সাহায্য করতে এখানে আছি।",
+  hello:"হ্যালো 👋",intro:"আমি Vyn, VORVAN-এর সাপোর্ট অ্যাসিস্ট্যান্ট। আপনাকে সাহায্য করতে এখানে আছি।",
   choose:"আপনার ভাষা নির্বাচন করুন।",ready:"VORVAN, সরাসরি LSP পার্টনারশিপ, লোন API বা সাপোর্ট সম্পর্কে জানতে নিচের অপশন বাছুন অথবা প্রশ্ন লিখুন।",
-  fallback:"Bian-এর লাইভ গাইড এখন কাজ করছে না। info@vorvan.co.in-এ মেইল করুন।",
+  fallback:"Vyn-এর লাইভ গাইড এখন কাজ করছে না। info@vorvan.co.in-এ মেইল করুন।",
   privacy:"ফোন নম্বর, PAN/Aadhaar, ইমেইল বা ব্যক্তিগত আর্থিক তথ্য এখানে দেবেন না।",
   topics:{partnership:"LSP পার্টনারশিপ",api:"লোন API",credit:"ক্রেডিট অ্যাপ",support:"সাপোর্ট",legal:"লিগ্যাল",contact:"ইমেইল"}
  },
  hi:{
-  hello:"नमस्ते 👋",intro:"मैं Bian हूँ, VORVAN का सपोर्ट असिस्टेंट। मैं आपकी मदद के लिए यहाँ हूँ।",
+  hello:"नमस्ते 👋",intro:"मैं Vyn हूँ, VORVAN का सपोर्ट असिस्टेंट। मैं आपकी मदद के लिए यहाँ हूँ।",
   choose:"अपनी भाषा चुनें।",ready:"VORVAN, सीधे LSP पार्टनरशिप, लेंडिंग API और सहायता के लिए विषय चुनें या सवाल लिखें।",
-  fallback:"Bian की लाइव सहायता अभी उपलब्ध नहीं है। info@vorvan.co.in पर लिखें।",
+  fallback:"Vyn की लाइव सहायता अभी उपलब्ध नहीं है। info@vorvan.co.in पर लिखें।",
   privacy:"कृपया फ़ोन, PAN/Aadhaar, ईमेल या निजी वित्तीय जानकारी साझा न करें।",
   topics:{partnership:"LSP साझेदारी",api:"लोन API",credit:"क्रेडिट ऐप",support:"सहायता",legal:"कानूनी",contact:"ईमेल"}
  }
@@ -42,26 +42,26 @@ const mascot=()=>'<span class="bian-figure" aria-hidden="true">'+
  '<span class="bian-ear bian-ear-left"></span><span class="bian-ear bian-ear-right"></span>'+
  '<span class="bian-face"><span class="bian-eyes"><i></i><i></i></span><span class="bian-smile"></span></span>'+
  '<span class="bian-body"><span class="bian-v">V</span></span>'+
- '<span class="bian-arm bian-arm-left"></span><span class="bian-arm bian-arm-right"><i class="bian-hand"></i></span>'+
+ '<span class="bian-arm bian-arm-left"></span><span class="bian-arm bian-arm-right"><i class="bian-hand"><b></b><b></b><b></b></i></span>'+
  '<span class="bian-spark bian-spark-one"></span><span class="bian-spark bian-spark-two"></span></span>';
 // All inserted markup above is static and owned by this first-party application.
 launch.classList.add("bian-launch");
-launch.innerHTML='<span class="bian-hi" aria-hidden="true">Hi! 👋</span>'+mascot()+
- '<span class="bian-launch-name" aria-hidden="true">Bian</span>';
-launch.setAttribute("aria-label","Open Bian animated support assistant");
+launch.innerHTML=mascot()+
+ '<span class="bian-launch-name" aria-hidden="true">Vyn</span>';
+launch.setAttribute("aria-label","Open Vyn animated support assistant");
 popup.classList.add("bian-chat");
-popup.setAttribute("aria-label","Bian — VORVAN website support assistant");
+popup.setAttribute("aria-label","Vyn — VORVAN website support assistant");
 const head=root.querySelector(".vv-chat-head");
 const heading=head?.querySelector("strong"),subhead=head?.querySelector("small");
-if(heading)heading.textContent="Bian";
+if(heading)heading.textContent="Vyn";
 if(subhead)subhead.textContent="● Available · Guided help";
 const headingBlock=head?.firstElementChild;
 if(headingBlock){
  headingBlock.classList.add("bian-heading");
  headingBlock.insertAdjacentHTML("afterbegin",'<span class="bian-head-avatar">'+mascot()+"</span>");
 }
-lang.setAttribute("aria-label","Change Bian chat language");
-close.setAttribute("aria-label","Close Bian assistant");
+lang.setAttribute("aria-label","Change Vyn chat language");
+close.setAttribute("aria-label","Close Vyn assistant");
 let busy=false;
 let languageSelected=false;
 let initialized=false;
@@ -110,7 +110,7 @@ function choose(key){
  add(languageNames[key],true);
  add(labels[key].ready);
  controls(true);
- field.placeholder=key==="bn"?"আপনার প্রশ্ন লিখুন…":key==="hi"?"अपना सवाल लिखें…":"Ask Bian a question…";
+ field.placeholder=key==="bn"?"আপনার প্রশ্ন লিখুন…":key==="hi"?"अपना सवाल लिखें…":"Ask Vyn a question…";
  field.focus();
 }
 function open(opened){
@@ -171,7 +171,7 @@ field.addEventListener("keydown",(e)=>{
 lang.addEventListener("change",()=>{
  if(labels[lang.value])choose(lang.value);
 });
-// The home search bar can open Bian and immediately ask a general question.
+// The home search bar can open Vyn and immediately ask a general question.
 const quick=document.querySelector("[data-vv-search]");
 const quickButton=document.querySelector("[data-vv-search-submit]");
 function quickAsk(){
