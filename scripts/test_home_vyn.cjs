@@ -17,7 +17,11 @@ assert.match(markup,/viewBox="0 0 152 151"/,"Mini bot has accessible, scalable S
 assert.match(css,/\.vv-vyn-antenna-rotor\s*\{[^}]*animation:vv-vyn-antenna-clockwise 11s linear infinite/s,"Only the antenna is set to rotate slowly");
 assert.match(css,/@keyframes vv-vyn-antenna-clockwise\s*\{[^}]*rotate\(0deg\)[^}]*\}[^}]*rotate\(360deg\)/s,"Clockwise full rotation");
 assert.match(css,/@media\(prefers-reduced-motion:reduce\)[\s\S]*?\.vv-vyn-antenna-rotor\{animation:none!important/,"Respect reduced motion");
-assert.match(css,/@media\(max-width:550px\)\s*\{[\s\S]*?\.vv-vyn-hello\{width:249px;height:95px\}/,"Small-screen layout");
+assert.match(css,/\.vv-vyn-hello\{[^}]*width:min\(146px,100%\);height:61px/,"Desktop robot badge must be half-size");
+assert.match(css,/\.vv-vyn-peek svg\{display:block;width:63px;height:63px/,"Desktop robot graphic must be half-size");
+assert.match(css,/\.vv-vyn-nameplate strong\{[^}]*font-size:9\.5px/,"Desktop Vyn title must be half-size");
+assert.match(css,/@media\(max-width:550px\)\s*\{[\s\S]*?\.vv-vyn-hello\{width:124\.5px;height:47\.5px\}/,"Small-screen robot badge must be half-size");
+assert.match(css,/\.vv-vyn-peek svg\{width:49px;height:49px\}/,"Mobile graphic must be half-size");
 assert.match(js,/if\(!message\)\{open\(true\);return\}/,"Empty Ask Vyn click opens the assistant");
 assert.match(js,/quickButton\.addEventListener\("click",quickAsk\)/,"CTA remains wired to the support assistant");
 console.log("Vyn homepage search badge tests passed: UI labels, antenna-only clockwise rotation, mobile, accessibility and click behavior.");
