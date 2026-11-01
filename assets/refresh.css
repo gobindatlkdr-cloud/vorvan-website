@@ -731,37 +731,37 @@ body{background:#fff;color:#342b37}
 }
 
 
-/* OWNER-APPROVED VYN HOME SEARCH BADGE — 2026-11-01
+/* OWNER-APPROVED VYN HOME SEARCH BADGE — half-size revision, 2026-11-01
    Matches concept: peeking pearl/ruby robot, I am Vyn / AI assistant,
    blush outline and Ask Vyn CTA. ONLY its antenna rotates clockwise.
    All visual assets are inline first-party SVG; existing chat is unchanged. */
 .vv-vyn-ask-wrap{
- width:min(520px,100%);max-width:100%;margin-top:24px
+ width:min(520px,100%);max-width:100%;margin-top:12px
 }
 .vv-vyn-hello{
  position:relative;display:flex;align-items:flex-end;justify-content:flex-end;
- width:min(292px,100%);height:122px;margin-left:auto;margin-bottom:-2px;
+ width:min(146px,100%);height:61px;margin-left:auto;margin-bottom:-1px;
  isolation:isolate
 }
 .vv-vyn-peek{
- display:block;position:relative;z-index:2;flex:0 0 119px;
- width:119px;height:120px;margin-right:-17px;
- filter:drop-shadow(0 5px 8px #7b225021)
+ display:block;position:relative;z-index:2;flex:0 0 59.5px;
+ width:59.5px;height:60px;margin-right:-8.5px;
+ filter:drop-shadow(0 2.5px 4px #7b225021)
 }
-.vv-vyn-peek svg{display:block;width:126px;height:126px;overflow:visible}
+.vv-vyn-peek svg{display:block;width:63px;height:63px;overflow:visible}
 .vv-vyn-nameplate{
- flex:0 0 176px;min-width:0;height:78px;margin:0 2px 4px 0;
+ flex:0 0 88px;min-width:0;height:39px;margin:0 1px 2px 0;
  display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
- padding:8px 16px 8px 28px;border:1.5px solid #f4c6dd;
+ padding:4px 8px 4px 14px;border:1px solid #f4c6dd;
  border-radius:999px;background:linear-gradient(108deg,#fff2faed,#fff9fdec);
- box-shadow:0 8px 21px #b4296c11
+ box-shadow:0 4px 11px #b4296c11
 }
 .vv-vyn-nameplate strong{
- font-size:19px;line-height:1.15;letter-spacing:-.025em;font-weight:850;color:#921149
+ font-size:9.5px;line-height:1.15;letter-spacing:-.025em;font-weight:850;color:#921149
 }
 .vv-vyn-nameplate small{
- display:block;font-size:13px;line-height:1.5;letter-spacing:.01em;
- color:#6d6570;margin-top:5px
+ display:block;font-size:7px;line-height:1.5;letter-spacing:.01em;
+ color:#6d6570;margin-top:2.5px
 }
 .vv-vyn-ask-wrap .vv-askbar{
  width:100%;max-width:100%;margin-top:0;
@@ -795,16 +795,16 @@ body{background:#fff;color:#342b37}
  to{transform:rotate(360deg)}
 }
 @media(max-width:550px){
- .vv-vyn-ask-wrap{margin-top:14px}
- .vv-vyn-hello{width:249px;height:95px}
- .vv-vyn-peek{flex-basis:93px;width:93px;height:95px;margin-right:-14px}
- .vv-vyn-peek svg{width:98px;height:98px}
+ .vv-vyn-ask-wrap{margin-top:7px}
+ .vv-vyn-hello{width:124.5px;height:47.5px}
+ .vv-vyn-peek{flex-basis:46.5px;width:46.5px;height:47.5px;margin-right:-7px}
+ .vv-vyn-peek svg{width:49px;height:49px}
  .vv-vyn-nameplate{
-  flex-basis:159px;height:61px;margin-bottom:2px;
-  padding:5px 13px 5px 23px
+  flex-basis:79.5px;height:30.5px;margin-bottom:1px;
+  padding:2.5px 6.5px 2.5px 11.5px
  }
- .vv-vyn-nameplate strong{font-size:15px}
- .vv-vyn-nameplate small{font-size:11px;margin-top:2px}
+ .vv-vyn-nameplate strong{font-size:8px}
+ .vv-vyn-nameplate small{font-size:6px;margin-top:1px}
  .vv-vyn-ask-wrap .vv-askbar{gap:5px;min-height:55px;padding:6px 7px 6px 12px}
  .vv-vyn-ask-wrap .vv-askbar input{font-size:11px}
  .vv-vyn-ask-wrap .vv-askbar button{padding:11px 10px;font-size:11px;min-height:40px}
