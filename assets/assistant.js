@@ -194,7 +194,8 @@ const quickButton=document.querySelector("[data-vv-search-submit]");
 function quickAsk(){
  if(!quick||busy)return;
  const message=quick.value.trim();
- if(!message||message.length>240)return;
+ if(!message){open(true);return}
+ if(message.length>240)return;
  open(true);
  if(!languageSelected)choose("en");
  quick.value="";
