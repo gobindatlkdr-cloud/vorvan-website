@@ -21,6 +21,8 @@ jobs:
         run: node scripts/test_mfa_qr.cjs
       - name: Test Vyn name and animated hand-wave and live FAQ handoff (synthetic DOM)
         run: node scripts/test_bian.cjs
+      - name: Test approved Vyn homepage prompt bar and clockwise antenna
+        run: node scripts/test_home_vyn.cjs
       - name: Validate static website security and local links
         run: python3 scripts/check_site.py
       - name: Install Deno for backend type checking
