@@ -1,0 +1,23 @@
+/* Offline regression checks for the owner-approved homepage Vyn mini assistant. */
+"use strict";
+const assert=require("node:assert/strict");
+const fs=require("node:fs");
+const html=fs.readFileSync("index.html","utf8");
+const css=fs.readFileSync("assets/refresh.css","utf8");
+const js=fs.readFileSync("assets/assistant.js","utf8");
+const block=html.match(/<div class="vv-vyn-ask-wrap">([\s\S]*?)<\/div>\s*<p class="vv-caption">/);
+assert.ok(block,"Approved homepage search panel exists");
+const markup=block[1];
+assert.match(markup,/<strong>I am Vyn<\/strong>/,"Assistant name matches approval");
+assert.match(markup,/<small>AI assistant<\/small>/,"Assistant subtitle matches approval");
+assert.match(markup,/data-vv-search-submit>Ask Vyn ↗<\/button>/,"Call to action says Ask Vyn");
+assert.doesNotMatch(markup,/Ask VORVAN|Vian|Bian/,"Old assistant names may not appear in this component");
+assert.match(markup,/class="vv-vyn-antenna-rotor"/,"Distinct animated antenna exists");
+assert.match(markup,/viewBox="0 0 152 151"/,"Mini bot has accessible, scalable SVG");
+assert.match(css,/\.vv-vyn-antenna-rotor\s*\{[^}]*animation:vv-vyn-antenna-clockwise 11s linear infinite/s,"Only the antenna is set to rotate slowly");
+assert.match(css,/@keyframes vv-vyn-antenna-clockwise\s*\{[^}]*rotate\(0deg\)[^}]*\}[^}]*rotate\(360deg\)/s,"Clockwise full rotation");
+assert.match(css,/@media\(prefers-reduced-motion:reduce\)[\s\S]*?\.vv-vyn-antenna-rotor\{animation:none!important/,"Respect reduced motion");
+assert.match(css,/@media\(max-width:550px\)\s*\{[\s\S]*?\.vv-vyn-hello\{width:249px;height:95px\}/,"Small-screen layout");
+assert.match(js,/if\(!message\)\{open\(true\);return\}/,"Empty Ask Vyn click opens the assistant");
+assert.match(js,/quickButton\.addEventListener\("click",quickAsk\)/,"CTA remains wired to the support assistant");
+console.log("Vyn homepage search badge tests passed: UI labels, antenna-only clockwise rotation, mobile, accessibility and click behavior.");
