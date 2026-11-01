@@ -729,3 +729,90 @@ body{background:#fff;color:#342b37}
  #vv-assistant .vyn-photo-float,
  #vv-assistant .vyn-photo-wave{animation:none!important}
 }
+
+
+/* OWNER-APPROVED VYN HOME SEARCH BADGE — 2026-11-01
+   Matches concept: peeking pearl/ruby robot, I am Vyn / AI assistant,
+   blush outline and Ask Vyn CTA. ONLY its antenna rotates clockwise.
+   All visual assets are inline first-party SVG; existing chat is unchanged. */
+.vv-vyn-ask-wrap{
+ width:min(520px,100%);max-width:100%;margin-top:24px
+}
+.vv-vyn-hello{
+ position:relative;display:flex;align-items:flex-end;justify-content:flex-end;
+ width:min(292px,100%);height:122px;margin-left:auto;margin-bottom:-2px;
+ isolation:isolate
+}
+.vv-vyn-peek{
+ display:block;position:relative;z-index:2;flex:0 0 119px;
+ width:119px;height:120px;margin-right:-17px;
+ filter:drop-shadow(0 5px 8px #7b225021)
+}
+.vv-vyn-peek svg{display:block;width:126px;height:126px;overflow:visible}
+.vv-vyn-nameplate{
+ flex:0 0 176px;min-width:0;height:78px;margin:0 2px 4px 0;
+ display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
+ padding:8px 16px 8px 28px;border:1.5px solid #f4c6dd;
+ border-radius:999px;background:linear-gradient(108deg,#fff2faed,#fff9fdec);
+ box-shadow:0 8px 21px #b4296c11
+}
+.vv-vyn-nameplate strong{
+ font-size:19px;line-height:1.15;letter-spacing:-.025em;font-weight:850;color:#921149
+}
+.vv-vyn-nameplate small{
+ display:block;font-size:13px;line-height:1.5;letter-spacing:.01em;
+ color:#6d6570;margin-top:5px
+}
+.vv-vyn-ask-wrap .vv-askbar{
+ width:100%;max-width:100%;margin-top:0;
+ border:1.5px solid #f6c8df;border-radius:19px;
+ box-shadow:0 15px 33px #a8326e16;
+ padding:8px 9px 8px 15px;min-height:59px;
+ background:linear-gradient(120deg,#fff,#fffafd)
+}
+.vv-vyn-ask-wrap .vv-askbar:focus-within{
+ border-color:#ac2668;box-shadow:0 0 0 3px #b9236421,0 15px 33px #a8326e16
+}
+.vv-vyn-ask-wrap .vv-askbar .vv-ask-spark{font-size:18px;color:#bb165b}
+.vv-vyn-ask-wrap .vv-askbar input{font-size:12px;padding:9px 3px}
+.vv-vyn-ask-wrap .vv-askbar button{
+ white-space:nowrap;border-radius:12px;padding:12px 18px;
+ font-size:12px;font-weight:800;min-height:42px;
+ background:linear-gradient(120deg,#9b0b4b,#84103e);
+ box-shadow:0 5px 13px #6f0d3b17
+}
+.vv-vyn-ask-wrap .vv-askbar button:hover{
+ background:linear-gradient(120deg,#b21358,#8f0944)
+}
+/* Continuous slow fan-like clockwise rotation. The rest of the mascot is static. */
+.vv-vyn-antenna-rotor{
+ transform-box:view-box;transform-origin:78px 19px;
+ animation:vv-vyn-antenna-clockwise 11s linear infinite;
+ will-change:transform
+}
+@keyframes vv-vyn-antenna-clockwise{
+ from{transform:rotate(0deg)}
+ to{transform:rotate(360deg)}
+}
+@media(max-width:550px){
+ .vv-vyn-ask-wrap{margin-top:14px}
+ .vv-vyn-hello{width:249px;height:95px}
+ .vv-vyn-peek{flex-basis:93px;width:93px;height:95px;margin-right:-14px}
+ .vv-vyn-peek svg{width:98px;height:98px}
+ .vv-vyn-nameplate{
+  flex-basis:159px;height:61px;margin-bottom:2px;
+  padding:5px 13px 5px 23px
+ }
+ .vv-vyn-nameplate strong{font-size:15px}
+ .vv-vyn-nameplate small{font-size:11px;margin-top:2px}
+ .vv-vyn-ask-wrap .vv-askbar{gap:5px;min-height:55px;padding:6px 7px 6px 12px}
+ .vv-vyn-ask-wrap .vv-askbar input{font-size:11px}
+ .vv-vyn-ask-wrap .vv-askbar button{padding:11px 10px;font-size:11px;min-height:40px}
+}
+@media(max-width:350px){
+ .vv-vyn-ask-wrap .vv-askbar input{font-size:10px}
+ .vv-vyn-ask-wrap .vv-askbar button{padding:9px 7px;font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){
+ .vv-vyn-antenna-rotor{animation:none!important;will-change:auto}
+}
