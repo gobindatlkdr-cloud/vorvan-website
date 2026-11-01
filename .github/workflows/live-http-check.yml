@@ -84,11 +84,25 @@ jobs:
             echo "FAIL: Approved Vyn artwork not served as WebP ($mascot_ct)."
             exit 1
           fi
-          if ! grep -q "assistant.js?v=20261031-vyn-reference" <<< "$homepage"; then
-            echo "FAIL: Homepage not referencing latest Vyn assistant version."
+          # Pages deploy is asynchronous to this workflow. Poll for the
+          # approved Vyn homepage release instead of checking a stale asset tag.
+          vyn_ready=0
+          for attempt in {1..18}; do
+            if grep -q 'assistant.js?v=20261101-vyn-hello' <<< "$homepage" \
+               && grep -q 'class="vv-vyn-antenna-rotor"' <<< "$homepage" \
+               && grep -q 'data-vv-search-submit>Ask Vyn' <<< "$homepage"; then
+              vyn_ready=1
+              break
+            fi
+            echo "Waiting for approved Vyn homepage deployment (attempt $attempt/18)"
+            sleep 10
+            homepage=$(curl -fsSL -m 20 "$BASE" || true)
+          done
+          if [[ "$vyn_ready" != "1" ]]; then
+            echo "FAIL: New Vyn mini assistant / clockwise antenna / Ask Vyn bar not present on the live website."
             exit 1
           fi
-          echo "PASS: Owner-approved Vyn image asset and current assistant published."
+          echo "PASS: Owner-approved Vyn artwork and new rotating-antenna homepage release are published."
           echo "PASS: Burgundy navigation and contextual LSP/API guide validated."
           echo "PASS: Five departmental mailboxes and live guide response verified."
           echo "PASS: Bank/NBFC portal is live and customer-action controls stay disabled."
