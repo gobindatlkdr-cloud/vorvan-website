@@ -184,3 +184,22 @@ jobs:
           echo "B2B endpoint statuses: preflight=$preflight unauthenticated-read=$read_status invalid-intake=$invalid"
           [[ "$preflight" == "204" && "$read_status" == "401" && "$invalid" == "400" ]] || exit 1
           echo "PASS: B2B page, indexable sitemap, CORS, privileged read protection and invalid-input rejection."
+
+
+      - name: Verify Google Search Console HTML file
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGET="https://vorvan.co.in/google7decf5ca6ffe0331.html"
+          EXPECTED="google-site-verification: google7decf5ca6ffe0331.html"
+          for attempt in $(seq 1 18); do
+            response=$(curl -fsSL -m 20 -A "VORVAN-site-health-check" "$TARGET" || true)
+            if [[ "$response" == "$EXPECTED" ]]; then
+              echo "PASS: Exact Google Search Console file is publicly readable."
+              exit 0
+            fi
+            echo "Google file deploy propagation: attempt $attempt/18"
+            sleep 10
+          done
+          echo "FAIL: Google verification HTML file is not publicly available with exact content."
+          exit 1
