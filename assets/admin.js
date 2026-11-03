@@ -260,6 +260,98 @@ function tracker(container,area){
  append(pane,title,desc,form,list);container.append(pane);loadEntries();
 }
 
+
+async function vaultRequest(path,method="GET",body,rawType){
+ if(!state.access)throw Error("Complete admin sign-in and MFA first.");
+ const h=authHeaders(true);
+ if(rawType)h["content-type"]=rawType;
+ const res=await fetch(API+"/functions/v1/compliance-vault"+path,{method,headers:h,body:body===undefined?undefined:rawType?body:JSON.stringify(body),cache:"no-store"});
+ const data=await res.json().catch(()=>({}));
+ if(!res.ok){
+  const hints={mfa_required:"Please sign in and complete MFA.",admin_access_denied:"Admin role not approved.",incorporation_required:"Incorporation pending: approval is locked.",owner_approval_required:"Owner approval required.",verified_requires_uploaded_file:"Upload a genuine document first.",file_signature_mismatch:"File signature does not match its MIME type.",file_storage_failed:"Private Storage upload failed."};
+  throw Error(hints[data.code]||"Compliance API: "+(data.code||res.status));
+ }
+ return data;
+}
+async function vaultDownload(doc,version){
+ const p="/documents/"+encodeURIComponent(doc)+(version?"/versions/"+encodeURIComponent(version):"")+"/download";
+ const res=await fetch(API+"/functions/v1/compliance-vault"+p,{headers:authHeaders(true),cache:"no-store"});
+ if(!res.ok){const x=await res.json().catch(()=>({}));throw Error("Private download failed: "+(x.code||res.status))}
+ const blob=await res.blob(),url=URL.createObjectURL(blob),a=el("a");
+ a.href=url;a.download="VORVAN_"+doc+(blob.type==="application/pdf"?".pdf":blob.type==="image/png"?".png":".jpg");
+ document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),15000);
+}
+function vaultPanel(parent){
+ const pane=el("article","panel-box vault");
+ append(pane,el("h2","","Private Company Documents & LSP/API Due Diligence"),el("p","","Protected administrative records. Never upload borrower KYC, credit reports, Aadhaar, OTPs, passwords or banking credentials."));
+ const msg=el("p","vault-message","Loading protected company records…"),company=el("div","vault-company"),list=el("div","vault-list"),events=el("div","vault-events");
+ msg.setAttribute("role","status");msg.setAttribute("aria-live","polite");
+ append(pane,msg,company,list,events);parent.append(pane);
+ const tell=(text,ok=false)=>{msg.textContent=text;msg.classList.toggle("ok",ok)};
+ async function refresh(){
+  const r=await vaultRequest("/"),c=r.company||{};company.replaceChildren();list.replaceChildren();events.replaceChildren();
+  const top=el("div","vault-summary");
+  top.append(el("strong","",c.incorporation_status==="incorporated"?"Incorporated":"Pre-Incorporation · Certificate Pending"));
+  for(const [key,yes,no] of [["ca_documents_verified","CA documents verified","CA verification pending"],["mca_fee_paid","MCA fee paid","MCA fee pending"],["coi_issued","COI issued","COI not issued"]])top.append(el("span","",c[key]?yes:no));
+  if(c.cin)top.append(el("span","","CIN: "+c.cin));company.append(top);
+  const docs=r.documents||[];tell("Secure checklist loaded — "+docs.length+" records; "+docs.filter(d=>d.stage==="verified").length+" verified.",true);
+  let cat="";
+  for(const d of docs){
+   if(cat!==d.category){cat=d.category;list.append(el("h3","vault-heading",cat.replaceAll("_"," ").toUpperCase()))}
+   const item=el("article","vault-item"),head=el("div","vault-head");
+   append(head,el("strong","",d.title),el("span","vault-tag",d.stage.replaceAll("_"," ")));
+   append(item,head,el("p","",d.description||""),el("p","vault-meta",(d.versions||0)+" private file version(s)"));
+   if(d.post_incorporation&&c.incorporation_status!=="incorporated")item.append(el("p","vault-warning","After incorporation — final verification locked"));
+   const tools=el("div","vault-tools"),select=el("select");
+   select.setAttribute("aria-label","Document status: "+d.title);
+   for(const st of ["pending","draft","under_review","verified","blocked"]){
+    if(st==="verified"&&state.role!=="owner")continue;
+    const opt=el("option","",st.replaceAll("_"," "));opt.value=st;opt.selected=st===d.stage;select.append(opt);
+   }
+   select.disabled=state.role==="auditor";
+   select.addEventListener("change",async()=>{
+    if(select.value==="verified"&&!confirm("Confirm Owner approval for "+d.title+"? Verify uploaded evidence before approval.")){select.value=d.stage;return}
+    select.disabled=true;try{await vaultRequest("/documents/"+d.doc_id,"PATCH",{stage:select.value});await refresh();tell("Review status saved.",true)}
+    catch(e){select.value=d.stage;tell(e.message)}finally{select.disabled=false}
+   });tools.append(select);
+   const note=el("input");note.type="text";note.value=d.notes||"";note.maxLength=500;note.placeholder="Internal notes — no customer data";note.setAttribute("aria-label","Review note: "+d.title);note.disabled=state.role==="auditor";
+   const save=el("button","small-button","Save note");save.type="button";save.disabled=state.role==="auditor";
+   save.addEventListener("click",async()=>{save.disabled=true;try{await vaultRequest("/documents/"+d.doc_id,"PATCH",{notes:note.value});tell("Note saved.",true)}catch(e){tell(e.message)}finally{save.disabled=false}});
+   tools.append(note,save);
+   if(state.role==="owner"){
+    const file=el("input");file.type="file";file.accept=".pdf,.png,.jpg,.jpeg,application/pdf,image/png,image/jpeg";file.className="vault-upload";file.setAttribute("aria-label","Private document upload: "+d.title);
+    file.addEventListener("change",async()=>{
+     const f=file.files&&file.files[0];if(!f)return;
+     if(f.size>8388608||!["application/pdf","image/png","image/jpeg"].includes(f.type)){tell("Upload requires PDF, PNG or JPEG, 8 MB maximum.");file.value="";return}
+     file.disabled=true;
+     try{await vaultRequest("/documents/"+d.doc_id+"/upload","POST",f,f.type);await refresh();tell("File stored privately and sent for review.",true)}
+     catch(e){tell(e.message)}finally{file.disabled=false;file.value=""}
+    });tools.append(file);
+    if(d.versions){
+     const down=el("button","small-button","Download latest");down.type="button";
+     down.addEventListener("click",()=>vaultDownload(d.doc_id).then(()=>tell("Private file downloaded.",true)).catch(e=>tell(e.message)));tools.append(down);
+     if(d.versions>1){
+      const history=el("button","small-button","Version history");history.type="button";
+      history.addEventListener("click",async()=>{
+       try{const v=await vaultRequest("/documents/"+d.doc_id+"/versions"),wrap=el("div","vault-versions");
+        for(const ver of v.versions||[]){const b=el("button","small-button",new Date(ver.uploaded_at).toLocaleString()+" · "+Math.ceil(ver.byte_size/1024)+" KB");
+         b.type="button";b.addEventListener("click",()=>vaultDownload(d.doc_id,ver.id).catch(e=>tell(e.message)));wrap.append(b)}
+        item.querySelector(".vault-versions")?.remove();item.append(wrap);
+       }catch(e){tell(e.message)}
+      });tools.append(history);
+     }
+    }
+   }
+   item.append(tools);list.append(item);
+  }
+  events.append(el("h3","vault-heading","AUDIT HISTORY"));
+  try{const q=await vaultRequest("/audit");if(!q.events?.length)events.append(el("p","vault-meta","No compliance actions recorded."));
+    for(const ev of (q.events||[]).slice(0,12))events.append(el("p","vault-meta",new Date(ev.created_at).toLocaleString()+" · "+ev.action.replaceAll("_"," ")+" · "+ev.doc_id));
+  }catch{events.append(el("p","vault-meta","Audit history unavailable."))}
+ }
+ refresh().catch(e=>tell(e.message||"Unable to load vault."));
+}
+
 function infoPanel(area){
  const container=el("div","panel-grid");
  if(area==="overview"){
@@ -292,6 +384,7 @@ function infoPanel(area){
   mail.append(list);container.append(mail)
  }
  if(area==="partners"||area==="support")tracker(container,area);
+  if(area==="compliance")vaultPanel(container);
  if(area==="security"){
   const pane=el("article","panel-box");pane.append(el("h2","","Recent task changes"));
   const log=el("div","", "Loading audit history…");pane.append(log);container.append(pane);
