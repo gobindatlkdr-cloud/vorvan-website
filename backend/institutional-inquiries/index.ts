@@ -53,7 +53,7 @@ function intake(x){
     official_email:text(x.official_email,160).toLowerCase(),
     business_phone:text(x.business_phone||"",30),
     partnership_track:text(x.partnership_track,20),
-    agenda:typeof x.agenda==="string"?x.agenda.trim().slice(0,1201):"",
+    agenda:typeof x.agenda==="string"?x.agenda.trim().replace(/\s+/g," ").slice(0,1201):"",
     source_channel:text(x.source_channel||"unknown",20)
   };
   if(!["bank","nbfc"].includes(p.institution_type)||!["direct_lsp","direct_api","both"].includes(p.partnership_track)||!["google","linkedin","email","direct","other","unknown"].includes(p.source_channel))return null;
