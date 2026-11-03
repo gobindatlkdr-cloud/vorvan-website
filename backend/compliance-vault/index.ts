@@ -38,7 +38,7 @@ async function storage(path:string,method:string,content?:Uint8Array,mime?:strin
  const h=serverHeaders();
  if(!h||!BASE.startsWith("https://"))return null;
  if(content){h.set("content-type",mime||"application/octet-stream");h.set("x-upsert","false")}
- try{return await fetch(BASE+"/storage/v1/"+path,{method,headers:h,body:content,signal:AbortSignal.timeout(15000)})}
+ try{return await fetch(BASE+"/storage/v1/"+path,{method,headers:h,body:content?new Blob([Uint8Array.from(content).buffer]):undefined,signal:AbortSignal.timeout(15000)})}
  catch{return null}
 }
 async function authorised(req:Request):Promise<Admin|null|"mfa"|"denied"|"offline">{
