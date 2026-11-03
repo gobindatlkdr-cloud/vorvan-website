@@ -152,3 +152,35 @@ jobs:
           echo "PASS: MFA recovery control published and backend rejects requests without login."
           echo "PASS: Admin page published and API rejects anonymous access."
           echo "PASS: All checked live resources and the interactive demo marker respond successfully."
+
+
+      - name: Verify deployed B2B inquiry page, SEO files and anonymous API rejection
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="https://vorvan.co.in/"
+          EDGE="https://kukfpsqujlutlgwndplh.supabase.co/functions/v1/institutional-inquiries"
+          ready=0
+          for attempt in $(seq 1 18); do
+            page=$(curl -fsSL -m 20 "$BASE""partners.html" || true)
+            if grep -q 'id="vv-institutional-inquiry-form"' <<< "$page" && grep -qi 'pre-incorporation' <<< "$page"; then
+              ready=1;break
+            fi
+            echo "Partner form deploy propagation: $attempt/18"
+            sleep 10
+          done
+          [[ "$ready" == "1" ]] || { echo "Missing live institutional form"; exit 1; }
+          for resource in assets/institutional-inquiry.css assets/institutional-inquiry.js sitemap.xml robots.txt; do
+            code=$(curl -L -sS -m 20 -o /dev/null -w '%{http_code}' "$BASE$resource")
+            echo "$resource -> $code"; [[ "$code" == "200" ]] || exit 1
+          done
+          sitemap=$(curl -fsSL -m 20 "$BASE""sitemap.xml")
+          grep -q 'https://vorvan.co.in/partners.html' <<< "$sitemap" || exit 1
+          robots=$(curl -fsSL -m 20 "$BASE""robots.txt")
+          grep -q 'Sitemap: https://vorvan.co.in/sitemap.xml' <<< "$robots" || exit 1
+          preflight=$(curl -sS -m 20 -o /dev/null -w '%{http_code}' -X OPTIONS -H 'Origin: https://vorvan.co.in' "$EDGE")
+          read_status=$(curl -sS -m 20 -o /dev/null -w '%{http_code}' -H 'Origin: https://vorvan.co.in' "$EDGE")
+          invalid=$(curl -sS -m 20 -o /dev/null -w '%{http_code}' -X POST -H 'Origin: https://vorvan.co.in' -H 'Content-Type: application/json' -d '{"institution_type":"nbfc","consent":false}' "$EDGE")
+          echo "B2B endpoint statuses: preflight=$preflight unauthenticated-read=$read_status invalid-intake=$invalid"
+          [[ "$preflight" == "204" && "$read_status" == "401" && "$invalid" == "400" ]] || exit 1
+          echo "PASS: B2B page, indexable sitemap, CORS, privileged read protection and invalid-input rejection."
