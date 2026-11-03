@@ -14,7 +14,7 @@ assert.match(backend,/jwt\.aal!=="aal2"/);
 assert.match(backend,/owner_only_file_access/);
 assert.match(backend,/SHA-256/);
 assert.match(backend,/incorporation_required/);
-assert.match(backend,/verify/); // owner verification workflow
+assert.match(backend,/data.stage==="verified"/); // owner verification workflow
 assert.match(schema,/incorporation_status='pending_incorporation'/);
 assert.match(schema,/true,true,false,null/); // CA confirmed + fees paid, no COI
 assert.match(schema,/enable row level security/);
