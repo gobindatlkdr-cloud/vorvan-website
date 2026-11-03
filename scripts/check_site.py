@@ -8,7 +8,12 @@ import re
 from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGES = sorted(ROOT.glob("*.html"))
+# Search Console verification tokens are plain text files with .html extension.
+# Exclude only the exact verified token file, not arbitrary HTML uploads.
+VERIFICATION_FILE = ROOT / "google7decf5ca6ffe0331.html"
+if not VERIFICATION_FILE.is_file() or VERIFICATION_FILE.read_bytes() != b"google-site-verification: google7decf5ca6ffe0331.html":
+    raise SystemExit("ERROR: Google site verification file is missing or modified")
+PAGES = sorted(p for p in ROOT.glob("*.html") if p.name != VERIFICATION_FILE.name)
 ERRORS = []
 
 def issue(message):
