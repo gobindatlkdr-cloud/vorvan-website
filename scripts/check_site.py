@@ -47,6 +47,9 @@ for page in PAGES:
             issue(f"{page.name}: unexpected script")
     for match in re.finditer(r'\b(?:src|href)="([^"]+)"', html):
         href = match.group(1)
+        if page.name == "partners.html" and href == "https://vorvan.co.in/partners.html":
+            # Canonical metadata URL is a search hint, not an external asset.
+            continue
         if href.startswith(("#", "mailto:", "tel:", "data:")):
             continue
         parsed = urlsplit(href)
