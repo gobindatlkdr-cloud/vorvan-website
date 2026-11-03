@@ -94,6 +94,7 @@ function validFormat(bytes:Uint8Array,mime:string):boolean{
  return false;
 }
 async function sendFile(req:Request,adm:Admin,doc:string,fileId?:string):Promise<Response>{
+ if(adm.role!=="owner")return deny(req,403,"owner_only_file_access");
  if(!await document(doc))return deny(req,404,"document_not_found");
  const f=await latestFile(doc,fileId);
  if(!f)return deny(req,404,"file_not_found");
@@ -101,6 +102,9 @@ async function sendFile(req:Request,adm:Admin,doc:string,fileId?:string):Promise
  if(!r?.ok)return deny(req,503,"private_file_unavailable");
  const bytes=await r.arrayBuffer();
  if(bytes.byteLength!==f.byte_size)return deny(req,503,"file_integrity_length_mismatch");
+ const digest=new Uint8Array(await crypto.subtle.digest("SHA-256",bytes));
+ const actual=Array.from(digest,x=>x.toString(16).padStart(2,"0")).join("");
+ if(actual!==f.sha256_hex)return deny(req,503,"file_integrity_checksum_mismatch");
  const h=headers(req);h.set("content-type",f.mime_type);h.set("content-length",String(bytes.byteLength));
  h.set("content-disposition","attachment; filename=\"VORVAN_"+doc+(f.mime_type==="application/pdf"?".pdf":f.mime_type==="image/png"?".png":".jpg")+"\"");
  h.set("content-security-policy","sandbox");
@@ -177,6 +181,7 @@ Deno.serve(async(req:Request):Promise<Response>=>{
   }
   const upload=/^\/documents\/([a-z][a-z0-9_]{2,55})\/upload$/.exec(p);
   if(req.method==="POST"&&upload){
+   if(a.role!=="owner")return deny(req,403,"owner_only_file_access");
    const doc=upload[1];if(!await document(doc))return deny(req,404,"document_not_found");
    const mime=(req.headers.get("content-type")||"").split(";")[0].trim().toLowerCase();
    if(!["application/pdf","image/png","image/jpeg"].includes(mime))return deny(req,415,"file_type_not_allowed");
@@ -195,7 +200,8 @@ Deno.serve(async(req:Request):Promise<Response>=>{
     await storage("object/"+BUCKET+"/"+obj,"DELETE");
     return deny(req,503,"file_metadata_failed");
    }
-   await internal("/rest/v1/vorvan_compliance_documents?doc_id=eq."+doc,"PATCH",{stage:"under_review",modified_by:a.uid,verified_at:null,updated_at:new Date().toISOString()});
+   const statusUpdate=await internal("/rest/v1/vorvan_compliance_documents?doc_id=eq."+doc,"PATCH",{stage:"under_review",modified_by:a.uid,verified_at:null,updated_at:new Date().toISOString()});
+   if(!statusUpdate?.ok)return deny(req,503,"document_review_update_failed");
    const rows=await row.json();
    if(!await event(a,doc,"document_uploaded",{version_id:rows[0]?.id,byte_size:bytes.length}))return deny(req,503,"audit_unavailable");
    return respond(req,201,{ok:true,version_id:rows[0]?.id,byte_size:bytes.length,stage:"under_review"});
