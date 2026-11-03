@@ -29,11 +29,19 @@ for page in PAGES:
             issue("admin.html: frame/embed is not permitted")
         if 'https://kukfpsqujlutlgwndplh.supabase.co' not in html:
             issue("admin.html: expected restricted Supabase connect-src")
+    elif page.name == "partners.html":
+        # One deliberately reviewed, non-file-upload B2B institutional form is allowed.
+        if re.search(r"<(?:iframe|object|embed)\b", html, re.I):
+            issue("partners.html: external frame or embed forbidden")
+        if len(re.findall(r"<form\b", html, re.I)) != 1 or 'id="vv-institutional-inquiry-form"' not in html:
+            issue("partners.html: unexpected form structure")
+        if re.search(r'type\s*=\s*"file"', html, re.I):
+            issue("partners.html: upload controls are forbidden")
     elif re.search(r"<(?:form|iframe|object|embed)\b", html, re.I):
         issue(f"{page.name}: form, frame or embed is not permitted")
     if re.search(r'\s(?:style|on[a-z]+)\s*=', html, re.I):
         issue(f"{page.name}: inline style or event handler blocked by CSP")
-    allowed_script = r'assets/(?:site|admin)\.js' if page.name == "admin.html" else r'assets/(?:site|assistant)\.js'
+    allowed_script = r'assets/(?:site|admin)\.js' if page.name == "admin.html" else (r'assets/(?:site|assistant|institutional-inquiry)\.js' if page.name == "partners.html" else r'assets/(?:site|assistant)\.js')
     for script in re.findall(r'<script\b[^>]*>', html, re.I):
         if not re.search(r'src="' + allowed_script + r'(?:\?v=[A-Za-z0-9_-]+)?"', script):
             issue(f"{page.name}: unexpected script")
