@@ -23,6 +23,8 @@ jobs:
         run: node scripts/test_bian.cjs
       - name: Test approved Vyn homepage prompt bar and clockwise antenna
         run: node scripts/test_home_vyn.cjs
+      - name: Check company vault, incorporation disclosure and MFA security
+        run: node scripts/test_company_vault.cjs
       - name: Validate static website security and local links
         run: python3 scripts/check_site.py
       - name: Install Deno for backend type checking
@@ -30,4 +32,4 @@ jobs:
         with:
           deno-version: v2.x
       - name: Type-check authenticated AI guidance backend
-        run: deno check backend/ai-guidance/index.ts backend/admin-console/index.ts backend/site-assistant/index.ts backend/admin-mfa-recovery/index.ts
+        run: deno check backend/ai-guidance/index.ts backend/admin-console/index.ts backend/site-assistant/index.ts backend/admin-mfa-recovery/index.ts backend/compliance-vault/index.ts
