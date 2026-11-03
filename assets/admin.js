@@ -384,6 +384,7 @@ function infoPanel(area){
   mail.append(list);container.append(mail)
  }
  if(area==="partners"||area==="support")tracker(container,area);
+ if(area==="partners")institutionalInbox(container);
   if(area==="compliance")vaultPanel(container);
  if(area==="security"){
   const pane=el("article","panel-box");pane.append(el("h2","","Recent task changes"));
@@ -405,6 +406,61 @@ function tasks(){
   append(card,left,select);container.append(card);
  }
 }
+
+function institutionalInbox(container){
+ const pane=el("article","panel-box");
+ append(pane,el("h2","","New institutional inquiries — Bank / NBFC only"),el("p","","Public form submissions are unverified. Confirm entity registration, official domain, sender authority and direct LSP/API fit before replying. Status changes do not create accounts."));
+ const reload=el("button","primary","Refresh inquiry inbox");reload.type="button";pane.append(reload);
+ const list=el("div","tracker-list","Loading institutional inquiries…");pane.append(list);container.append(pane);
+ async function loadInbox(){
+  if(!state.access)return;list.textContent="Loading…";
+  try{
+   const r=await fetch(API+"/functions/v1/institutional-inquiries",{method:"GET",headers:authHeaders(true),cache:"no-store"});
+   const data=await r.json().catch(()=>({}));
+   if(!r.ok)throw Error(data.code||"unavailable");
+   list.replaceChildren();
+   const entries=Array.isArray(data.inquiries)?data.inquiries:[];
+   if(!entries.length){list.append(el("p","subtitle","No online institutional inquiries received yet."));return;}
+   const count=el("p","subtitle",entries.length+" most recent inquiries; newest first.");list.append(count);
+   for(const record of entries){
+    const card=el("article","task"),left=el("div");
+    append(left,el("strong","",record.institution_name+" · "+record.institution_type.toUpperCase()));
+    append(left,el("div","details",record.contact_name+" — "+record.designation+" · "+record.official_email));
+    append(left,el("div","details","Track: "+record.partnership_track+" · Source: "+record.source_channel+" · "+new Date(record.created_at).toLocaleString()));
+    const safeSite=String(record.institution_website||"");
+    if(/^https:\/\/[A-Za-z0-9.-]+(?:\/|$)/.test(safeSite)){
+     const site=el("a","","Institution website");site.href=safeSite;site.target="_blank";site.rel="noopener noreferrer nofollow";left.append(site);
+    }
+    append(left,el("p","details",record.agenda));
+    if(record.business_phone)append(left,el("div","details","Business phone: "+record.business_phone));
+    const mail=el("a","","Reply from company mailbox ↗");mail.href="mailto:"+encodeURIComponent(record.official_email)+"?subject="+encodeURIComponent("Re: VORVAN direct LSP/API institutional inquiry");
+    left.append(mail);
+    const controls=el("div","");
+    const status=el("select");status.setAttribute("aria-label","Review stage for "+record.institution_name);
+    for(const st of ["new","reviewing","verified","contacted","closed","rejected"]){const o=el("option","",st);o.value=st;o.selected=record.status===st;status.append(o);}
+    status.disabled=state.role==="auditor";
+    controls.append(status);
+    const note=el("textarea");note.maxLength=500;note.rows=2;note.placeholder="Internal verification note (no customer data)";note.value=record.review_note||"";note.disabled=state.role==="auditor";
+    const save=el("button","primary","Save review");save.type="button";save.disabled=state.role==="auditor";
+    const feedback=el("span","meta","");
+    save.addEventListener("click",async()=>{
+      save.disabled=true;feedback.textContent="Saving…";
+      try{
+       const r=await fetch(API+"/functions/v1/institutional-inquiries?id="+encodeURIComponent(record.id),{
+        method:"PATCH",headers:authHeaders(true),body:JSON.stringify({status:status.value,review_note:note.value.trim()}),cache:"no-store"
+       });
+       const v=await r.json().catch(()=>({}));if(!r.ok)throw Error(v.code||"save_failed");
+       feedback.textContent="Saved. This is only an internal review stage, not institutional access.";
+      }catch(e){feedback.textContent="Not saved: "+e.message;}finally{save.disabled=state.role==="auditor";}
+    });
+    append(controls,el("p","meta","Internal status"),status,note,save,feedback);
+    append(card,left,controls);list.append(card);
+   }
+  }catch(err){list.textContent="Inbox unavailable: "+err.message+". Do not share your login or OTP.";}
+ }
+ reload.addEventListener("click",loadInbox);loadInbox();
+}
+
 function render(){
  const [title,subtitle]=AREAS[state.area];$("page-title").textContent=title;$("page-subtitle").textContent=subtitle;$("panel-content").replaceChildren(infoPanel(state.area));$("new-task-toggle").disabled=state.role==="auditor";
  for(const b of document.querySelectorAll("#panel-nav button")){b.classList.toggle("selected",b.dataset.area===state.area)}
