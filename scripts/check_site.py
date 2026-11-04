@@ -22,8 +22,30 @@ def issue(message):
 if len(PAGES) < 8:
     issue("Expected at least 8 website HTML pages.")
 
+PUBLIC_SEO_PAGES = {
+    "index.html", "partners.html", "lsp-api-integration.html",
+    "partner-desk.html", "solutions.html", "about.html",
+    "contact.html", "experience.html", "privacy.html", "terms.html",
+}
+
 for page in PAGES:
     html = page.read_text(encoding="utf-8")
+    if page.name in PUBLIC_SEO_PAGES:
+        canonical = "https://vorvan.co.in/" + ("" if page.name == "index.html" else page.name)
+        if html.count(f'<link rel="canonical" href="{canonical}">') != 1:
+            issue(f"{page.name}: missing or duplicate self-canonical")
+        if f'<meta property="og:url" content="{canonical}">' not in html:
+            issue(f"{page.name}: missing exact social canonical URL")
+        if not re.search(r'<meta name="description" content="[^"]{65,200}">', html):
+            issue(f"{page.name}: missing meaningful meta description")
+        if not re.search(r'<meta property="og:site_name" content="VORVAN">', html):
+            issue(f"{page.name}: site-name social metadata missing")
+        if not re.search(r'<title>[^<]{20,85}</title>', html):
+            issue(f"{page.name}: descriptive title missing")
+    if page.name in ("admin.html", "404.html") and not re.search(
+        r'<meta name="robots" content="noindex', html
+    ):
+        issue(f"{page.name}: this page must not be indexed")
     if '<meta http-equiv="Content-Security-Policy"' not in html:
         issue(f"{page.name}: missing Content Security Policy")
     if '<meta name="referrer" content="no-referrer">' not in html:
@@ -52,9 +74,11 @@ for page in PAGES:
             issue(f"{page.name}: unexpected script")
     for match in re.finditer(r'\b(?:src|href)="([^"]+)"', html):
         href = match.group(1)
-        if page.name == "partners.html" and href == "https://vorvan.co.in/partners.html":
-            # Canonical metadata URL is a search hint, not an external asset.
-            continue
+        if page.name in PUBLIC_SEO_PAGES:
+            canonical = "https://vorvan.co.in/" + ("" if page.name == "index.html" else page.name)
+            # Only the page's own reviewed canonical URL is permitted externally.
+            if href == canonical and f'<link rel="canonical" href="{canonical}">' in html:
+                continue
         if href.startswith(("#", "mailto:", "tel:", "data:")):
             continue
         parsed = urlsplit(href)
@@ -81,6 +105,28 @@ for source in ROOT.glob("**/*"):
         for pattern in (r'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----', r'sk_live_[A-Za-z0-9]{12,}', r'ghp_[A-Za-z0-9]{30,}'):
             if re.search(pattern, contents):
                 issue(f"{source.relative_to(ROOT)}: possible embedded credential")
+
+# Keep the Search Console sitemap limited to live public self-canonical pages.
+import xml.etree.ElementTree as ET
+sitemap = ROOT / "sitemap.xml"
+try:
+    tree = ET.parse(sitemap)
+    locs = [e.text for e in tree.findall(
+        ".//{http://www.sitemaps.org/schemas/sitemap/0.9}loc"
+    )]
+    expected = {
+        "https://vorvan.co.in/" + ("" if p == "index.html" else p)
+        for p in PUBLIC_SEO_PAGES
+    }
+    if len(locs) != len(expected) or set(locs) != expected:
+        issue("sitemap.xml: URLs must match the 10 public canonical pages")
+except (ET.ParseError, OSError) as exc:
+    issue(f"sitemap.xml: invalid XML or missing sitemap: {exc}")
+
+if 'itemtype="https://schema.org/WebSite"' not in (ROOT / "index.html").read_text(encoding="utf-8"):
+    issue("index.html: missing site name WebSite microdata")
+if 'href="lsp-api-integration.html"' not in (ROOT / "partners.html").read_text(encoding="utf-8"):
+    issue("partners.html: integration guide must be internally linked")
 
 if ERRORS:
     for e in ERRORS:
