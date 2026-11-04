@@ -56,8 +56,8 @@ def main():
         loc.text
         for loc in local_root.findall(f".//{SITEMAP_NS}loc")
     ]
-    if len(expected) != 11 or len(set(expected)) != len(expected):
-        issues.append("Local sitemap must contain exactly 11 distinct public URLs")
+    if len(expected) != 12 or len(set(expected)) != len(expected):
+        issues.append("Local sitemap must contain exactly 12 distinct public URLs")
 
     status, final, content_type, robots_body = fetch(ROBOTS)
     robots_text = robots_body.decode("utf-8-sig", "replace")
@@ -87,7 +87,7 @@ def main():
             locations = [loc.text for loc in doc.findall(f".//{SITEMAP_NS}loc")]
             versions[label] = locations
             if set(locations) != set(expected) or len(locations) != len(expected):
-                issues.append(f"Sitemap [{label}] URLs do not match 11 canonical checked-in URLs")
+                issues.append(f"Sitemap [{label}] URLs do not match 12 canonical checked-in URLs")
         except ElementTree.ParseError as exc:
             issues.append(f"Sitemap [{label}] is not valid XML: {exc}")
     if versions.get("standard") != versions.get("googlebot-user-agent"):
