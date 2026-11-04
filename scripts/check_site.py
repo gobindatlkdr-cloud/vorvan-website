@@ -24,6 +24,7 @@ if len(PAGES) < 8:
 
 PUBLIC_SEO_PAGES = {
     "index.html", "partners.html", "lsp-api-integration.html",
+    "lender-api-readiness.html",
     "partner-desk.html", "solutions.html", "about.html",
     "contact.html", "experience.html", "privacy.html", "terms.html",
 }
@@ -119,7 +120,7 @@ try:
         for p in PUBLIC_SEO_PAGES
     }
     if len(locs) != len(expected) or set(locs) != expected:
-        issue("sitemap.xml: URLs must match the 10 public canonical pages")
+        issue("sitemap.xml: URLs must match the 11 public canonical pages")
 except (ET.ParseError, OSError) as exc:
     issue(f"sitemap.xml: invalid XML or missing sitemap: {exc}")
 
@@ -127,6 +128,10 @@ if 'itemtype="https://schema.org/WebSite"' not in (ROOT / "index.html").read_tex
     issue("index.html: missing site name WebSite microdata")
 if 'href="lsp-api-integration.html"' not in (ROOT / "partners.html").read_text(encoding="utf-8"):
     issue("partners.html: integration guide must be internally linked")
+for parent in ("partners.html", "partner-desk.html", "lsp-api-integration.html"):
+    if 'href="lender-api-readiness.html"' not in (ROOT / parent).read_text(encoding="utf-8"):
+        issue(f"{parent}: sandbox readiness guide missing an internal crawlable link")
+
 
 if ERRORS:
     for e in ERRORS:
