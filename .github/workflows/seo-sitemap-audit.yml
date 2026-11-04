@@ -1,0 +1,38 @@
+name: Read-only sitemap and Googlebot-style crawl diagnostic
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'sitemap.xml'
+      - 'robots.txt'
+      - 'index.html'
+      - 'partners.html'
+      - 'lsp-api-integration.html'
+      - 'lender-api-readiness.html'
+      - 'partner-desk.html'
+      - 'solutions.html'
+      - 'about.html'
+      - 'contact.html'
+      - 'experience.html'
+      - 'privacy.html'
+      - 'terms.html'
+      - 'scripts/audit_live_seo.py'
+      - '.github/workflows/seo-sitemap-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  read-only-crawl-audit:
+    name: Inspect live public SEO URLs
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout public site code
+        uses: actions/checkout@v4
+      - name: Confirm the SEO audit script compiles
+        run: python3 -m py_compile scripts/audit_live_seo.py
+      - name: Check Googlebot-style public responses, robots and XML sitemap
+        run: python3 scripts/audit_live_seo.py

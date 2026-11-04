@@ -17,6 +17,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Check JavaScript syntax
         run: node --check assets/site.js && node --check assets/admin.js && node --check assets/assistant.js && node --check assets/institutional-inquiry.js
+      - name: Check live SEO audit script syntax
+        run: python3 -m py_compile scripts/audit_live_seo.py
       - name: Test authenticator QR rendering with synthetic SVG fixtures
         run: node scripts/test_mfa_qr.cjs
       - name: Test Vyn name and animated hand-wave and live FAQ handoff (synthetic DOM)
