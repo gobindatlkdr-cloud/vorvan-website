@@ -24,7 +24,7 @@ if len(PAGES) < 8:
 
 PUBLIC_SEO_PAGES = {
     "index.html", "partners.html", "lsp-api-integration.html",
-    "lender-api-readiness.html",
+    "lender-api-readiness.html", "institutional-partnership-brief.html",
     "partner-desk.html", "solutions.html", "about.html",
     "contact.html", "experience.html", "privacy.html", "terms.html",
 }
@@ -120,7 +120,7 @@ try:
         for p in PUBLIC_SEO_PAGES
     }
     if len(locs) != len(expected) or set(locs) != expected:
-        issue("sitemap.xml: URLs must match the 11 public canonical pages")
+        issue("sitemap.xml: URLs must match the 12 public canonical pages")
 except (ET.ParseError, OSError) as exc:
     issue(f"sitemap.xml: invalid XML or missing sitemap: {exc}")
 
@@ -152,6 +152,7 @@ for filename in PUBLIC_SEO_PAGES - {"experience.html"}:
     for link in (
         '<a href="lsp-api-integration.html">LSP &amp; lender API guide</a>',
         '<a href="lender-api-readiness.html">API sandbox checklist</a>',
+        '<a href="institutional-partnership-brief.html">One-page partner brief</a>',
     ):
         if link not in html:
             issue(f"{filename}: global B2B resource link is absent: {link}")
@@ -167,6 +168,20 @@ for filename, expected_depth in (
         issue(f"{filename}: breadcrumb hierarchy depth is invalid")
     if sorted(int(x) for x in re.findall(r'<meta itemprop="position" content="(\d+)">', html)) != list(range(1, expected_depth + 1)):
         issue(f"{filename}: breadcrumb positions are invalid")
+
+# Conversion path validation; only the pre-existing institutional form may submit.
+brief = (ROOT / "institutional-partnership-brief.html").read_text(encoding="utf-8")
+if brief.count('href="partners.html#institutional-inquiry"') < 2:
+    issue("institutional brief: missing direct secure enquiry CTAs")
+if '<form' in brief.lower():
+    issue("institutional brief: unexpected form; use existing institutional endpoint")
+if 'pre-incorporation' not in brief.lower():
+    issue("institutional brief: required truthful incorporation disclaimer missing")
+if 'href="partners.html#institutional-inquiry"' not in (ROOT / "index.html").read_text(encoding="utf-8"):
+    issue("homepage: missing direct institutional enquiry CTA")
+partners = (ROOT / "partners.html").read_text(encoding="utf-8")
+if 'id="vv-institutional-inquiry-form"' not in partners or 'id="institutional-inquiry"' not in partners:
+    issue("partners.html: existing form or destination anchor missing")
 
 if ERRORS:
     for e in ERRORS:
