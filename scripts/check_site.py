@@ -133,6 +133,41 @@ for parent in ("partners.html", "partner-desk.html", "lsp-api-integration.html")
         issue(f"{parent}: sandbox readiness guide missing an internal crawlable link")
 
 
+# Phase 3: verify factual brand microdata and B2B navigational paths.
+homepage = (ROOT / "index.html").read_text(encoding="utf-8")
+if homepage.count('itemtype="https://schema.org/WebSite"') != 1:
+    issue("index.html: exactly one WebSite identity scope is required")
+if homepage.count('itemtype="https://schema.org/Organization"') != 1:
+    issue("index.html: exactly one factual VORVAN Organization scope is required")
+for expected in (
+    '<strong itemprop="name">VORVAN</strong>',
+    '<meta itemprop="url" content="https://vorvan.co.in/">',
+    '<meta itemprop="email" content="info@vorvan.co.in">',
+):
+    if expected not in homepage:
+        issue("index.html: Organization metadata missing or inaccurate: " + expected)
+
+for filename in PUBLIC_SEO_PAGES - {"experience.html"}:
+    html = (ROOT / filename).read_text(encoding="utf-8")
+    for link in (
+        '<a href="lsp-api-integration.html">LSP &amp; lender API guide</a>',
+        '<a href="lender-api-readiness.html">API sandbox checklist</a>',
+    ):
+        if link not in html:
+            issue(f"{filename}: global B2B resource link is absent: {link}")
+
+for filename, expected_depth in (
+    ("lsp-api-integration.html", 3),
+    ("lender-api-readiness.html", 4),
+):
+    html = (ROOT / filename).read_text(encoding="utf-8")
+    if html.count('itemtype="https://schema.org/BreadcrumbList"') != 1:
+        issue(f"{filename}: missing or duplicate BreadcrumbList scope")
+    if html.count('itemtype="https://schema.org/ListItem"') != expected_depth:
+        issue(f"{filename}: breadcrumb hierarchy depth is invalid")
+    if sorted(int(x) for x in re.findall(r'<meta itemprop="position" content="(\\d+)">', html)) != list(range(1, expected_depth + 1)):
+        issue(f"{filename}: breadcrumb positions are invalid")
+
 if ERRORS:
     for e in ERRORS:
         print("ERROR:", e)
