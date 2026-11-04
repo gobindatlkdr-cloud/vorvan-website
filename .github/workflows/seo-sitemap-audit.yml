@@ -10,6 +10,7 @@ on:
       - 'partners.html'
       - 'lsp-api-integration.html'
       - 'lender-api-readiness.html'
+      - 'institutional-partnership-brief.html'
       - 'partner-desk.html'
       - 'solutions.html'
       - 'about.html'
@@ -34,5 +35,19 @@ jobs:
         uses: actions/checkout@v4
       - name: Confirm the SEO audit script compiles
         run: python3 -m py_compile scripts/audit_live_seo.py
+      - name: Wait for GitHub Pages to serve the committed sitemap snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 24); do
+            if curl --fail --silent --show-error --location --max-time 20 https://vorvan.co.in/sitemap.xml -o /tmp/vorvan-public-sitemap.xml && cmp -s sitemap.xml /tmp/vorvan-public-sitemap.xml; then
+              echo "PASS: Deployed public sitemap matches the checked-in sitemap before crawling."
+              exit 0
+            fi
+            echo "Waiting for the Pages deployment to propagate: attempt $attempt/24"
+            sleep 10
+          done
+          echo "FAIL: Public sitemap did not match the committed version after propagation window."
+          exit 1
       - name: Check Googlebot-style public responses, robots and XML sitemap
         run: python3 scripts/audit_live_seo.py
