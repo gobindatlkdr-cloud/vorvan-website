@@ -165,7 +165,7 @@ for filename, expected_depth in (
         issue(f"{filename}: missing or duplicate BreadcrumbList scope")
     if html.count('itemtype="https://schema.org/ListItem"') != expected_depth:
         issue(f"{filename}: breadcrumb hierarchy depth is invalid")
-    if sorted(int(x) for x in re.findall(r'<meta itemprop="position" content="(\\d+)">', html)) != list(range(1, expected_depth + 1)):
+    if sorted(int(x) for x in re.findall(r'<meta itemprop="position" content="(\d+)">', html)) != list(range(1, expected_depth + 1)):
         issue(f"{filename}: breadcrumb positions are invalid")
 
 if ERRORS:
