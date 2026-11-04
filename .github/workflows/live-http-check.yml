@@ -253,3 +253,28 @@ jobs:
           done
           [[ "$READY" == "1" ]] || { echo "FAIL: sandbox checklist page, canonical, internal link or sitemap absent"; exit 1; }
           echo "PASS: Live lender API sandbox checklist, self-canonical, crawlable link and sitemap inclusion."
+
+
+      - name: Verify production institutional breadcrumb and brand metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="https://vorvan.co.in/"
+          for attempt in $(seq 1 18); do
+            home=$(curl -fsSL -m 20 "$BASE" || true)
+            guide=$(curl -fsSL -m 20 "${BASE}lsp-api-integration.html" || true)
+            ready=$(curl -fsSL -m 20 "${BASE}lender-api-readiness.html" || true)
+            partner=$(curl -fsSL -m 20 "${BASE}partners.html" || true)
+            if grep -q 'itemtype="https://schema.org/Organization"' <<< "$home" && \
+               grep -q '<strong itemprop="name">VORVAN</strong>' <<< "$home" && \
+               grep -q 'itemtype="https://schema.org/BreadcrumbList"' <<< "$guide" && \
+               grep -q 'itemtype="https://schema.org/BreadcrumbList"' <<< "$ready" && \
+               grep -q '<a href="lender-api-readiness.html">API sandbox checklist</a>' <<< "$partner"; then
+              echo "PASS: brand identity metadata, two breadcrumb hierarchies and institutional site navigation are live."
+              exit 0
+            fi
+            echo "Phase 3 deployment propagation attempt $attempt/18"
+            sleep 10
+          done
+          echo "FAIL: Phase 3 structured SEO data or footer links were not deployed"
+          exit 1
