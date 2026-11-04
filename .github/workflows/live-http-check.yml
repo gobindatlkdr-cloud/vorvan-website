@@ -203,3 +203,28 @@ jobs:
           done
           echo "FAIL: Google verification HTML file is not publicly available with exact content."
           exit 1
+
+
+      - name: Verify deployed institutional SEO guide and canonical sitemap
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="https://vorvan.co.in/"
+          READY=0
+          for attempt in $(seq 1 18); do
+            guide=$(curl -fsSL -m 20 "${BASE}lsp-api-integration.html" || true)
+            home=$(curl -fsSL -m 20 "$BASE" || true)
+            sitemap=$(curl -fsSL -m 20 "${BASE}sitemap.xml" || true)
+            if grep -q '<link rel="canonical" href="https://vorvan.co.in/lsp-api-integration.html">' <<< "$guide" && \
+               grep -q 'Pre-incorporation' <<< "$guide" && \
+               grep -q '<link rel="canonical" href="https://vorvan.co.in/">' <<< "$home" && \
+               grep -q 'https://vorvan.co.in/lsp-api-integration.html' <<< "$sitemap" && \
+               grep -q 'href="lsp-api-integration.html"' <<< "$home"; then
+              READY=1
+              break
+            fi
+            echo "SEO deployment propagation attempt $attempt/18"
+            sleep 10
+          done
+          [[ "$READY" == "1" ]] || { echo "FAIL: SEO guide, canonical or sitemap not yet live"; exit 1; }
+          echo "PASS: Live B2B SEO guide, canonical homepage and sitemap/internal links."
