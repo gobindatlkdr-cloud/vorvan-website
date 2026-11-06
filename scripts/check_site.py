@@ -29,6 +29,13 @@ PUBLIC_SEO_PAGES = {
     "contact.html", "experience.html", "privacy.html", "terms.html",
 }
 
+LINKEDIN_FOOTER_PAGES = {"index.html", "partners.html", "institutional-partnership-brief.html"}
+LINKEDIN_FOLLOW_LINK = (
+    '<a href="https://www.linkedin.com/company/vorvan/" rel="noreferrer">'
+    'Follow VORVAN on LinkedIn</a>'
+)
+SECURE_ENQUIRY_LINK = '<a href="partners.html#institutional-inquiry">Secure partnership enquiry</a>'
+
 for page in PAGES:
     html = page.read_text(encoding="utf-8")
     if page.name in PUBLIC_SEO_PAGES:
@@ -73,7 +80,17 @@ for page in PAGES:
     for script in re.findall(r'<script\b[^>]*>', html, re.I):
         if not re.search(r'src="' + allowed_script + r'(?:\?v=[A-Za-z0-9_-]+)?"', script):
             issue(f"{page.name}: unexpected script")
-    for match in re.finditer(r'\b(?:src|href)="([^"]+)"', html):
+    local_links_html = html
+    if page.name in LINKEDIN_FOOTER_PAGES:
+        footer = re.search(r"<footer\b[^>]*>(.*?)</footer>", html, re.I | re.S)
+        if not footer or footer.group(1).count(LINKEDIN_FOLLOW_LINK) != 1:
+            issue(f"{page.name}: missing or duplicate reviewed LinkedIn footer link")
+        else:
+            start = footer.start(1) + footer.group(1).index(LINKEDIN_FOLLOW_LINK)
+            local_links_html = html[:start] + html[start + len(LINKEDIN_FOLLOW_LINK):]
+        if not footer or SECURE_ENQUIRY_LINK not in footer.group(1):
+            issue(f"{page.name}: missing direct secure enquiry footer link")
+    for match in re.finditer(r'\b(?:src|href)="([^"]+)"', local_links_html):
         href = match.group(1)
         if page.name in PUBLIC_SEO_PAGES:
             canonical = "https://vorvan.co.in/" + ("" if page.name == "index.html" else page.name)

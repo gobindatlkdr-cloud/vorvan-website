@@ -285,6 +285,7 @@ jobs:
         run: |
           set -euo pipefail
           BASE="https://vorvan.co.in/"
+          LINKEDIN='<a href="https://www.linkedin.com/company/vorvan/" rel="noreferrer">Follow VORVAN on LinkedIn</a>'
           for attempt in $(seq 1 18); do
             intro=$(curl -fsSL -m 20 "${BASE}institutional-partnership-brief.html" || true)
             home=$(curl -fsSL -m 20 "$BASE" || true)
@@ -296,11 +297,16 @@ jobs:
                grep -q 'pre-incorporation' <<< "$intro" && \
                grep -q 'href="partners.html#institutional-inquiry"' <<< "$intro" && \
                grep -q 'href="partners.html#institutional-inquiry"' <<< "$home" && \
+               grep -Fq "$LINKEDIN" <<< "$home" && \
+               grep -Fq "$LINKEDIN" <<< "$intro" && \
+               grep -Fq "$LINKEDIN" <<< "$partners" && \
+               grep -Fq 'href="institutional-partnership-brief.html" class="vv-nav-cta"' <<< "$home" && \
+               grep -Fq 'href="#institutional-inquiry">Open secure enquiry form' <<< "$partners" && \
                grep -q 'id="vv-institutional-inquiry-form"' <<< "$partners" && \
                grep -q 'id="institutional-inquiry"' <<< "$partners" && \
                grep -q 'href="institutional-partnership-brief.html"' <<< "$contact" && \
                grep -q '<loc>https://vorvan.co.in/institutional-partnership-brief.html</loc>' <<< "$sitemap"; then
-              echo "PASS: B2B promotion brief, homepage enquiry CTA, existing form and canonical sitemap are live."
+              echo "PASS: B2B promotion brief, secure enquiry route, LinkedIn follow links and canonical sitemap are live."
               exit 0
             fi
             echo "Promotion deployment propagation attempt $attempt/18"
