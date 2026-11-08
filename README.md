@@ -1,37 +1,32 @@
-# VORVAN PRIVATE LIMITED — Company website
+# VORVAN — Official pre-incorporation website
 
-Professional, mobile-responsive static website for VORVAN's planned fintech and consumer credit guidance products.
+**Public website:** https://vorvan.co.in/
+**Source:** GitHub Pages, `main` branch, custom HTTPS domain.
+**Business status:** proposed **VORVAN PRIVATE LIMITED**. MCA incorporation fees paid, incorporation still pending, no CIN/COI issued. Do not describe the entity as incorporated until genuine government documents are verified.
 
-## Publish free on GitHub Pages
+## Public navigation
 
-1. Open **Settings → Pages** in this repository:
-   https://github.com/gobindatlkdr-cloud/vorvan-website/settings/pages
-2. In **Build and deployment**, choose **Source: Deploy from a branch**.
-3. Set **Branch: main**, **Folder: / (root)**, and click **Save**.
-4. Once the Pages deployment is successful, visit:
-   https://gobindatlkdr-cloud.github.io/vorvan-website/
+- **Home:** overview and four **planned** loan categories (personal, business, education and short-term).
+- **Loan Categories:** `solutions.html` — separate anchored category descriptions and a clearly fictional product demo.
+- **Partner With Us:** `partners.html` — formal direct LSP/lender API discussion for verified banks and NBFCs only, with its existing institutional enquiry form.
+- **About / Contact:** general company information and website support.
 
-The URL above is a *candidate* until Pages is enabled and a deployment succeeds.
+**Contact routing:** company information → `info@vorvan.co.in`; support → `support@vorvan.co.in`; institutional page → `partnerships@vorvan.co.in`; legal documents → `legal@vorvan.co.in`. Private admin mailbox `admin@vorvan.co.in` must not appear on public pages. Secure staff login remains privately accessible at `/admin.html`, with server-approved ACL and MFA.
 
-## Files
+## Security and deployment
 
-- `index.html` – Home
-- `solutions.html` – Planned credit guidance solutions
-- `partners.html` – Direct bank/NBFC API and formal LSP partnership interest
-- `about.html` – Company overview
-- `contact.html` – Contact
-- `privacy.html` and `terms.html` – Draft policies for review
-- `404.html` – Not found
-- `assets/site.css`, `assets/site.js`, `assets/favicon.svg` – CSS, mobile navigation and brand icon
+- CI in `.github/workflows/static-security.yml` tests local links, first-party scripts, MFA, protected Company Vault and public page consistency.
+- Deployment: merge approved and tested changes into `main`; verify that the custom domain serves the latest HTML and CSS.
+- Do not commit keys, passwords, secret project files, borrower data or OTPs to this public repository.
+- Supabase project `vorvan-dev-india` hosts secured backend; never change the public information site into a live lending service just by enabling a UI control.
+- Owner-authenticated vault upload/download and audit logging require real MFA smoke testing before upload of sensitive company files.
 
-No user login, OTP collection, live CIBIL credit fetch, lender API, payment, or custom email has been activated. This company site is a static information site. Prior to a customer-facing product launch, verify legal, incorporation and privacy disclosures, and obtain the required bureau/lender authorisations. The site only lists `vorvan.pvt.ltd@gmail.com` as a current contact address.
+## Critical regulatory guardrails
 
-## Domain
+VORVAN is **not** a bank, NBFC, currently approved LSP, licensed credit bureau or lender. Customer account opening, bureau reports, KYC, loan applications, disbursement and payment processing are **not live**. No lender rates, eligibility decisions, approval claims or customer data collection is implied by the four educational categories.
 
-Application for `vorvan.o` is reported *pending*. The `.o` suffix is an alternative-DNS domain, not universally resolvable on public internet networks. **Do not configure this name as the GitHub Pages custom domain until approved and tested.**
+The reference website for the November 2026 refresh was Credila, for navigation architecture and content hierarchy only; no third-party art, copy, styles, code or trademarks were reused.
 
-No domain purchase or paid hosting is required for the GitHub Pages URL.
+## Operations
 
-## Security
-
-The repository is intentionally public. Do not commit secret tokens, OTPs, passwords, banking customer information, private KYC documents, or credentials here. Manage the repository from the owner's GitHub account with two-factor authentication enabled.
+Public partnership queries use the separate bank/NBFC institutional route. Staff perform normal admin work through approved access controls. After verified incorporation and applicable lender agreements, update legal wording and any locked financial flows only through separately reviewed changes and testing.
