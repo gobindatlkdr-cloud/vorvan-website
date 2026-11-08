@@ -29,6 +29,8 @@ jobs:
         run: node scripts/test_company_vault.cjs
       - name: Validate static website security and local links
         run: python3 scripts/check_site.py
+      - name: Verify Burgundy brand tokens and site-wide consistency
+        run: node scripts/test_brand_theme.cjs
       - name: Install Deno for backend type checking
         uses: denoland/setup-deno@v2
         with:
