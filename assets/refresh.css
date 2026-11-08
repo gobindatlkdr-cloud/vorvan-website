@@ -816,3 +816,63 @@ body{background:#fff;color:#342b37}
 @media(prefers-reduced-motion:reduce){
  .vv-vyn-antenna-rotor{animation:none!important;will-change:auto}
 }
+
+
+/* VORVAN Loan & Partner Experience — 2026-11-08
+   Original styling. Credila referenced for UX hierarchy only; no copied visual assets. */
+:root{--vv-plum:#5d1238;--vv-berry:#a01450;--vv-soft-rose:#fff3f7}
+.site-header{border-bottom:1px solid #ecdde5}
+.header-inner .nav>a{font-size:13px;transition:color .2s ease,background-color .2s ease}
+.header-inner .nav>a.vv-nav-cta{background:linear-gradient(120deg,#7b0c3d,#a40d52);color:#fff;padding:13px 21px;box-shadow:0 7px 19px #8e114b20}
+.header-inner .nav>a.vv-nav-cta:hover,.header-inner .nav>a.vv-nav-cta.active{background:linear-gradient(120deg,#9a124d,#b91862);color:#fff}
+.vv-loan-showcase{background:radial-gradient(circle at 92% 8%,#ffe7ef,transparent 30%),linear-gradient(180deg,#fff9fc,#fff);padding-top:94px;padding-bottom:102px}
+.vv-loan-intro{display:flex;gap:42px;justify-content:space-between;align-items:end;margin-bottom:40px}
+.vv-loan-intro>div{max-width:690px}.vv-loan-intro h2{font-size:clamp(34px,4vw,59px);letter-spacing:-.055em;line-height:1.1;margin:14px 0 0;color:#2f2631}
+.vv-loan-intro h2 em{font-style:normal;color:var(--vv-burgundy)}
+.vv-loan-intro>p{max-width:385px;color:#746575;line-height:1.75;margin:0}
+.vv-loan-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;align-items:stretch}
+.vv-loan-card{display:flex;flex-direction:column;min-width:0;position:relative;overflow:hidden;min-height:285px;padding:29px 25px;border:1px solid #eddde4;border-radius:24px;background:#fff;box-shadow:0 13px 44px #6d274013;transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease}
+.vv-loan-card:before{content:"";position:absolute;top:0;left:0;width:100%;height:5px;background:linear-gradient(90deg,#7f0e40,#e89bbb)}
+.vv-loan-card:nth-child(2):before{background:linear-gradient(90deg,#7a3a67,#bfa3d2)}
+.vv-loan-card:nth-child(3):before{background:linear-gradient(90deg,#b24643,#f0b89c)}
+.vv-loan-card:nth-child(4):before{background:linear-gradient(90deg,#834963,#c9a4a0)}
+.vv-loan-card:hover{transform:translateY(-5px);box-shadow:0 22px 55px #762b4c22;border-color:#cda6ba}
+.vv-loan-number{font-size:11px;font-weight:850;letter-spacing:.13em;color:#8f1b4e}
+.vv-loan-card h3{font-size:clamp(22px,2vw,27px);line-height:1.2;letter-spacing:-.045em;color:#342634;margin:30px 0 14px}
+.vv-loan-card p{font-size:14px;line-height:1.7;color:#725f6d;margin:0 0 21px}
+.vv-loan-card a{font-size:13px;font-weight:850;color:#891344;margin-top:auto;display:inline-flex;align-items:center;gap:10px}
+.vv-loan-card a:hover{text-decoration:underline}
+.vv-disclosure-line{margin:27px 0 0;color:#796e76;font-size:12px;line-height:1.65}
+.vv-loan-details{grid-template-columns:repeat(2,minmax(0,1fr));gap:23px}
+.vv-detail-card{min-height:360px;scroll-margin-top:120px;padding:37px}
+.vv-detail-card h3{font-size:32px;margin:20px 0 8px}
+.vv-detail-card h4{font-size:14px;margin:17px 0 8px;color:#50213b}
+.vv-loan-info-note{background:#fff1f6;border:1px solid #f1d3e0;border-radius:11px;color:#7a244c;font-size:12px;font-weight:700;padding:11px 14px;margin-top:auto;margin-bottom:18px}
+.vv-loan-details .vv-loan-card a{margin-top:0}
+.vv-product-sections{background:#fffafc}
+.vv-contact-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.vv-contact-card{background:#fff;border:1px solid #e8d4df;border-radius:25px;padding:38px;box-shadow:0 13px 45px #6b2c4310}
+.vv-contact-card h3{font-size:30px;letter-spacing:-.04em;margin:19px 0 9px}
+.vv-contact-card p{color:#746774;line-height:1.7;margin:0 0 25px}
+.vv-contact-card>a{color:#8d1049;font-size:16px;font-weight:850;overflow-wrap:anywhere}
+.vv-contact-split{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:55px}
+.vv-contact-split h2{font-size:clamp(28px,3vw,42px);letter-spacing:-.05em;margin:12px 0}
+.vv-contact-split p{color:#756776;max-width:475px;line-height:1.75}
+.vv-contact-split .vv-button{margin-top:12px}
+.vv-partner-focus{background:linear-gradient(110deg,#5b0a31 0%,#9c124d 70%,#b74779 100%);color:#fff;padding:54px 0}
+.vv-partner-focus-inner{display:flex;align-items:center;justify-content:space-between;gap:30px}
+.vv-partner-focus .vv-eyebrow{color:#ffd4e7}
+.vv-partner-focus h2{font-size:clamp(29px,3vw,44px);letter-spacing:-.04em;max-width:720px;margin:10px 0}
+.vv-partner-focus p{color:#f6d9e5;max-width:740px;font-size:14px}
+.vv-partner-focus .vv-button{background:#fff;color:#75133c;border-color:#fff;white-space:nowrap}
+.vv-partner-focus .vv-button:hover{background:#fff1f6}
+.vv-footer{background:linear-gradient(145deg,#280e24,#3d1531)}
+.vv-footer-focused{grid-template-columns:1.3fr 1fr 1.15fr 1.1fr;gap:36px}
+.vv-footer .logo-mark{background:#fff1f8;color:#7c1747}
+.vv-footer .vv-footer-mail{color:#ffcedf;font-weight:800;overflow-wrap:anywhere}
+.vv-footer .vv-footer-mail:hover{color:#fff}
+.vv-footer-focused p{max-width:300px}
+@media(max-width:1080px){.vv-loan-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.vv-loan-intro{align-items:start;flex-direction:column;gap:18px}.vv-footer-focused{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:820px){.vv-partner-focus-inner{align-items:start;flex-direction:column}.vv-loan-showcase{padding:65px 0}.vv-contact-split{gap:30px}}
+@media(max-width:560px){.vv-loan-grid,.vv-loan-details,.vv-contact-grid,.vv-contact-split,.vv-footer-focused{grid-template-columns:1fr}.vv-loan-card{min-height:244px}.vv-detail-card{min-height:335px;padding:28px}.vv-contact-card{padding:28px}.vv-loan-intro h2{font-size:39px}.vv-loan-showcase{padding:59px 0}}
+@media(prefers-reduced-motion:reduce){.vv-loan-card{transition:none}.vv-loan-card:hover{transform:none}}
