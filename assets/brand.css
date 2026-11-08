@@ -1,0 +1,168 @@
+/* VORVAN unified Burgundy UI layer — 2026-11-08.
+   Load AFTER the existing page stylesheet. No script, auth, data or API changes.
+   Do not recolor semantic error/success/warning states as mere brand accents. */
+:root {
+  color-scheme: light;
+  --vorvan-primary: #800020;
+  --vorvan-primary-dark: #5A1028;
+  --vorvan-primary-hover: #650019;
+  --vorvan-soft: #F7E9EE;
+  --vorvan-white: #FFFFFF;
+  --vorvan-text: #1F2937;
+  --vorvan-muted: #6B7280;
+  --vorvan-canvas: #FFFBFD;
+  --vorvan-border: #E8D4DC;
+  --vorvan-focus: #800020;
+  --vorvan-shadow: 0 12px 32px rgba(90,16,40,.10);
+
+  /* Compatibility aliases for both existing public-site design systems. */
+  --vv-blue: var(--vorvan-primary);
+  --vv-blue2: var(--vorvan-primary-dark);
+  --vv-burgundy: var(--vorvan-primary);
+  --vv-berry: #A72B54;
+  --vv-plum: var(--vorvan-primary-dark);
+  --vv-ink: var(--vorvan-text);
+  --vv-quiet: var(--vorvan-muted);
+  --vv-cream: var(--vorvan-canvas);
+  --vv-line: var(--vorvan-border);
+  --vv-rose: var(--vorvan-soft);
+  --bg: var(--vorvan-primary-dark);
+  --navy: var(--vorvan-primary-dark);
+  --mint: #F5CEDC;
+  --ink: var(--vorvan-text);
+  --muted: var(--vorvan-muted);
+  --border: var(--vorvan-border);
+
+  /* Admin legacy aliases; semantic status colors are intentionally separate. */
+  --navy2: var(--vorvan-primary);
+  --accent: var(--vorvan-primary);
+  --accent2: #A72B54;
+  --teal: var(--vorvan-primary);
+  --line: var(--vorvan-border);
+  --surface: var(--vorvan-canvas);
+}
+body { color: var(--vorvan-text); background: var(--vorvan-canvas); }
+:where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 3px solid var(--vorvan-focus);
+  outline-offset: 3px;
+}
+::selection { background: var(--vorvan-soft); color: var(--vorvan-primary-dark); }
+
+/* Public navigation, hero, primary CTAs and institutional content. */
+.site-header { border-bottom-color: var(--vorvan-border); }
+.site-header .logo-copy strong { color: var(--vorvan-primary); }
+.site-header .logo-mark, .brand-mark {
+  background: linear-gradient(135deg,var(--vorvan-primary),var(--vorvan-primary-dark));
+}
+.site-header .nav > a:hover, .site-header .nav > a.active {
+  color: var(--vorvan-primary); border-bottom-color: var(--vorvan-primary);
+}
+.site-header .nav > a.vv-nav-cta, .site-header .nav .nav-cta,
+.vv-button:not(.vv-outline), .btn-primary, .btn-dark,
+.portal-contact-actions a:not(.secondary) {
+  background: linear-gradient(125deg,var(--vorvan-primary),var(--vorvan-primary-dark));
+  color: var(--vorvan-white);
+  border-color: transparent;
+}
+.vv-button:not(.vv-outline):hover, .btn-primary:hover, .btn-dark:hover,
+.site-header .nav > a.vv-nav-cta:hover,
+.portal-contact-actions a:not(.secondary):hover {
+  background: var(--vorvan-primary-hover);
+  color: var(--vorvan-white);
+}
+.vv-button.vv-outline, .btn-outline {
+  background: var(--vorvan-white);
+  border-color: #D4A9BA;
+  color: var(--vorvan-primary-dark);
+}
+.vv-button.vv-outline:hover, .btn-outline:hover { background: var(--vorvan-soft); }
+.vv-utility { background: linear-gradient(110deg,var(--vorvan-primary-dark),var(--vorvan-primary)); }
+.vv-hero {
+  background: radial-gradient(ellipse at 83% 10%,#F5D7E3 0%,transparent 48%),
+    linear-gradient(110deg,#FFFFFF,#F7E9EE);
+}
+.vv-hero h1 span, .vv-eyebrow, .vv-breadcrumb a, .vv-quick-link span,
+.vv-card a, .vv-inline-link, .vv-copy a, .link-inline, .article a,
+.vv-icon, .vv-flow-step span, .vv-ask-spark { color: var(--vorvan-primary); }
+.vv-page-hero { background: linear-gradient(120deg,#FFFBFD,var(--vorvan-soft)); }
+.vv-section.alt, .vv-section.pale, .vv-cta, .section.alt {
+  background: #FBF4F7;
+}
+.vv-card, .vv-dashboard, .feature-card, .info-card, .contact-option,
+.portal-card, .portal-rules {
+  border-color: var(--vorvan-border); box-shadow: var(--vorvan-shadow);
+}
+.vv-icon:not(.peach):not(.mint), .vv-big-symbol, .vv-feature-illustration,
+.vv-flow-step span, .vv-wash, .two-tone {
+  background: linear-gradient(130deg,var(--vorvan-soft),#FFF9FC);
+}
+.vv-graph span, .vv-dash-chip { background: #EBD6DE; }
+.vv-graph span:nth-last-child(-n+2) { background: var(--vorvan-primary); }
+.vv-float-note, .vv-flow-step:last-child, .vv-section.dark,
+.dark-panel, .cta-banner, .portal-contact-card {
+  background: linear-gradient(135deg,var(--vorvan-primary-dark),#371021);
+  color: var(--vorvan-white);
+}
+.vv-footer, .footer { background: #321222; color: #F1DDE6; }
+.vv-footer .logo-mark { background: var(--vorvan-soft); color: var(--vorvan-primary-dark); }
+.vv-footer-links a:hover, .footer-links a:hover { color: #FFFFFF; }
+.vv-chat-launch, .vv-chat-head, .vv-chat-row button {
+  background: var(--vorvan-primary-dark); color: #FFFFFF;
+}
+.vv-msg.visitor { background: var(--vorvan-soft); color: var(--vorvan-primary-dark); }
+.vv-chat-options button { border-color: #DEBCCB; color: var(--vorvan-primary-dark); }
+.vv-chat-options button:hover { background: var(--vorvan-soft); }
+.vv-vyn-ask-wrap .vv-askbar:focus-within { border-color: var(--vorvan-primary); }
+.vv-vyn-ask-wrap .vv-askbar button {
+  background: linear-gradient(115deg,var(--vorvan-primary),var(--vorvan-primary-dark));
+}
+/* The existing approved Vyn image, mascot size and slow antenna animation
+   are deliberately retained. */
+#vv-assistant .bian-chat .vv-chat-head {
+  background: linear-gradient(120deg,var(--vorvan-primary-dark),var(--vorvan-primary));
+}
+#vv-assistant .bian-chat .vv-chat-row button,
+#vv-assistant .bian-chat .bian-language-choice:hover {
+  background: var(--vorvan-primary); color: #FFFFFF;
+}
+
+/* Staff Admin: color-only overrides, keep all existing MFA/RBAC gates intact. */
+.admin-header { background: linear-gradient(125deg,var(--vorvan-primary-dark),var(--vorvan-primary)); }
+.workspace-sidebar { background: linear-gradient(160deg,#381321,var(--vorvan-primary-dark)); }
+.workspace-sidebar nav button.selected {
+  background: #FFFFFF20; border-color: #EAB9CC;
+}
+.primary, button.primary {
+  background: linear-gradient(125deg,var(--vorvan-primary),var(--vorvan-primary-dark));
+  color: #FFFFFF;
+  box-shadow: var(--vorvan-shadow);
+}
+.primary:hover, button.primary:hover { background: var(--vorvan-primary-hover); }
+.login-card, .panel-box, .metric, .vault-item { border-color: var(--vorvan-border); }
+.login-card, .panel-box, .metric { box-shadow: var(--vorvan-shadow); }
+.section-overline, .login-side .security-symbol, .small-button,
+.vault-heading { color: var(--vorvan-primary); }
+.admin-footer { background: #321222; }
+.small-button { border-color: #D8ADBE; }
+.vault-summary { background: var(--vorvan-soft); border-color: var(--vorvan-border); }
+.vault-summary strong { color: var(--vorvan-primary-dark); }
+
+/* Bank / NBFC portal — keep warning and eligibility states semantically coded. */
+.portal-hero { background: linear-gradient(125deg,#321222,var(--vorvan-primary-dark)); }
+.portal-tag { color: #F6D4E1; border-color: #CD8EA6; }
+.portal, .portal-rules { color: var(--vorvan-text); }
+.portal { background: var(--vorvan-canvas); }
+.portal-card { border-color: var(--vorvan-border); }
+.portal-card svg { stroke: var(--vorvan-primary); }
+.portal-card h3 { color: var(--vorvan-text); }
+.portal-contact-actions a:not(.secondary) { border-radius: 12px; }
+.portal-contact-card { background: linear-gradient(125deg,var(--vorvan-primary-dark),#371021); }
+@media (max-width: 820px) {
+  .site-header .nav.open { background: var(--vorvan-white); }
+}
+/* Dark mode can be enabled per application after its dedicated contrast
+   and QA pass. This public layer intentionally preserves the proven light
+   mode instead of automatically changing legal or warning surfaces. */
+@media (prefers-reduced-motion: reduce) {
+  .vv-button, .btn-primary { transition: none; }
+}
