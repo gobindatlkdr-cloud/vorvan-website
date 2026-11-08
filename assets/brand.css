@@ -105,6 +105,7 @@ body { color: var(--vorvan-text); background: var(--vorvan-canvas); }
 }
 .vv-footer, .footer { background: #321222; color: #F1DDE6; }
 .vv-footer .logo-mark { background: var(--vorvan-soft); color: var(--vorvan-primary-dark); }
+.vv-footer .logo-copy strong, .footer .logo-copy strong { color: #FFFFFF; }
 .vv-footer-links a:hover, .footer-links a:hover { color: #FFFFFF; }
 .vv-chat-launch, .vv-chat-head, .vv-chat-row button {
   background: var(--vorvan-primary-dark); color: #FFFFFF;
@@ -115,6 +116,23 @@ body { color: var(--vorvan-text); background: var(--vorvan-canvas); }
 .vv-vyn-ask-wrap .vv-askbar:focus-within { border-color: var(--vorvan-primary); }
 .vv-vyn-ask-wrap .vv-askbar button {
   background: linear-gradient(115deg,var(--vorvan-primary),var(--vorvan-primary-dark));
+}
+/* A compact visible text label accompanies the approved floating Vyn image. */
+#vv-assistant .bian-launch::after {
+  content: "Ask Vyn";
+  position: absolute;
+  right: 72px;
+  bottom: 28px;
+  white-space: nowrap;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--vorvan-primary);
+  color: #FFFFFF;
+  font: 700 11px/1.2 Inter, system-ui, sans-serif;
+  box-shadow: var(--vorvan-shadow);
+}
+@media (max-width: 550px) {
+  #vv-assistant .bian-launch::after { right: 65px; bottom: 23px; }
 }
 /* The existing approved Vyn image, mascot size and slow antenna animation
    are deliberately retained. */
