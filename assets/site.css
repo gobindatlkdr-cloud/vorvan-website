@@ -174,3 +174,15 @@ body{background:#f4f7fb;color:#192b43}
 
 /* Additional institutional partner menu item: maintain compact accessible desktop nav. */
 @media (min-width:921px){.site-header .nav{gap:13px}.site-header .nav a{font-size:12px}.site-header .logo{min-width:184px}}
+
+
+/* Brand alignment for legacy fictional demo and 404 pages, November 2026. */
+:root{--bg:#310f27;--navy:#431c36;--mint:#f0abc9;--ink:#39273a;--muted:#746476;--border:#ecdce4}
+body{background:#fffbfd}
+.site-header{background:#2d0f26;border-color:#7e4264}
+.site-header .nav .nav-cta{background:#97134d;color:#fff;border-color:#ad3467;font-weight:800}
+.site-header .nav .nav-cta:hover{background:#ba1c61;color:#fff}
+.logo-mark{background:linear-gradient(135deg,#861343,#bf3476)}
+.hero,.page-hero{background:radial-gradient(ellipse at 84% 14%,#6b244b 0%,transparent 42%),radial-gradient(ellipse at 8% 0%,#4a2249 0%,transparent 42%),#2f1027}
+.footer{background:#2d0f26}
+a:focus-visible,button:focus-visible{outline-color:#e4aac7}
