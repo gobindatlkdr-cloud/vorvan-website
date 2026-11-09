@@ -64,9 +64,11 @@ WITH d AS (
       AND grantee_role IN ('anon','authenticated')),
    'Future postgres-created public functions have no explicit client defaults'
  UNION ALL SELECT 'D09_future_postgres_functions_no_global_public_execute',
-   NOT EXISTS (SELECT 1 FROM d WHERE creator='postgres'
+   EXISTS (SELECT 1 FROM pg_default_acl o
+      WHERE o.defaclrole='postgres'::regrole AND o.defaclnamespace=0 AND o.defaclobjtype='f')
+   AND NOT EXISTS (SELECT 1 FROM d WHERE creator='postgres'
       AND schema_oid=0 AND object_type='f' AND grantee=0),
-   'New postgres-created functions are not executable by PUBLIC by default'
+   'Explicit global function default ACL must exist and deny implicit PUBLIC EXECUTE'
  UNION ALL SELECT 'D10_vault_storage_remains_private',
    COALESCE((SELECT NOT public FROM storage.buckets WHERE id='vorvan-company-private'),FALSE),
    'Company Vault bucket is not public'
