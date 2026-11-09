@@ -145,7 +145,7 @@ close.addEventListener("click",()=>open(false));
 document.addEventListener("keydown",(e)=>{if(e.key==="Escape"&&!popup.hidden)open(false)});
 function looksSensitive(value){
  const text=value.normalize("NFKC");
- return /(?:\d[\s-]?){8,}|[^\s@]+@[^\s@]+\.[^\s@]+|\b[A-Z]{5}\d{4}[A-Z]\b|(?:\b(?:otp|one[- ]time (?:password|code)|pin|passcode|verification code)\s*[:=\-]?\s*\d{4,8}\b)/iu.test(text);
+ return /(?:\d[\s-]?){8,}|[^\s@]+@[^\s@]+\.[^\s@]+|\b[A-Z]{5}\d{4}[A-Z]\b|(?:\b(?:otp|one[- ]time (?:password|code)|pin|passcode|password|verification code)\s*[:=\-]?\s*\d{4,8}\b)/iu.test(text);
 }
 async function ask(topic,message){
  if(busy||!languageSelected)return;
@@ -162,6 +162,7 @@ async function ask(topic,message){
    referrerPolicy:"no-referrer",signal:AbortSignal.timeout(8500)
   });
   const body=await r.json();
+  if(r.status===400&&body.error==="please_remove_personal_information"){add(local.privacy);return}
   if(!r.ok||typeof body.reply!=="string")throw Error("unavailable");
   add(body.reply);
  }catch{add(local.fallback)}
