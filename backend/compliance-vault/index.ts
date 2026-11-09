@@ -1,3 +1,4 @@
+import { readBytesWithLimit } from "./body-limit.ts";
 /** VORVAN Step 12D — private corporate compliance vault.
  * Operator/owner access requires server-verified Supabase user, approved ACL, and AAL2 MFA.
  * No secret is shipped to GitHub Pages. This function does NOT activate lending.
@@ -64,10 +65,13 @@ async function authorised(req:Request):Promise<Admin|null|"mfa"|"denied"|"offlin
  return {uid,role:rows[0].admin_role};
 }
 async function bodyJson(req:Request):Promise<Record<string,unknown>|null>{
- if(!req.headers.get("content-type")?.startsWith("application/json"))return null;
- const length=Number(req.headers.get("content-length")||"0");if(length>2200)return null;
- try{const txt=await req.text();if(txt.length>2200)return null;const x=JSON.parse(txt);
-  return x&&typeof x==="object"&&!Array.isArray(x)?x:null;
+ if(req.headers.get("content-type")?.split(";")[0].trim().toLowerCase()!=="application/json")return null;
+ const bytes=await readBytesWithLimit(req,2200);
+ if(!bytes)return null;
+ try{
+  const txt=new TextDecoder("utf-8",{fatal:true}).decode(bytes);
+  const x:unknown=JSON.parse(txt);
+  return x&&typeof x==="object"&&!Array.isArray(x)?x as Record<string,unknown>:null;
  }catch{return null}
 }
 async function event(admin:Admin,doc:string,action:string,meta:Record<string,unknown>={}):Promise<boolean>{
@@ -186,8 +190,8 @@ Deno.serve(async(req:Request):Promise<Response>=>{
    const mime=(req.headers.get("content-type")||"").split(";")[0].trim().toLowerCase();
    if(!["application/pdf","image/png","image/jpeg"].includes(mime))return deny(req,415,"file_type_not_allowed");
    if(Number(req.headers.get("content-length")||"0")>LIMIT)return deny(req,413,"file_too_large");
-   const bytes=new Uint8Array(await req.arrayBuffer());
-   if(bytes.length<5||bytes.length>LIMIT)return deny(req,413,"invalid_file_size");
+   const bytes=await readBytesWithLimit(req,LIMIT);
+   if(!bytes||bytes.length<5)return deny(req,413,"invalid_file_size_or_limit");
    if(!validFormat(bytes,mime))return deny(req,422,"file_signature_mismatch");
    const digest=new Uint8Array(await crypto.subtle.digest("SHA-256",bytes));
    const checksum=Array.from(digest,x=>x.toString(16).padStart(2,"0")).join("");
