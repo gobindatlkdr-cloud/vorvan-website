@@ -50,6 +50,16 @@ The page is publicly viewable as a **fictional, informational sandbox**; its con
 
 **Verified PR branch evidence:** [PR #27](https://github.com/gobindatlkdr-cloud/vorvan-website/pull/27), [Static Security CI #42665571009](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42665571009) **SUCCESS**, [Live URL CI #42665570958](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42665570958) **SUCCESS**. The CI confirms browser assets match canonical TypeScript; **6,561 parity cases PASS**; actual Passport UI synthetic DOM, EN/BN/HI, focus, no-network, missing/progress/reset tests PASS; existing VOR-006 customer Auth and isolated Postgres17 User A/B RLS tests PASS. Any post-merge real-browser outcomes must be captured separately; mock DOM tests do not prove Safari/VoiceOver/TalkBack acceptance.
 
+## Production Pages verification and real-browser smoke (09 Nov 2026)
+
+- [PR #27](https://github.com/gobindatlkdr-cloud/vorvan-website/pull/27) merged into `main` as **`7538401ebd4f1fc0cb148e91074f1b5aec4ddc1f`**.
+- [Main Static Security CI #42665928906](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42665928906) **SUCCESS**, [Live website URL #42665928748](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42665928748) **SUCCESS**, [GitHub Pages deployment #42665926333](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42665926333) **SUCCESS**, and [Read-only sitemap/Googlebot check #42665928390](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42665928390) **SUCCESS**.
+- Actual publicly visible demo: [https://vorvan.co.in/readiness-passport.html](https://vorvan.co.in/readiness-passport.html), with `noindex` and strong CSP; linked from `solutions.html`.
+- [Read-only live browser run `9d988eb5-842c-4eeb-8842-37dfe6fb36c2`](https://agent.tinyfish.ai/runs/9d988eb5-842c-4eeb-8842-37dfe6fb36c2): **13/13 scoped smoke checks PASS** (agent-reported). Verified correct page, financial disclaimers, Personal 6 questions/3 fixed choices, selecting one fictional choice, 1/6 progress, skipping next question, resulting 1 answered/5 missing Passport with no CIBIL score/eligibility, Edit, Bengali and Hindi live language switching while preserving previous answer, Business and Education category-switch reset, and full in-memory reset on page reload. Agent reported no browser console/runtime errors in this run.
+- This was a real browser smoke of a **synthetic, informational demonstration**, not a VAPT, screen-reader audit, real-customer authentication/consent evaluation, or a guarantee that no browser extension/website logs information. No personal or financial information was entered.
+
+**Acceptance:** VOR-008 implementation, CI, public sandbox publishing and scoped live-browser smoke **completed**; overall ticket remains **PARTIAL** pending mobile Safari/Android accessibility, screen readers, independent privacy/security, legal/product wording and approved VOR-006 consent/login integration. No real borrower onboarding was activated.
+
 ## Remaining work
 
 - Screen-reader, real keyboard-only, Android/Chrome/iOS/Safari, cross-language glyph/shaping and narrow device regression.
