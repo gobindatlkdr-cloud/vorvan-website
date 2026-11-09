@@ -106,8 +106,7 @@ async function sendFile(req:Request,adm:Admin,doc:string,fileId?:string):Promise
  if(!r?.ok)return deny(req,503,"private_file_unavailable");
  const bytes=await r.arrayBuffer();
  if(bytes.byteLength!==f.byte_size)return deny(req,503,"file_integrity_length_mismatch");
- const digestInput=new Uint8Array(bytes.byteLength);digestInput.set(bytes);
-   const digest=new Uint8Array(await crypto.subtle.digest("SHA-256",digestInput));
+ const digest=new Uint8Array(await crypto.subtle.digest("SHA-256",bytes));
  const actual=Array.from(digest,x=>x.toString(16).padStart(2,"0")).join("");
  if(actual!==f.sha256_hex)return deny(req,503,"file_integrity_checksum_mismatch");
  const h=headers(req);h.set("content-type",f.mime_type);h.set("content-length",String(bytes.byteLength));
@@ -194,7 +193,8 @@ Deno.serve(async(req:Request):Promise<Response>=>{
    const bytes=await readBytesWithLimit(req,LIMIT);
    if(!bytes||bytes.length<5)return deny(req,413,"invalid_file_size_or_limit");
    if(!validFormat(bytes,mime))return deny(req,422,"file_signature_mismatch");
-   const digest=new Uint8Array(await crypto.subtle.digest("SHA-256",bytes));
+   const digestInput=new Uint8Array(bytes.byteLength);digestInput.set(bytes);
+   const digest=new Uint8Array(await crypto.subtle.digest("SHA-256",digestInput));
    const checksum=Array.from(digest,x=>x.toString(16).padStart(2,"0")).join("");
    const ext=mime==="application/pdf"?"pdf":mime==="image/png"?"png":"jpg";
    const obj=doc+"/"+crypto.randomUUID()+"."+ext;
