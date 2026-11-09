@@ -164,7 +164,7 @@ Deno.test("Rejects bad completed tasks and never reflects arbitrary strings",()=
  const r=buildEducationalPlan(s,forged,1,false);
  eq(r.ok,false);
  eq(buildEducationalPlan(s,new Set([1]),1,false).ok,false);
- eq(buildEducationalPlan(s,{},1,false).ok,false);
+ eq(buildEducationalPlan(s,{} as Set<string>,1,false).ok,false);
 });
 Deno.test("Pure module cannot access network, timers or storage; output remains bounded",()=>{
  const before=globalThis.fetch;
