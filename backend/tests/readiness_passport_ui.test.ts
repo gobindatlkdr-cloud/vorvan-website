@@ -119,6 +119,7 @@ Deno.test("Actual VOR-008 UI script: multilingual, progress, editing, review, re
   eq(get("rp-choices").children.length,3,"three radio choices rendered");
   const radio=get("rp-choices").children[0].children[0];
   radio.checked=true;radio.fire("change");
+  yes(get("rp-choices").children[0].children[0].focused,"selected radio retains keyboard focus after UI refresh");
   eq(get("rp-meter").getAttribute("aria-valuenow"),"1");
   eq(get("rp-progress-label").textContent,"1 of 6 questions answered");
   get("rp-next").fire("click");
