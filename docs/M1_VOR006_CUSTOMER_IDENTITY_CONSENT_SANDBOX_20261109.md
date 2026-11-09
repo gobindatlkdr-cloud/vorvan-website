@@ -53,7 +53,9 @@ An **identical idempotent replay** returns the first stored receipt; an incompat
 
 ## CI proof and remaining acceptance
 
-**Required GitHub CI:** existing Static Security and Live URL checks plus new VOR-006 Deno Edge handler tests and `consent-rls-isolated-postgres` job. Run status/PR references must be appended after checks complete.
+**Verified GitHub execution:** [PR #24](https://github.com/gobindatlkdr-cloud/vorvan-website/pull/24) was merged into `main` at `cf62846d06ef97a41b856e736ce6171f4dff55ab`. [Static Security + dedicated Postgres RLS CI #42657106975](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42657106975) **SUCCESS**: `customer_identity_consent.test.ts` **13/13 PASS**, `customer_identity_disabled.test.ts` **1/1 PASS**, backend `deno check` PASS, and dedicated PostgreSQL 17 `consent-rls-isolated-postgres` job **PASS**. [Live URL CI #42657107097](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42657107097) **SUCCESS**. The tests use fake users and ephemeral database only; they do not test actual production Auth tokens or consent collection.
+
+**Post-merge read-only live Supabase audit:** `public.vorvan_customer_consent_events` **does not exist** in production; Customer Identity Edge Function **not deployed**; existing `public.profiles` rows **0** and legacy `public.consent_events` rows **0**. Supabase currently retains seven pre-existing functions; `pending_incorporation` status remains. No user account was created and no financial endpoint enabled.
 
 **Remaining / not demonstrated:**
 1. Actual customer sign-up/sign-in UI, verified email workflow, real Supabase-issued user JWT and revocation/refresh on owner-approved sandbox account.
