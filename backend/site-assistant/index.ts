@@ -130,7 +130,7 @@ function containsSensitiveData(message:string):boolean{
  const text=message.normalize("NFKC");
  // Personal identifiers and common credential formats. This rule is deliberately
  // conservative; do not store or echo rejected input in a response or log.
- return /(?:\d[\s-]?){8,}|[^\s@]+@[^\s@]+\.[^\s@]+|\b[A-Z]{5}\d{4}[A-Z]\b|(?:\b(?:otp|one[- ]time (?:password|code)|pin|passcode|verification code)\s*[:=\-]?\s*\d{4,8}\b)/iu.test(text);
+ return /(?:\d[\s-]?){8,}|[^\s@]+@[^\s@]+\.[^\s@]+|\b[A-Z]{5}\d{4}[A-Z]\b|(?:\b(?:otp|one[- ]time (?:password|code)|pin|passcode|password|verification code)\s*[:=\-]?\s*\d{4,8}\b)/iu.test(text);
 }
 function respond(req:Request,status:number,value:Record<string,unknown>):Response {
   const headers=new Headers({"content-type":"application/json; charset=utf-8","cache-control":"no-store,max-age=0","x-content-type-options":"nosniff","vary":"origin"});
