@@ -5,7 +5,7 @@ Status key: **DONE** = source + verification evidence; **PARTIAL** = substantive
 | Milestone | Ticket | Work package | Status | Remaining acceptance evidence |
 | --- | --- | --- | --- | --- |
 | M0 | VOR-001 | Audit and freeze source baseline | PARTIAL | **Annotated tag m0-baseline-20261109 verified at SHA d8456ffa…; source recovery dry-run PASS; architecture/runbook committed.** Still enforce GitHub tag protection ruleset (none configured), rehearse live/staging rollback, recover missing deployed API source, verify database backup/restore |
-| M0 | VOR-002 | Admin MFA + role E2E | PENDING | Owner AAL2 sign-in, operator/auditor least privilege, expired token, denied AAL1 with safe test accounts |
+| M0 | VOR-002 | Admin MFA + role E2E | PARTIAL | **Synthetic request-handler role/MFA matrix and production metadata audit implemented;** real Owner AAL2 browser proof, actual Operator/Auditor test identities, token expiry/revocation and real cross-role E2E remain pending |
 | M0 | VOR-003 | Compliance Vault E2E | PENDING | Synthetic upload/download, checksum, version/event, rejection paths, role separation and evidence capture |
 | M0 | VOR-004 | Supabase security remediation | PARTIAL | **Metadata RLS/GRANT review DONE (10/10 checks)**; finish leaked-password warning disposition, Data API settings review, threat model and live role tests |
 | M0 | VOR-005 | Public Vyn routing/UX QA | PARTIAL | Public internal email removed, contextual routing deployed; complete language/fallback/safety evaluation and browser UX |
@@ -33,10 +33,12 @@ Status key: **DONE** = source + verification evidence; **PARTIAL** = substantive
 - **Earlier VOR-004 step:** `backend/security/m0_vor004_exposure_assertions.sql` committed and executed against current Supabase: 10/10 PASS; audit report archived. This is a metadata check only.
 - **Current VOR-001 step:** Pinned baseline manifest, verified annotated tag and successful isolated source-recovery check, architecture inventory, safe rollback runbook, and CI regression checks implemented. Live/staging rollback, enforced tag immutability and DB recovery remain pending.
 
+- **Current VOR-002 step:** real Admin, Vault and MFA Recovery handler tests built with in-memory synthetic identities; no live account creation, no real OTP. Read-only Auth/ACL audit confirms one enabled Owner with a verified TOTP factor, no active Operator/Auditor. Test evidence: `backend/tests/admin_role_gates.test.ts` and `docs/M0_VOR002_MFA_ROLES_20261109.md`. **This is not real session-level E2E.**
+
 ## Incorporation and financial service release gates
 - **VORVAN PRIVATE LIMITED: proposed; incorporation pending; MCA fees paid.** No COI/CIN or corporate registration claim until evidence provided by owner.
 - Keep all live CIBIL/bureau/KYC, loan applications, payments and actual lender offers OFF until applicable legal, lender/API, bureau/provider and security approvals.
-- **Next recommended single step:** VOR-002 — Admin MFA and role authorization E2E with synthetic test accounts. Do not require the owner to share an OTP/password in chat. VOR-001 infrastructure/tag-rule and live recovery gaps remain recorded above.
+- **Next recommended single step:** VOR-003 — Company Document Vault synthetic file-version, hash, audit and denied-role workflow tests; keep all real sensitive documents out of test fixtures. Return to VOR-002 real AAL2/role E2E when owner-approved test identities are securely available. VOR-001 protection and recovery gaps remain pending.
 
 ## Developer handoff rule
 Each delivery: implement **one** narrowly scoped step → run tests → record PR/merge/deployment evidence → update this cumulative ledger → report **কাজ কমপ্লিট — NEXT বলুন** with exact remaining work.
