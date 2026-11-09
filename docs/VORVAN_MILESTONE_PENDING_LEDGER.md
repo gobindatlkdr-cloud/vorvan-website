@@ -4,7 +4,7 @@ Status key: **DONE** = source + verification evidence; **PARTIAL** = substantive
 
 | Milestone | Ticket | Work package | Status | Remaining acceptance evidence |
 | --- | --- | --- | --- | --- |
-| M0 | VOR-001 | Audit and freeze source baseline | PARTIAL | Rollback branch exists; create immutable release/tag, fuller architecture/module inventory, staging and rollback rehearsal |
+| M0 | VOR-001 | Audit and freeze source baseline | PARTIAL | SHA-pinned manifest, architecture and rollback docs authored; annotated-tag workflow/dry-run ready. Must verify tag creation, enforce tag ruleset, rehearse staging/production rollback, recover missing deployed API source and verify DB backup/restore |
 | M0 | VOR-002 | Admin MFA + role E2E | PENDING | Owner AAL2 sign-in, operator/auditor least privilege, expired token, denied AAL1 with safe test accounts |
 | M0 | VOR-003 | Compliance Vault E2E | PENDING | Synthetic upload/download, checksum, version/event, rejection paths, role separation and evidence capture |
 | M0 | VOR-004 | Supabase security remediation | PARTIAL | **Metadata RLS/GRANT review DONE (10/10 checks)**; finish leaked-password warning disposition, Data API settings review, threat model and live role tests |
@@ -29,13 +29,14 @@ Status key: **DONE** = source + verification evidence; **PARTIAL** = substantive
 - Corporate website with **Personal, Business, Education, Short-Term** informational categories and professional **Partner With Us** landing.
 - Public Admin mailbox/link removed from customer-facing pages; context-specific departmental contact routing.
 - Secure private Company Vault backend and M0 bounded streaming upload/JSON parsing; public Vyn information separation; GitHub CI and live checks.
-- Pre-M0 source snapshot branch exists; **not** an immutable tag or DB backup.
-- **This step:** `backend/security/m0_vor004_exposure_assertions.sql` committed and executed against current Supabase: 10/10 PASS; audit report archived. This is a metadata check only.
+- Pre-M0 source snapshot branch exists; SHA-pinned M0 manifest, append-only annotated tag workflow and isolated source recovery test have been added. **Tag ref protection not verified; neither is a database backup.**
+- **Earlier VOR-004 step:** `backend/security/m0_vor004_exposure_assertions.sql` committed and executed against current Supabase: 10/10 PASS; audit report archived. This is a metadata check only.
+- **Current VOR-001 step:** `docs/M0_VOR001_BASELINE_MANIFEST.json` pinned to pre-change main SHA `d8456ffa0fad97b653f590e0cf02429bd6288cc3`; architecture inventory, safe recovery runbook, one-time annotated tag creation workflow, and baseline CI regression test added. Ruleset enforcement and live recovery drill still pending.
 
 ## Incorporation and financial service release gates
 - **VORVAN PRIVATE LIMITED: proposed; incorporation pending; MCA fees paid.** No COI/CIN or corporate registration claim until evidence provided by owner.
 - Keep all live CIBIL/bureau/KYC, loan applications, payments and actual lender offers OFF until applicable legal, lender/API, bureau/provider and security approvals.
-- **Next recommended single step:** VOR-001 follow-up — immutable baseline tag/release manifest and safer rollback documentation, **or** VOR-002 owner-authenticated role E2E if securely available. Do not require the owner to share an OTP/password in chat.
+- **Next recommended single step:** VOR-002 — Admin MFA and role authorization E2E with synthetic test accounts. Do not require the owner to share an OTP/password in chat. VOR-001 infrastructure/tag-rule and live recovery gaps remain recorded above.
 
 ## Developer handoff rule
 Each delivery: implement **one** narrowly scoped step → run tests → record PR/merge/deployment evidence → update this cumulative ledger → report **কাজ কমপ্লিট — NEXT বলুন** with exact remaining work.

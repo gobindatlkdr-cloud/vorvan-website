@@ -1,0 +1,71 @@
+name: Freeze VORVAN M0 source baseline
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/m0-baseline-freeze.yml'
+  workflow_dispatch:
+
+# Runs only after the baseline workflow has landed on main. Never run unreviewed PR code with write permission.
+permissions:
+  contents: write
+
+concurrency:
+  group: vorvan-m0-baseline-20261109
+  cancel-in-progress: false
+
+jobs:
+  freeze-tag:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    env:
+      BASELINE_SHA: d8456ffa0fad97b653f590e0cf02429bd6288cc3
+      TAG: m0-baseline-20261109
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify the pinned source commit is a main ancestor
+        shell: bash
+        run: |
+          set -euo pipefail
+          git cat-file -e "${BASELINE_SHA}^{commit}"
+          git merge-base --is-ancestor "$BASELINE_SHA" HEAD
+          test "$(git rev-parse "$BASELINE_SHA^{commit}")" = "$BASELINE_SHA"
+          test -f index.html && test -f backend/security/m0_vor004_exposure_assertions.sql
+          echo "PASS: exact source SHA is present and belongs to main history."
+
+      - name: Create annotated tag once (never force or retarget)
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git ls-remote --exit-code --refs origin "refs/tags/$TAG" > /dev/null; then
+            echo "Existing tag found; verifying without modifying."
+            git fetch origin "refs/tags/$TAG:refs/tags/$TAG"
+          else
+            git config user.name "VORVAN Baseline Automation"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git tag -a "$TAG" "$BASELINE_SHA" -m "VORVAN M0 validated 2026-11-09 baseline: $BASELINE_SHA"
+            git push origin "refs/tags/$TAG"
+          fi
+          test "$(git cat-file -t "refs/tags/$TAG")" = "tag" || { echo "ERROR: expected annotated tag"; exit 1; }
+          pinned=$(git rev-parse "refs/tags/$TAG^{}")
+          test "$pinned" = "$BASELINE_SHA" || { echo "ERROR: tag does not match pinned baseline"; exit 1; }
+          git fetch -f origin "refs/tags/$TAG:refs/tags/$TAG"
+          test "$(git rev-parse "refs/tags/$TAG^{}")" = "$BASELINE_SHA"
+          echo "PASS: annotated baseline tag exists at immutable commit SHA; never moved by this workflow."
+          echo "NOTE: repository tag protection/ruleset must be checked separately for server-side ref immutability."
+
+      - name: Dry-run source recovery in an isolated runner worktree
+        shell: bash
+        run: |
+          set -euo pipefail
+          scratch="$(mktemp -d)"
+          git worktree add --detach "$scratch/recovery" "$BASELINE_SHA"
+          test "$(git -C "$scratch/recovery" rev-parse HEAD)" = "$BASELINE_SHA"
+          test -f "$scratch/recovery/index.html"
+          test -f "$scratch/recovery/backend/compliance-vault/index.ts"
+          git worktree remove --force "$scratch/recovery"
+          echo "PASS: source-only recovery dry-run; main, GitHub Pages, Supabase and production database unchanged."
