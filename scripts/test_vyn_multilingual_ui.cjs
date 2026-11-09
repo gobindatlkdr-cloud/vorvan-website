@@ -81,7 +81,7 @@ function setup(){
  const a=setup();
  assert.equal(a.launch.attrs["aria-label"],"Open Vyn animated support assistant");
  assert.equal(a.popup.attrs["aria-label"],"Vyn — VORVAN website support assistant");
- assert.equal(a.send.ev.click instanceof Function,true);
+ assert.equal(typeof a.send.ev.click,"function");
  a.launch.ev.click();
  assert.equal(a.popup.hidden,false);
  assert.equal(a.topics.hidden,true,"Language-first interaction");
