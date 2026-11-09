@@ -125,7 +125,7 @@ function detailedAnswer(message:string,language:Lang){
  }
  return null;
 }
-function topicOf(message:string):Topic{const normalized=message.toLowerCase().normalize("NFKC");for(const candidate of [...topics,"customer","security","location","domain"] as Topic[])if(hints[candidate].some(h=>normalized.includes(h)))return candidate;return "unknown"}
+function topicOf(message:string):Topic{const normalized=message.toLowerCase().normalize("NFKC");for(const candidate of ["api","partnership","credit","support","legal","contact","customer","security","location","domain"] as Topic[])if(hints[candidate].some(h=>normalized.includes(h)))return candidate;return "unknown"}
 function containsSensitiveData(message:string):boolean{
  const text=message.normalize("NFKC");
  // Personal identifiers and common credential formats. This rule is deliberately
