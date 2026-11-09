@@ -49,7 +49,12 @@ This review uses read-only database catalog queries, Supabase Security Advisors,
 
 - Pre-change check `backend/security/m0_vor004_data_api_assertions.sql` had **D06/D07/D08 FAIL** plus implicit **D09 PUBLIC EXECUTE FAIL** after correcting the assertion to require an explicit global default ACL, which is expected before applying the migration. Existing-current-table checks passed.
 - Post-change, execute that exact read-only assertion suite and require **11/11 PASS**; compare current table grants and RLS with the baseline.
-- **This document is staged before deployment. Actual migration and post-change result must be recorded here after applying the reviewed change.**
+- **Actual migration applied:** Supabase migration `20261109161637_m0_vor004_postgres_default_api_grants` succeeded. Source was fetched from the merged `main` repository, PR #22.
+- **Post-migration database assertions:** all **11/11 PASSED**, including the four former failures D06–D09. Query is the same checked-in `backend/security/m0_vor004_data_api_assertions.sql`.
+- **Existing grants preserved:** 23/23 public tables still RLS-enabled, current `anon` table grants = 0, existing `authenticated` SELECT grants = 12, Company Vault bucket remains non-public. No change was made to current table grants or Auth accounts.
+- **Internal exception quantified:** 24 `supabase_admin` client-default ACL entries are still present, owned by Supabase internal provisioning. These are not changed by our migration and should not be mistaken for current table leaks.
+- **Post-migration Security Advisor:** one `auth_leaked_password_protection` WARN and 22 `rls_enabled_no_policy` INFO notices; no new warning reported. Pro-only Auth protection remains an unresolved owner/plan-dependent item.
+- [GitHub PR #22](https://github.com/gobindatlkdr-cloud/vorvan-website/pull/22) merged after successful source-level static security and live-site checks. The actual production RLS/privilege verification was performed separately through Supabase's read-only SQL executor.
 - No auth user, MFA settings, PostgREST schema config, payment, bureau, lender or company incorporation status is changed by the migration.
 - Important: `ALTER DEFAULT PRIVILEGES` is forward-looking only. Existing ACLs remain unchanged; do not auto-grant broad access to restore old defaults.
 
