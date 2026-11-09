@@ -11,6 +11,12 @@ const EMAIL={
   partnership:"partnerships@vorvan.co.in",support:"support@vorvan.co.in",
   legal:"legal@vorvan.co.in",info:"info@vorvan.co.in"
 };
+function emailForTopic(topic:Topic):string{
+ if(topic==="partnership"||topic==="api")return EMAIL.partnership;
+ if(topic==="support")return EMAIL.support;
+ if(topic==="legal"||topic==="security")return EMAIL.legal;
+ return EMAIL.info;
+}
 const answer:Record<Lang,Record<Topic,string>>={
  en:{
   partnership:"VORVAN welcomes direct, formal LSP partnerships with regulated banks and NBFCs. Contact partnerships@vorvan.co.in to start an institutional discussion. No DSA or lead-sale program is offered.",
@@ -150,7 +156,7 @@ Deno.serve(async(req:Request)=>{
  const topic=(value.topic||specific?.topic||topicOf(message)) as Topic;
  return respond(req,200,{
   reply:specific?.reply||answer[lang][topic],topic,engine:"guided_knowledge_base_v2",
-  ai_model:false,personal_data_saved:false,links:topics,official_emails:EMAIL,
+  ai_model:false,personal_data_saved:false,links:topics,official_email:emailForTopic(topic),
   note:"Informational guidance only; no live bureau, KYC, lending decision or LLM."
  });
 });
