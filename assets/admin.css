@@ -51,3 +51,46 @@
 .vault-tools .vault-upload{flex:1 1 240px;max-width:100%;font-size:12px;color:#594258}
 .vault-versions{border-top:1px solid #eedfeb;padding:12px 0 0;display:flex;flex-wrap:wrap;gap:8px}
 @media(max-width:620px){.vault-head{align-items:flex-start;flex-direction:column}.vault-tools{align-items:stretch;flex-direction:column}.vault-tools input,.vault-tools button,.vault-tools select{width:100%;min-width:0}}
+
+
+/* M1 VOR-010 · nonpersistent admin-only readiness demonstration */
+.vor010-mount{grid-column:1/-1;min-width:0}
+.vor010-sandbox{border:1px solid #83365677;background:linear-gradient(145deg,#fffafc,#fff);border-radius:17px;padding:clamp(16px,3vw,29px);box-shadow:0 12px 40px #5a15301c;color:#362938}
+.vor010-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;flex-wrap:wrap}
+.vor010-head h2{font-size:clamp(21px,2.3vw,29px);color:#64193e;letter-spacing:-.035em;margin:7px 0}
+.vor010-head p{font-size:13px;color:#70586a;line-height:1.7;max-width:660px}
+.vor010-meta{font-size:11px!important;word-break:break-word;color:#7d5268!important}
+.vor010-filters{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin:15px 0 21px}
+.vor010-filter{display:flex;flex:1;flex-direction:column;gap:5px;font-size:11px;font-weight:800;color:#692e4f;min-width:140px}
+.vor010-filter select,.vor010-task select{width:100%;border:1px solid #d5adbf;border-radius:9px;padding:10px;background:#fff;color:#50253e;font-size:12px}
+.vor010-milestones{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:20px 0}
+.vor010-stage{padding:16px;border:1px solid #e6cad8;border-radius:12px;background:#fff5f9}
+.vor010-stage strong{display:block;font-size:16px;color:#66173d}
+.vor010-stage>span{display:block;font-size:11px;color:#825c70;margin:4px 0 10px}
+.vor010-track{height:9px;background:#ecd7e1;overflow:hidden;border-radius:12px}
+.vor010-track span{display:block;height:100%;background:#7c1d48}
+.vor010-permissions,.vor010-alert{font-size:12px;color:#654455;background:#f6eaf0;border-radius:10px;padding:12px 15px;line-height:1.7}
+.vor010-queue-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin:24px 0 10px}
+.vor010-queue-head h3,.vor010-gate-title,.vor010-audit h3{font-size:17px;color:#51203a;margin:0}
+.vor010-queue-head span{font-size:12px;color:#805f70}
+.vor010-queue{display:grid;gap:11px}
+.vor010-task{display:flex;align-items:center;justify-content:space-between;gap:18px;background:#fff;padding:15px;border:1px solid #ead8e1;border-radius:12px}
+.vor010-task-description{flex:1;min-width:0}
+.vor010-task-description strong{display:block;font-size:13px;color:#5c2943;line-height:1.45}
+.vor010-task-description p{margin:5px 0;font-size:12px;color:#755c6b;line-height:1.6}
+.vor010-task-description small{font-size:10px;color:#927689;line-height:1.7;word-break:break-word}
+.vor010-task label{display:flex;flex-direction:column;gap:6px;min-width:137px;max-width:177px;color:#654455;font-size:11px;font-weight:800}
+.vor010-task select:disabled{background:#f4e9ef;color:#8d7380}
+.vor010-gate-title{margin-top:27px}
+.vor010-note{font-size:12px;color:#856a79}
+.vor010-gates{margin:0;list-style:none;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.vor010-gates li{display:flex;flex-direction:column;gap:5px;padding:12px 14px;background:#f7f0f3;border:1px solid #ead8e1;border-radius:10px}
+.vor010-gates strong{font-size:12px;line-height:1.45;color:#4d2940}
+.vor010-locked{font-size:10px;line-height:1.5;font-weight:750;color:#8a2452}
+.vor010-bottom{display:flex;align-items:center;gap:15px;margin-top:19px}
+.vor010-feedback{color:#923655;font-size:11px}
+.vor010-audit{margin:22px 0;border-top:1px solid #ead8e1;padding-top:16px}
+.vor010-audit p{font-size:11px;color:#7a6470;word-break:break-word}
+.vor010-mount a:focus-visible,.vor010-mount button:focus-visible,.vor010-mount select:focus-visible{outline:3px solid #aa2b65;outline-offset:3px}
+@media(max-width:800px){.vor010-gates{grid-template-columns:1fr}.vor010-milestones{grid-template-columns:1fr}.vor010-task{align-items:flex-start;flex-direction:column}.vor010-task label{width:100%;max-width:100%}}
+@media(prefers-reduced-motion:reduce){.vor010-sandbox *{scroll-behavior:auto!important;animation:none!important;transition:none!important}}

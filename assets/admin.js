@@ -11,6 +11,7 @@ const AREAS={
  partners:["Bank / NBFC Partners","Direct LSP and API collaboration; customer requests remain disabled"],
  ai:["AI Backend","Synthetic credit guidance status, security and deployment"],
  customers:["Customer Operations","Confidential account operations stay locked until approved"],
+ readiness:["Readiness Operations (Sandbox)","Synthetic 30/60/90-day template queues, simulated role scopes and locked go-live gates"],
  support:["Support & Grievances","Issue tracking and business correspondence work queue"],
  security:["Security & Audit","Authentication controls, checks and administrative change history"],
  website:["Website & Domain","Live company website, custom-domain HTTPS and GitHub Pages status"],
@@ -18,7 +19,7 @@ const AREAS={
  compliance:["Legal & Compliance","Review checklist, consents, contracts and compliance readiness"]
 };
 const $=(id)=>document.getElementById(id);
-const state={access:"",refresh:"",role:"",tasks:[],modules:[],counters:{},area:"overview",mfaFactor:"",mfaSetup:false,user:null,events:[]};
+const state={access:"",refresh:"",role:"",tasks:[],modules:[],counters:{},area:"overview",mfaFactor:"",mfaSetup:false,user:null,events:[],readinessSandbox:null};
 function visible(id,yes){$(id).hidden=!yes}
 function message(id,msg,ok=false){const el=$(id);el.textContent=msg;el.classList.toggle("ok",ok)}
 function el(tag,cl,text){const x=document.createElement(tag);if(cl)x.className=cl;if(text!==undefined)x.textContent=String(text);return x}
@@ -31,7 +32,7 @@ async function auth(path,method="GET",body=undefined,session=true){
  return result;
 }
 function setTokens(result){if(result.access_token){state.access=result.access_token;state.refresh=result.refresh_token||state.refresh}}
-function clearSession(){state.access="";state.refresh="";state.mfaFactor="";state.user=null;state.tasks=[];state.modules=[];state.role="";$("password").value="";$("signup-password").value="";$("signup-confirm").value="";$("mfa-code").value="";$("mfa-secret").textContent="";$("mfa-qr").removeAttribute("src");visible("mfa-setup",false);visible("dashboard-view",false);visible("mfa-view",false);visible("signup-view",false);visible("login-view",true);visible("logout",false)}
+function clearSession(){state.access="";state.refresh="";state.mfaFactor="";state.user=null;state.tasks=[];state.modules=[];state.role="";state.readinessSandbox=null;$("password").value="";$("signup-password").value="";$("signup-confirm").value="";$("mfa-code").value="";$("mfa-secret").textContent="";$("mfa-qr").removeAttribute("src");visible("mfa-setup",false);visible("dashboard-view",false);visible("mfa-view",false);visible("signup-view",false);visible("login-view",true);visible("logout",false)}
 async function login(event){
  event.preventDefault();message("login-message","");
  const password=$("password").value;
@@ -194,7 +195,7 @@ async function call(path,method="GET",body){
  return json;
 }
 async function load(){
- const data=await call("/overview");state.tasks=Array.isArray(data.tasks)?data.tasks:[];state.modules=Array.isArray(data.modules)?data.modules:[];state.counters=data.counters||{};state.role=data.role||"unknown";
+ const data=await call("/overview");state.tasks=Array.isArray(data.tasks)?data.tasks:[];state.modules=Array.isArray(data.modules)?data.modules:[];state.counters=data.counters||{};const verifiedRole=data.role||"unknown";if(state.role!==verifiedRole)state.readinessSandbox=null;state.role=verifiedRole;
  $("admin-role").textContent="Approved role: "+state.role;
  message("dashboard-message","Last refreshed: "+new Date().toLocaleString(),true);
 }
@@ -354,6 +355,30 @@ function vaultPanel(parent){
 
 function infoPanel(area){
  const container=el("div","panel-grid");
+ if(area==="readiness"){
+  const notice=el("article","panel-box");
+  append(notice,el("span","status","FICTIONAL · NEVER PRODUCTION"),
+    el("h2","","Readiness template operations — simulation"),
+    el("p","","The platform verified your role and MFA before this panel opened. All examples are public, fictional templates; browser permissions here never authorize real customer data or financial services."));
+  const mount=el("div","vor010-mount","Loading versioned synthetic templates…");
+  container.append(notice,mount);
+  // This branch is reached ONLY within the previously authenticated dashboard.
+  // Admin /overview enforces approved identity+role+AAL2 MFA server-side.
+  const validatedRole=state.role;
+  if(!state.access||!["owner","operator","auditor"].includes(validatedRole)){
+   mount.textContent="Approved admin role and MFA required.";
+   return container;
+  }
+  import("./admin-readiness-sandbox.js").then(mod=>{
+   if(state.area!=="readiness"||!state.access||state.role!==validatedRole)return;
+   if(!state.readinessSandbox||state.readinessSandbox.role!==validatedRole)
+    state.readinessSandbox=mod.createAdminReadinessSandbox(validatedRole);
+   mount.replaceChildren();
+   const outcome=mod.mountAdminReadinessSandbox(mount,state.readinessSandbox);
+   if(!outcome.ok)mount.textContent="Synthetic readiness module unavailable.";
+  }).catch(()=>{if(state.area==="readiness")mount.textContent="Synthetic readiness module unavailable; no customer data was accessed.";});
+  return container;
+ }
  if(area==="overview"){
   const cards=el("div","metric-grid");const c=state.counters;
   for(const [k,label] of [["todo","To do"],["in_progress","In progress"],["blocked","Blocked"],["done","Completed"]]){
@@ -464,7 +489,8 @@ function institutionalInbox(container){
 function render(){
  const [title,subtitle]=AREAS[state.area];$("page-title").textContent=title;$("page-subtitle").textContent=subtitle;$("panel-content").replaceChildren(infoPanel(state.area));$("new-task-toggle").disabled=state.role==="auditor";
  for(const b of document.querySelectorAll("#panel-nav button")){b.classList.toggle("selected",b.dataset.area===state.area)}
- $("task-area").value=state.area;tasks();
+ $("new-task-toggle").hidden=state.area==="readiness";document.querySelector(".worklist").hidden=state.area==="readiness";
+ $("task-area").value=state.area==="readiness"?"overview":state.area;if(state.area!=="readiness")tasks();
 }
 async function addTask(event){
  event.preventDefault();
