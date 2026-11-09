@@ -4,8 +4,10 @@
  * No fetch/XHR, localStorage, cookies, send, analytics or financial data fields.
  */
 import {createPassportSession} from "./readiness-controller.js";
+import {createEducationalPlanSession,PLAN_COPY,PLAN_VERSION} from "./readiness-action-plan.js";
 const $=id=>document.getElementById(id);
 const session=createPassportSession();
+const planSession=createEducationalPlanSession();
 const labels={
  en:{
   titleLead:"Your readiness",titleAccent:"passport.",lang:"Language",
@@ -130,6 +132,65 @@ function safeRender(fn){
     $("rp-question-view").hidden=true;$("rp-passport-view").hidden=true;
   }
 }
+function renderActionPlan(s){
+ const plan=planSession.view(s);
+ if(!plan.ok)throw Error("invalid_educational_plan");
+ const c=PLAN_COPY[s.locale];
+ text("rp-plan-badge","90 DAYS · "+PLAN_VERSION);
+ text("rp-plan-heading",c.heading);
+ text("rp-plan-intro",c.intro);
+ text("rp-plan-version",PLAN_VERSION);
+ text("rp-plan-progress-text",c.progress(plan.completed_count,plan.total_tasks));
+ const bar=$("rp-plan-progressbar");
+ bar.setAttribute("aria-valuenow",String(plan.completed_count));
+ bar.setAttribute("aria-valuetext",c.progress(plan.completed_count,plan.total_tasks));
+ $("rp-plan-progress-fill").style.width=plan.percent+"%";
+ const list=$("rp-plan-milestones");
+ list.replaceChildren();
+ for(const phase of plan.milestones){
+  const section=make("section","rp-milestone");
+  section.setAttribute("aria-label",phase.title);
+  const head=make("div","rp-milestone-header");
+  head.append(make("strong","",phase.title),
+    make("span","",phase.completed_count+" / "+phase.total_tasks+" · "+c.completed));
+  section.append(head);
+  const tasks=make("ul","rp-plan-tasks");
+  for(const task of phase.tasks){
+   const li=make("li","rp-plan-task");
+   li.classList.toggle("is-done",task.completed);
+   const button=make("button","rp-task-toggle",task.completed?"✓":"+");
+   button.type="button";
+   button.dataset.planTask=task.question_id;
+   button.setAttribute("aria-pressed",String(task.completed));
+   button.setAttribute("aria-label",task.title+" — "+(task.completed?c.taskDone:c.taskTodo));
+   button.addEventListener("click",()=>{
+    if(planSession.toggle(task.id,session.snapshot())){
+      safeRender(render);
+      document.querySelector('[data-plan-task="'+task.question_id+'"]')?.focus({preventScroll:true});
+    }
+   });
+   const body=make("div","rp-task-copy");
+   body.append(make("strong","",task.title),
+     make("p","",task.action),
+     make("small","",task.explanation_status+" "+c.advice+" "+task.reason));
+   li.append(button,body);tasks.append(li);
+  }
+  section.append(tasks);list.append(section);
+ }
+ text("rp-reminder-heading",c.reminderTitle);
+ text("rp-day-label",c.daySelect);
+ const daySelect=$("rp-simulated-day");
+ daySelect.value=String(plan.reminder.simulated_day);
+ for(const option of daySelect.children){
+  if(option.value)option.textContent=c.daySelect+" "+option.value;
+ }
+ const toggle=$("rp-reminder-toggle");
+ toggle.setAttribute("aria-pressed",String(plan.reminder.preview_enabled));
+ toggle.textContent=plan.reminder.preview_enabled?c.previewOn:c.previewOff;
+ text("rp-reminder-output",plan.reminder.text);
+ text("rp-plan-disclaimer",c.disclaimer);
+}
+
 function render(){
  const s=session.snapshot(),c=labels[s.locale],q=s.questionnaire,result=s.result;
  document.documentElement.lang=s.locale;
@@ -227,6 +288,7 @@ function render(){
     make("p","",exp.reason));
    explanations.append(card);
  }
+ renderActionPlan(s);
 }
 function focusCurrent(id){$(id)?.focus({preventScroll:true});}
 $("rp-language").addEventListener("change",e=>{
@@ -241,5 +303,12 @@ $("rp-back").addEventListener("click",()=>{session.previous();safeRender(render)
 $("rp-next").addEventListener("click",()=>{session.next();safeRender(render);focusCurrent("rp-question-heading");});
 $("rp-review").addEventListener("click",()=>{session.passport();safeRender(render);focusCurrent("rp-passport-heading");});
 $("rp-edit").addEventListener("click",()=>{session.edit();safeRender(render);focusCurrent("rp-question-heading");});
-$("rp-reset").addEventListener("click",()=>{session.reset();safeRender(render);focusCurrent("rp-question-heading");});
+$("rp-reset").addEventListener("click",()=>{session.reset();planSession.reset();safeRender(render);focusCurrent("rp-question-heading");});
+$("rp-simulated-day").addEventListener("change",event=>{
+ const day=Number(event.currentTarget.value);
+ if(planSession.setDay(day))safeRender(render);
+});
+$("rp-reminder-toggle").addEventListener("click",()=>{
+ if(planSession.setReminderPreview(!planSession.getReminderPreviewEnabled()))safeRender(render);
+});
 safeRender(render);
