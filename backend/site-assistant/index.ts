@@ -125,7 +125,13 @@ function detailedAnswer(message:string,language:Lang){
  }
  return null;
 }
-function topicOf(message:string):Topic{const normalized=message.toLowerCase();for(const candidate of [...topics,"customer","security","location","domain"] as Topic[])if(hints[candidate].some(h=>normalized.includes(h)))return candidate;return "unknown"}
+function topicOf(message:string):Topic{const normalized=message.toLowerCase().normalize("NFKC");for(const candidate of [...topics,"customer","security","location","domain"] as Topic[])if(hints[candidate].some(h=>normalized.includes(h)))return candidate;return "unknown"}
+function containsSensitiveData(message:string):boolean{
+ const text=message.normalize("NFKC");
+ // Personal identifiers and common credential formats. This rule is deliberately
+ // conservative; do not store or echo rejected input in a response or log.
+ return /(?:\d[\s-]?){8,}|[^\s@]+@[^\s@]+\.[^\s@]+|\b[A-Z]{5}\d{4}[A-Z]\b|(?:\b(?:otp|one[- ]time (?:password|code)|pin|passcode|verification code)\s*[:=\-]?\s*\d{4,8}\b)/iu.test(text);
+}
 function respond(req:Request,status:number,value:Record<string,unknown>):Response {
   const headers=new Headers({"content-type":"application/json; charset=utf-8","cache-control":"no-store,max-age=0","x-content-type-options":"nosniff","vary":"origin"});
   const origin=req.headers.get("origin");if(origin&&ALLOWED.has(origin))headers.set("access-control-allow-origin",origin);
@@ -151,7 +157,7 @@ Deno.serve(async(req:Request)=>{
  if(!value.topic&&!value.message)return respond(req,400,{error:"input_required"});
  // Avoid collecting or processing sensitive identifiers even transiently.
  const message=value.message||"";
- if(/(?:\d[ -]?){8,}|[^\s@]+@[^\s@]+\.[^\s@]+/.test(message))return respond(req,400,{error:"please_remove_personal_information"});
+ if(containsSensitiveData(message))return respond(req,400,{error:"please_remove_personal_information"});
  const specific = value.topic ? null : detailedAnswer(message,lang);
  const topic=(value.topic||specific?.topic||topicOf(message)) as Topic;
  return respond(req,200,{
