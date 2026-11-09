@@ -92,6 +92,15 @@ jobs:
           node --check assets/readiness-action-plan.js
           node --check assets/readiness-passport.js
           deno check assets/readiness-action-plan.js
+      - name: VOR-010 role-scoped readiness queues, immutable release gates, and synthetic task transitions
+        run: deno test backend/tests/admin_readiness_sandbox.test.ts
+      - name: VOR-010 actual admin UI synthetic DOM and server MFA/ACL mount regression
+        run: deno test --allow-read backend/tests/admin_readiness_ui.test.ts
+      - name: Verify VOR-010 browser module syntax and type checking
+        run: |
+          node --check assets/admin-readiness-sandbox.js
+          node --check assets/admin.js
+          deno check assets/admin-readiness-sandbox.js
       - name: Type-check authenticated AI guidance backend
         run: deno check backend/ai-guidance/index.ts backend/admin-console/index.ts backend/site-assistant/index.ts backend/admin-mfa-recovery/index.ts backend/compliance-vault/index.ts backend/institutional-inquiries/index.ts
 
