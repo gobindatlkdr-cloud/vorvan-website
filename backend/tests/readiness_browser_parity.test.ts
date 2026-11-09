@@ -22,7 +22,7 @@ Deno.test("Generated browser and VOR-007 source evaluate all 6561 complete synth
    const payload={mode:"synthetic_only",category,locale,answers};
    const expected=evaluateSource(payload),actual=evaluateBrowser(payload);
    eq(actual,expected,category+"/"+locale+"/"+index);
-   if(!actual.ok)throw Error("Expected complete questionnaire "+category+"/"+locale);
+   if(!actual.ok || !("credit_score" in actual))throw Error("Expected complete questionnaire "+category+"/"+locale);
    if(actual.credit_score!==null||actual.eligibility_assessed||
      actual.approval_or_offer_available||actual.personal_data_stored)
      throw Error("Unsafe numeric eligibility, offer or stored data");
