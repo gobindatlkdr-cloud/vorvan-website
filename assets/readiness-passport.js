@@ -192,7 +192,14 @@ function render(){
    radio.type="radio";radio.name="readiness-choice";radio.value=choice.value;
    radio.checked=s.answers[s.current.id]===choice.value;
    radio.addEventListener("change",()=>{
-     if(radio.checked&&session.choose(choice.value))safeRender(render);
+     if(radio.checked&&session.choose(choice.value)){
+       safeRender(render);
+       // Re-rendering choices must not steal keyboard focus from the selected radio.
+       for(const labelNode of $("rp-choices").children){
+         const nextRadio=labelNode.children[0];
+         if(nextRadio?.checked){nextRadio.focus({preventScroll:true});break;}
+       }
+     }
    });
    label.append(radio,make("span","",choice.label));
    choices.append(label);
