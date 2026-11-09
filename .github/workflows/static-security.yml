@@ -31,6 +31,8 @@ jobs:
         run: node scripts/test_partner_loans_ui.cjs
       - name: Verify M0 security baseline and Vyn channel separation
         run: node scripts/test_m0_security_baseline.cjs
+      - name: Verify frozen M0 baseline manifest and rollback safeguards
+        run: node scripts/test_m0_vor001_baseline.cjs
       - name: Validate static website security and local links
         run: python3 scripts/check_site.py
       - name: Install Deno for backend type checking
