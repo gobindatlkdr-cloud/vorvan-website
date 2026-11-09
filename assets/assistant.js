@@ -144,7 +144,8 @@ launch.addEventListener("click",()=>open(popup.hidden));
 close.addEventListener("click",()=>open(false));
 document.addEventListener("keydown",(e)=>{if(e.key==="Escape"&&!popup.hidden)open(false)});
 function looksSensitive(value){
- return /(?:\d[\s-]?){8,}|[^\s@]+@[^\s@]+\.[^\s@]+/.test(value);
+ const text=value.normalize("NFKC");
+ return /(?:\d[\s-]?){8,}|[^\s@]+@[^\s@]+\.[^\s@]+|\b[A-Z]{5}\d{4}[A-Z]\b|(?:\b(?:otp|one[- ]time (?:password|code)|pin|passcode|verification code)\s*[:=\-]?\s*\d{4,8}\b)/iu.test(text);
 }
 async function ask(topic,message){
  if(busy||!languageSelected)return;
@@ -179,6 +180,8 @@ function sendMessage(){
  const msg=field.value.trim();
  if(!msg||msg.length>240)return;
  field.value="";
+ // Do not echo private identifiers into the chat DOM, including before sending.
+ if(looksSensitive(msg)){add((labels[lang.value]||labels.en).privacy);return}
  add(msg,true);ask(null,msg);
 }
 send.addEventListener("click",sendMessage);
