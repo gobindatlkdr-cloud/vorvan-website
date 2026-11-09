@@ -81,6 +81,32 @@
           <div class="rp-stats"><div><span id="rp-stat-answered">Answered</span><strong id="rp-stat-count">0 / 6</strong></div><div><span id="rp-stat-missing">Missing</span><strong id="rp-stat-missing-count">6</strong></div><div><span id="rp-stat-unsure">Not sure</span><strong id="rp-stat-unsure-count">0</strong></div></div>
           <div class="rp-result-section"><h3 id="rp-actions-heading">Learning next steps</h3><p id="rp-actions-subheading">Topics to consider, not credit or lender recommendations.</p><ol id="rp-actions-list" class="rp-action-list"></ol></div>
           <div class="rp-result-section"><h3 id="rp-explanations-heading">Why these suggestions?</h3><div id="rp-explanations" class="rp-explanation-list"></div></div>
+          <section class="rp-action-plan" id="rp-action-plan" aria-labelledby="rp-plan-heading">
+            <div class="rp-plan-heading-row"><div>
+              <span class="rp-panel-badge" id="rp-plan-badge">90-DAY LEARNING · SYNTHETIC</span>
+              <h3 id="rp-plan-heading">Your 90-day educational action plan</h3>
+              <p id="rp-plan-intro">Six fictional learning topics, three milestones. No credit improvement promise.</p>
+            </div><small id="rp-plan-version">Versioned educational tasks</small></div>
+            <div class="rp-plan-progress" role="progressbar" id="rp-plan-progressbar" aria-valuemin="0" aria-valuemax="6" aria-valuenow="0" aria-label="Educational tasks marked reviewed">
+              <span id="rp-plan-progress-fill"></span>
+            </div><p class="rp-plan-progress-caption" id="rp-plan-progress-text" aria-live="polite">0 of 6 educational tasks marked reviewed</p>
+            <div class="rp-plan-milestones" id="rp-plan-milestones" aria-label="Thirty, sixty and ninety day learning milestones"></div>
+            <section class="rp-reminder-demo" aria-labelledby="rp-reminder-heading">
+              <h4 id="rp-reminder-heading">Reminder preview — simulated only</h4>
+              <div class="rp-reminder-controls">
+                <label for="rp-simulated-day" id="rp-day-label">Simulated day</label>
+                <select id="rp-simulated-day" aria-label="Simulated day for fictional reminder preview">
+                  <option value="1">Day 1</option><option value="15">Day 15</option><option value="23">Day 23</option>
+                  <option value="29">Day 29</option><option value="30">Day 30</option><option value="31">Day 31</option>
+                  <option value="53">Day 53</option><option value="59">Day 59</option><option value="60">Day 60</option>
+                  <option value="61">Day 61</option><option value="83">Day 83</option><option value="89">Day 89</option><option value="90">Day 90</option>
+                </select>
+                <button type="button" class="rp-btn rp-btn-secondary" id="rp-reminder-toggle" aria-pressed="false">Preview a fictional reminder</button>
+              </div>
+              <p id="rp-reminder-output" class="rp-reminder-output" role="status" aria-live="polite">Reminder preview is off. No messages or schedules are created.</p>
+            </section>
+            <p id="rp-plan-disclaimer" class="rp-inline-tip">No real reminders or financial data are used. Reload clears this simulated plan.</p>
+          </section>
           <div class="rp-disclaimer" id="rp-disclaimer" role="note"></div>
           <div class="rp-toolbar"><button type="button" class="rp-btn rp-btn-secondary" id="rp-edit">← Edit answers</button><button type="button" class="rp-btn rp-btn-primary" id="rp-reset">Restart fictional demo</button></div>
         </section>
