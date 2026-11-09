@@ -33,4 +33,12 @@ GitHub [PR #31](https://github.com/gobindatlkdr-cloud/vorvan-website/pull/31) br
 
 VOR-010 overall remains PARTIAL pending real Owner/Operator/Auditor AAL2 session E2E, mobile Safari/VoiceOver/Android accessibility, reviewed workflow content and independent VAPT. Real owner-scoped task tables, secure retention/RLS, audit and customer consent are not implemented. No real customer onboarding, score, lender approval or payments are active.
 
+## Verified merged deployment and live surface (10 November 2026)
+
+- [Implementation PR #31](https://github.com/gobindatlkdr-cloud/vorvan-website/pull/31) squash merged as main SHA dd761bebadd01e23043b95e7ecaddf08eccf3cb4.
+- [Production branch Static Security + isolated PostgreSQL RLS #42677319230](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42677319230) SUCCESS; [Live URL and anonymous admin API denial #42677319346](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42677319346) SUCCESS; [GitHub Pages build and deploy #42677319759](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42677319759) SUCCESS.
+- The deployed [Admin Console](https://vorvan.co.in/admin.html) still displays the sign-in/MFA entry screen. The new first-party module at https://vorvan.co.in/assets/admin-readiness-sandbox.js was fetched from the live host successfully and matched the VOR-010 synthetic module content. Note: the module is publicly readable JavaScript by design; it contains fictional templates only. The actual Dashboard mounts the module after successful server-approved AAL2 Admin sign-in.
+- All new 16/16 sandbox engine + actual UI synthetic-DOM tests PASS; real Operator/Auditor user accounts and signed-in cross-role browser evidence are NOT available. No real customer/task data was read or modified during this check.
+- Current coverage limitation: role authorization for the **real** backend uses pre-existing ACL+AAL2 and has not been modified; the new frontend role matrix controls only in-memory fictional stage changes. Do not use this module for real loan servicing/borrower records.
+
 Proposed VORVAN PRIVATE LIMITED remains pre-incorporation; COI/CIN pending.
