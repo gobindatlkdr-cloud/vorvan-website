@@ -67,4 +67,4 @@ Existing company security, Vault, MFA and isolated PostgreSQL consent-RLS regres
 
 ## GitHub CI and browser evidence
 
-**PR, CI, merge and live-browser evidence to be appended only after results are verified.** Do not claim that synthetic DOM or unit tests constitute independent mobile accessibility, VAPT or customer authorization acceptance.
+**Verified PR tests:** [PR #29](https://github.com/gobindatlkdr-cloud/vorvan-website/pull/29); [Static Security CI #42669890354](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42669890354) **SUCCESS**, including new VOR-009 **15/15 Deno tests PASS**, existing Passport synthetic DOM **3/3 PASS** with VOR-009 task/reminder interactions, VOR-008 canonical/browser exhaustive parity **6,561/6,561 PASS**, current/earlier security validations, and the isolated PostgreSQL customer consent RLS job **PASS**. [Live URL verification #42669889854](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42669889854) **SUCCESS** on the unchanged live baseline. Branch CI does not prove the new UI is live until GitHub Pages publishes after merge. Future live-browser acceptance remains separate.
