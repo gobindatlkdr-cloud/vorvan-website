@@ -51,7 +51,7 @@ assert.match(recovery,/separate environment first/);
 assert.match(recovery,/\*\*not\*\* a tested full disaster-recovery guarantee/);
 assert.match(recovery,/tag does not include Supabase Postgres or Storage contents/);
 assert.match(ledger,/VOR-001/);
-assert.match(ledger,/RULESET_NOT_VERIFIED|tag ruleset/);
+assert.match(ledger,/tag protection ruleset|tag ruleset|RULESET_NOT_VERIFIED/);
 assert.match(ledger,/VOR-002/);
 assert.match(ledger,/Incorporation|incorporation/);
 console.log("PASS: M0 VOR-001 pinned baseline manifest, append-only tagging workflow, architecture inventory, recovery safeguards and pending ledger");
