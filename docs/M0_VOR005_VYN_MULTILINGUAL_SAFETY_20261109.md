@@ -52,3 +52,19 @@ VORVAN is still **pre-incorporation**; the site does not provide live credit rep
 **VOR-005 synthetic code-level multilingual/safety/browser-widget QA: COMPLETE when merged and CI is green. VOR-005 overall: PARTIAL** pending real device/browser QA and live endpoint verification/abuse review.
 
 Future regression: GitHub Actions **Static website security and integrity** runs the two new tests on every PR and `main` push.
+
+## Post-merge verified deployment and live browser smoke (09 Nov 2026)
+
+- [PR #20](https://github.com/gobindatlkdr-cloud/vorvan-website/pull/20) merged into `main` at commit `ea4fc2869a23d713ecdb5e78482a23908c8ad203`.
+- GitHub main-branch [Static Security CI #42650146800](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42650146800), [Live URL #42650147074](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42650147074), and [Pages deployment #42650146805](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42650146805) each completed **SUCCESS**.
+- Supabase project `vorvan-dev-india` `site-assistant` updated to **ACTIVE version 4**, retaining the public FAQ endpoint's existing `verify_jwt=false` configuration; only informational responses are enabled.
+- A separate, **read-only live browser smoke test** was run at `https://vorvan.co.in/`, run ID `103092f1-97df-46a2-bb4b-196da6660b59` ([browser execution record](https://agent.tinyfish.ai/runs/103092f1-97df-46a2-bb4b-196da6660b59)):
+  1. **PASS** — Chat launcher and English/Bengali/Hindi language selector available without sign-in.
+  2. **PASS** — Bengali “API sandbox” response in Bengali, routed to `partnerships@vorvan.co.in`, explicitly says no sandbox access is active.
+  3. **PASS** — Hindi “website support” response in Hindi, routed to `support@vorvan.co.in`, does not claim active lending.
+  4. **NOT TESTED in live browser** — dummy OTP text suppression / Hindi privacy warning (synthetic DOM and backend tests passed).
+  5. **NOT TESTED in live browser** — Escape-to-close (synthetic DOM test passed).
+- The browser noticed that language-switch confirmation is represented as a visitor-side language label; this is a UX polish opportunity, not an observed security failure.
+- The browser run ended after its allowed steps; **do not claim 5/5 live-browser acceptance**. An additional manual browser check and accessibility/rate-limit review remain pending. No real customer or company data was entered during the smoke test.
+
+**Final VOR-005 verdict:** source changes, PR merge, Edge deployment, CI and constrained real-browser smoke **completed**; **ticket PARTIAL** because full live privacy, browser accessibility, abuse and safety acceptance is still open.
