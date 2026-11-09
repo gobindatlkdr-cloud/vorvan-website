@@ -57,6 +57,23 @@ jobs:
         run: deno test --allow-env backend/tests/customer_identity_consent.test.ts
       - name: Type-check sandbox Customer Identity backend and consent notice registry
         run: deno check backend/customer-identity/index.ts backend/customer-identity/notices.ts
+      - name: Run VOR-007 explainable questionnaire synthetic scenario tests
+        run: deno test backend/tests/readiness_rules.test.ts
+      - name: Type-check VOR-007 rules, definitions and synthetic-only examples
+        run: deno check backend/readiness/questions.ts backend/readiness/engine.ts backend/readiness/demo.ts
+      - name: Verify VOR-007 three-category readiness demo has no live score or approval
+        run: |
+          set -euo pipefail
+          deno run backend/readiness/demo.ts > /tmp/vor007-readiness-results.jsonl
+          python3 - <<'PY'
+          import json
+          with open("/tmp/vor007-readiness-results.jsonl", encoding="utf-8") as f:
+              rows=[json.loads(line) for line in f if line.strip()]
+          assert {r["category"] for r in rows}=={"personal","business","education"}
+          assert all(r["cibil_score"] is None and not r["eligibility_assessed"] and not r["financial_offer_available"] and not r["personal_data_stored"] for r in rows)
+          assert all(r["total"]==6 and len(r["question_ids"])==6 for r in rows)
+          print("PASS VOR-007: 3 simulated categories, 6 questions each, no live scoring, approval or PII")
+          PY
       - name: Type-check authenticated AI guidance backend
         run: deno check backend/ai-guidance/index.ts backend/admin-console/index.ts backend/site-assistant/index.ts backend/admin-mfa-recovery/index.ts backend/compliance-vault/index.ts backend/institutional-inquiries/index.ts
 
