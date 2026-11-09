@@ -109,7 +109,7 @@ Deno.test("Opt-in preview shows fictional due milestones only in their last seve
  }
 });
 Deno.test("Reminders update as educational tasks are marked reviewed, never create a schedule",()=>{
- const s=snap(),state=createEducationalPlanSession();state.setDay(29);
+ const s=snap(),state=createEducationalPlanSession();state.view(s);state.setDay(29);
  state.setReminderPreview(true);
  let p=ready(state.view(s));eq(p.reminder.pending_count,2);
  state.toggle(p.tasks[0].id,s);
