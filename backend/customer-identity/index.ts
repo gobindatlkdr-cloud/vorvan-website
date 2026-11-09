@@ -130,6 +130,7 @@ Deno.serve(async(req:Request)=>{
  if(!ENABLED)return fail(req,503,"customer_sandbox_disabled");
  if(!["GET","POST"].includes(req.method))return fail(req,405,"method_not_allowed");
  if(!["/v1/customer/session","/v1/customer/notices","/v1/customer/consents"].includes(path))return fail(req,404,"not_found");
+ if(path!=="/v1/customer/notices"&&[...new URL(req.url).searchParams.keys()].length>0)return fail(req,400,"invalid_query");
  const user=await verifiedUser(req);
  if(user===null)return fail(req,401,"login_required");
  if(user==="denied")return fail(req,403,"customer_access_denied");
