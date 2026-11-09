@@ -2,11 +2,16 @@
 import {createPassportSession} from "../../assets/readiness-controller.js";
 function eq(a:unknown,b:unknown,label="assertion"){if(a!==b)throw Error(label+": expected "+String(b)+" got "+String(a));}
 function yes(a:unknown,label:string){if(!a)throw Error(label);}
+function evaluated(s:ReturnType<ReturnType<typeof createPassportSession>["snapshot"]>){
+ const r=s.result;
+ if(!r.ok||!("workflow_status" in r))throw Error("Expected validated evaluation");
+ return r;
+}
 Deno.test("Passport controller: 3 categories, in-memory progress and incomplete states",()=>{
  for(const category of ["personal","business","education"]){
   const ctrl=createPassportSession({category,locale:"bn"});
   const s=ctrl.snapshot();eq(s.total,6);eq(s.answered,0);eq(s.percent,0);
-  eq(s.result.workflow_status,"needs_more_information");eq(s.consent_status,"unavailable_not_approved");
+  eq(evaluated(s).workflow_status,"needs_more_information");eq(s.consent_status,"unavailable_not_approved");
   eq(s.personal_information_received,false);
   yes(!ctrl.choose("9999999999"),"numeric private data input rejected");
   yes(!ctrl.choose("unknown"),"free-text choice rejected");
@@ -14,7 +19,7 @@ Deno.test("Passport controller: 3 categories, in-memory progress and incomplete 
   eq(ctrl.snapshot().answered,1);eq(ctrl.snapshot().percent,17);
   ctrl.next();eq(ctrl.snapshot().step,1);
   ctrl.choose("unsure");eq(ctrl.snapshot().answered,2);
-  ctrl.passport();eq(ctrl.snapshot().result.workflow_status,"needs_more_information");
+  ctrl.passport();eq(evaluated(ctrl.snapshot()).workflow_status,"needs_more_information");
   eq(ctrl.snapshot().screen,"passport");
   ctrl.edit();eq(ctrl.snapshot().screen,"questions");
   ctrl.setLanguage("hi");eq(ctrl.snapshot().answered,2);
@@ -36,10 +41,10 @@ Deno.test("Passport rejects invalid navigation and unsafe category values",()=>{
  for(let i=0;i<6;i++){ctrl.goTo(i);yes(ctrl.choose("not_yet"),"safe answer accepted");}
  const s=ctrl.snapshot();
  eq(s.answered,6);eq(s.result.workflow_status,"educational_checklist_reviewed");
- eq(s.result.next_steps.length,6);
- eq(s.result.credit_score,null);
- eq(s.result.eligibility_assessed,false);
- eq(s.result.approval_or_offer_available,false);
+ eq(evaluated(s).next_steps.length,6);
+ eq(evaluated(s).credit_score,null);
+ eq(evaluated(s).eligibility_assessed,false);
+ eq(evaluated(s).approval_or_offer_available,false);
 });
 class FakeElement{
  tag:string;
