@@ -9,13 +9,13 @@ type Topic=typeof categories[number];
 type Lang="en"|"bn"|"hi";
 const EMAIL={
   partnership:"partnerships@vorvan.co.in",support:"support@vorvan.co.in",
-  legal:"legal@vorvan.co.in",info:"info@vorvan.co.in",admin:"admin@vorvan.co.in"
+  legal:"legal@vorvan.co.in",info:"info@vorvan.co.in"
 };
 const answer:Record<Lang,Record<Topic,string>>={
  en:{
   partnership:"VORVAN welcomes direct, formal LSP partnerships with regulated banks and NBFCs. Contact partnerships@vorvan.co.in to start an institutional discussion. No DSA or lead-sale program is offered.",
   api:"For lender API, sandbox and technical integration discussions, email partnerships@vorvan.co.in using an official business email. Production access is disabled until legal, security and lender approval.",
-  contact:"General enquiries: info@vorvan.co.in. Partnerships: partnerships@vorvan.co.in. Support: support@vorvan.co.in. Legal: legal@vorvan.co.in. Administration: admin@vorvan.co.in.",
+  contact:"For general enquiries, email info@vorvan.co.in or choose the relevant team through the Contact page. For institutional integration enquiries, open Partner With Us. Private staff administration is not a public contact channel.",
   credit:"The credit-app experience is currently a fictional product preview only. No live CIBIL/bureau report, customer account, credit score check, payments or application is offered on this website.",
   support:"Please email support@vorvan.co.in about this website. Do not include PAN, Aadhaar, OTP, bank statements or other private financial information.",
   legal:"Read the Privacy and Terms pages. For legal enquiries: legal@vorvan.co.in. Website disclosures are drafts until professional approval.",
@@ -28,7 +28,7 @@ const answer:Record<Lang,Record<Topic,string>>={
  bn:{
   partnership:"VORVAN নিয়ন্ত্রিত Bank/NBFC-এর সঙ্গে সরাসরি LSP অংশীদারত্বের আলোচনা করে। অফিসিয়াল ইমেইল থেকে partnerships@vorvan.co.in-এ যোগাযোগ করুন। DSA বা শুধু lead referral নয়।",
   api:"Lender API, sandbox ও integration আলোচনার জন্য partnerships@vorvan.co.in-এ মেইল করুন। চুক্তি, সিকিউরিটি ও অনুমোদন না হওয়া পর্যন্ত production access বন্ধ।",
-  contact:"সাধারণ তথ্য: info@vorvan.co.in। পার্টনারশিপ: partnerships@vorvan.co.in। সাপোর্ট: support@vorvan.co.in। লিগ্যাল: legal@vorvan.co.in। অ্যাডমিন: admin@vorvan.co.in।",
+  contact:"সাধারণ তথ্যের জন্য info@vorvan.co.in-এ মেইল করুন। নির্দিষ্ট বিভাগ খুঁজতে Contact পেজ দেখুন, আর Bank/NBFC আলোচনার জন্য Partner With Us ব্যবহার করুন। অভ্যন্তরীণ অ্যাডমিন ঠিকানা পাবলিক যোগাযোগের জন্য নয়।",
   credit:"Credit App আপাতত শুধু কাল্পনিক ডেমো। এখানে বাস্তব CIBIL রিপোর্ট, স্কোর চেক, গ্রাহক অ্যাকাউন্ট, পেমেন্ট বা ঋণের আবেদন চালু নেই।",
   support:"ওয়েবসাইট সাপোর্টের জন্য support@vorvan.co.in-এ মেইল করুন। PAN, Aadhaar, OTP বা ব্যক্তিগত আর্থিক নথি পাঠাবেন না।",
   legal:"Privacy ও Terms পেজ পড়ুন। আইনি বিষয়ে legal@vorvan.co.in-এ মেইল করুন। নীতিগুলো এখনও চূড়ান্ত আইনি অনুমোদনসাপেক্ষ।",
@@ -41,7 +41,7 @@ const answer:Record<Lang,Record<Topic,string>>={
  hi:{
   partnership:"VORVAN विनियमित बैंक/NBFC के साथ सीधे औपचारिक LSP साझेदारी पर चर्चा करता है। partnerships@vorvan.co.in पर आधिकारिक व्यावसायिक ईमेल से संपर्क करें। DSA/lead-referral नहीं।",
   api:"Lender API, sandbox और तकनीकी integration के लिए partnerships@vorvan.co.in पर लिखें। अनुबंध, सुरक्षा समीक्षा और स्वीकृति से पहले production access बंद है।",
-  contact:"जानकारी: info@vorvan.co.in। पार्टनरशिप: partnerships@vorvan.co.in। सहायता: support@vorvan.co.in। कानूनी: legal@vorvan.co.in। एडमिन: admin@vorvan.co.in।",
+  contact:"सामान्य जानकारी के लिए info@vorvan.co.in पर ईमेल करें। उचित टीम के लिए Contact पेज और बैंक/NBFC सहयोग के लिए Partner With Us देखें। आंतरिक एडमिन ईमेल सार्वजनिक संपर्क नहीं है।",
   credit:"Credit App फिलहाल केवल काल्पनिक डेमो है। लाइव CIBIL रिपोर्ट, ग्राहक खाता, भुगतान या लोन आवेदन इस वेबसाइट पर उपलब्ध नहीं हैं।",
   support:"वेबसाइट संबंधी सहायता के लिए support@vorvan.co.in पर लिखें। PAN, Aadhaar, OTP या निजी वित्तीय दस्तावेज़ न भेजें।",
   legal:"Privacy और Terms पेज पढ़ें। कानूनी विषयों के लिए legal@vorvan.co.in लिखें। नीतियां अंतिम पेशेवर समीक्षा के अधीन हैं।",
