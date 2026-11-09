@@ -7,8 +7,8 @@
   "baseline_sha": "d8456ffa0fad97b653f590e0cf02429bd6288cc3",
   "previous_rollback_sha": "e2426d24a7f6434ea7529bd3194fae0741141444",
   "annotated_tag": "m0-baseline-20261109",
-  "tag_creation": "GitHub Actions on reviewed main workflow merge",
-  "tag_protection": "RULESET_NOT_VERIFIED",
+  "tag_creation": "CONFIRMED_ANNOTATED_TAG",
+  "tag_protection": "NO_GITHUB_TAG_RULESET_CONFIGURED",
   "baseline_checks": [
     {
       "name": "Static website security and integrity",
@@ -44,5 +44,14 @@
     "Git tag name is not tamper-proof until protected by GitHub tag ruleset or immutable release",
     "No staging deployment or production database restoration was carried out",
     "No live customer financial services authorised"
-  ]
+  ],
+  "tag_verified": {
+    "tag": "m0-baseline-20261109",
+    "tag_object_sha": "82e2a8cbe0de05712f3608b6069d14198722e6b6",
+    "target_commit": "d8456ffa0fad97b653f590e0cf02429bd6288cc3",
+    "workflow_run": 42641757122,
+    "status": "success",
+    "isolated_source_recovery": "success"
+  },
+  "tag_security_disclaimer": "Git tag refs are movable by users with sufficient privileges; verified annotated tag and immutable commit SHA do not guarantee tag-ref immutability until a GitHub tag protection ruleset or immutable release is enabled."
 }
