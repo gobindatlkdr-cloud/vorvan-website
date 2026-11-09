@@ -43,5 +43,7 @@ jobs:
         run: deno test backend/compliance-vault/body-limit.test.ts
       - name: Run VOR-002 synthetic MFA, role and permission integration tests
         run: deno test --allow-env backend/tests/admin_role_gates.test.ts
+      - name: Run VOR-003 synthetic document Vault workflow tests
+        run: deno test --allow-env backend/tests/company_vault_workflow.test.ts
       - name: Type-check authenticated AI guidance backend
         run: deno check backend/ai-guidance/index.ts backend/admin-console/index.ts backend/site-assistant/index.ts backend/admin-mfa-recovery/index.ts backend/compliance-vault/index.ts backend/institutional-inquiries/index.ts
