@@ -47,7 +47,7 @@ This review uses read-only database catalog queries, Supabase Security Advisors,
 
 ### Reproducible live query and release safety
 
-- Pre-change check `backend/security/m0_vor004_data_api_assertions.sql` had **D06/D07/D08 FAIL**, which is expected before applying the migration. Existing-current-table checks passed.
+- Pre-change check `backend/security/m0_vor004_data_api_assertions.sql` had **D06/D07/D08 FAIL** plus implicit **D09 PUBLIC EXECUTE FAIL** after correcting the assertion to require an explicit global default ACL, which is expected before applying the migration. Existing-current-table checks passed.
 - Post-change, execute that exact read-only assertion suite and require **11/11 PASS**; compare current table grants and RLS with the baseline.
 - **This document is staged before deployment. Actual migration and post-change result must be recorded here after applying the reviewed change.**
 - No auth user, MFA settings, PostgREST schema config, payment, bureau, lender or company incorporation status is changed by the migration.
