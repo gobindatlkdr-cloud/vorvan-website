@@ -168,3 +168,42 @@ a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,[t
  .rp-step-list{grid-template-columns:repeat(2,1fr)}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+
+/* M1 VOR-009: integrated 30/60/90-day fictional educational action plan. */
+.rp-action-plan{margin-top:32px;border:1px solid #e6c9d9;border-radius:17px;background:linear-gradient(180deg,#fffafa,#fff);padding:25px;box-shadow:0 12px 35px #4b113010}
+.rp-plan-heading-row{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap}
+.rp-plan-heading-row h3{font-size:clamp(20px,2.4vw,27px);letter-spacing:-.04em;margin:12px 0 6px;color:var(--rp-deep)}
+.rp-plan-heading-row p{font-size:12px;color:#816d79;line-height:1.8;margin:0}
+.rp-plan-heading-row>small{font-size:10px;word-break:break-all;color:#9b7384}
+.rp-plan-progress{height:9px;overflow:hidden;background:#f0dfe6;border-radius:20px;margin-top:22px}
+.rp-plan-progress>span{display:block;width:0;height:100%;background:var(--rp-burgundy);transition:width .2s}
+.rp-plan-progress-caption{font-size:12px;color:#704a60;font-weight:800;margin:9px 0 22px}
+.rp-plan-milestones{display:grid;gap:17px}
+.rp-milestone{background:#fff;border:1px solid #e9dce3;border-radius:14px;overflow:hidden}
+.rp-milestone-header{padding:13px 16px;background:#f9f0f4;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;border-bottom:1px solid #f0dfe7}
+.rp-milestone-header strong{font-size:15px;color:#62203f}
+.rp-milestone-header span{font-size:11px;font-weight:800;color:#8e6980}
+.rp-plan-tasks{padding:0;margin:0;list-style:none}
+.rp-plan-task{display:flex;gap:13px;align-items:flex-start;padding:16px;border-bottom:1px solid #f1e6eb}
+.rp-plan-task:last-child{border-bottom:none}
+.rp-plan-task.is-done{background:#f7faf9}
+.rp-task-toggle{width:34px;height:34px;flex:0 0 34px;border:1.5px solid var(--rp-burgundy);border-radius:10px;background:#fff;color:var(--rp-burgundy);font-size:18px;font-weight:800;display:grid;place-items:center}
+.rp-task-toggle[aria-pressed="true"]{background:#276555;border-color:#276555;color:white}
+.rp-task-copy{min-width:0;flex:1}
+.rp-task-copy strong{display:block;font-size:13px;line-height:1.45;color:#5a2944}
+.rp-task-copy p{margin:6px 0;font-size:12px;color:#755f6d;line-height:1.7}
+.rp-task-copy small{display:block;font-size:11px;color:#907783;line-height:1.65}
+.rp-reminder-demo{margin-top:23px;background:#faf1f5;border:1px solid #e9d3dd;border-radius:13px;padding:18px}
+.rp-reminder-demo h4{font-size:15px;color:#54243f;margin:0 0 13px}
+.rp-reminder-controls{display:flex;align-items:center;flex-wrap:wrap;gap:12px}
+.rp-reminder-controls label{font-size:12px;font-weight:750;color:#634056}
+.rp-reminder-controls select{padding:10px 12px;border:1px solid #dcc3d0;border-radius:9px;background:#fff;color:#5d2442}
+.rp-reminder-controls button{max-width:100%;white-space:normal}
+.rp-reminder-output{background:#fff;padding:14px;border-radius:10px;font-size:12px;color:#714e63;line-height:1.7;margin:16px 0 0}
+@media(max-width:460px){
+ .rp-action-plan{padding:16px}
+ .rp-milestone-header{flex-direction:column;align-items:flex-start}
+ .rp-reminder-demo{padding:14px}
+ .rp-reminder-controls select,.rp-reminder-controls button{width:100%}
+}
