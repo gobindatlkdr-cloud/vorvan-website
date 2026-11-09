@@ -1,0 +1,41 @@
+# VORVAN — Cumulative Development & Pending Ledger
+Updated: **09 November 2026**. Source of ticket IDs: Developer Handover v1 (09 Nov 2026), section 15.
+Status key: **DONE** = source + verification evidence; **PARTIAL** = substantive work exists but exit criteria missing; **PENDING** = required exit evidence not available; **BLOCKED** = external approvals/contract needed. Do not relabel pending work as complete without new evidence.
+
+| Milestone | Ticket | Work package | Status | Remaining acceptance evidence |
+| --- | --- | --- | --- | --- |
+| M0 | VOR-001 | Audit and freeze source baseline | PARTIAL | Rollback branch exists; create immutable release/tag, fuller architecture/module inventory, staging and rollback rehearsal |
+| M0 | VOR-002 | Admin MFA + role E2E | PENDING | Owner AAL2 sign-in, operator/auditor least privilege, expired token, denied AAL1 with safe test accounts |
+| M0 | VOR-003 | Compliance Vault E2E | PENDING | Synthetic upload/download, checksum, version/event, rejection paths, role separation and evidence capture |
+| M0 | VOR-004 | Supabase security remediation | PARTIAL | **Metadata RLS/GRANT review DONE (10/10 checks)**; finish leaked-password warning disposition, Data API settings review, threat model and live role tests |
+| M0 | VOR-005 | Public Vyn routing/UX QA | PARTIAL | Public internal email removed, contextual routing deployed; complete language/fallback/safety evaluation and browser UX |
+| M1 | VOR-006 | Customer identity & consent | PENDING | Secure customer auth, own-record RLS, versioned consent, export/delete flow |
+| M1 | VOR-007 | Readiness questionnaire/rules | PENDING | Explainable rules, incomplete-input behavior, no real score/approval implication |
+| M1 | VOR-008 | Readiness Passport screens | PENDING | Localized, accessible UI with empty/error/consent states |
+| M1 | VOR-009 | 90-Day Action Plan | PENDING | Versioned tasks, milestones, reminders, owner-scoped records |
+| M1 | VOR-010 | Admin readiness module | PENDING | Scoped queues/definitions, task templates, release gate indicators |
+| M1 | VOR-011 | Institutional inquiry E2E | PARTIAL | Existing form/backend live; test synthetic intake → scoped staff queue, anti-spam, audit and failure handling |
+| M2 | VOR-012 | Vyn personal coach sandbox | PENDING | Consent-gated mode, safe guidance, redaction, escalation |
+| M2 | VOR-013 | Support & complaints | PARTIAL | Existing internal support foundation; complete SLA, case lifecycle and scope checks |
+| M2 | VOR-014 | AI governance & reporting | PENDING | Prompt/model registry, safety evaluation, role-scoped dashboards |
+| M2 | VOR-016 | Privacy requests & export | PENDING | Authenticated access/correct/delete/export request workflow |
+| M3 | VOR-015 | Subscription/payment sandbox | PENDING | Provider-independent simulation, refunds, idempotent webhooks; no live charges |
+| M4 | VOR-017 | Partner tenant IAM/portal | BLOCKED | Verified bank/NBFC invitation, MFA, tenant isolation; no live partnership claim |
+| M4 | VOR-018 | Bureau/lender adapter mocks | PENDING | Synthetic mock adapters and contracts only; no production keys |
+| M4 | VOR-019 | Loan comparison & case tracking | BLOCKED | Synthetic KFS/APR UI; production offers and status require lender-verified APIs |
+| M4 | VOR-020 | Go-live gate & independent review | BLOCKED | Signed partnerships, independent VAPT, legal/owner sign-off, rollback monitoring |
+
+## Verified completions to date
+- Corporate website with **Personal, Business, Education, Short-Term** informational categories and professional **Partner With Us** landing.
+- Public Admin mailbox/link removed from customer-facing pages; context-specific departmental contact routing.
+- Secure private Company Vault backend and M0 bounded streaming upload/JSON parsing; public Vyn information separation; GitHub CI and live checks.
+- Pre-M0 source snapshot branch exists; **not** an immutable tag or DB backup.
+- **This step:** `backend/security/m0_vor004_exposure_assertions.sql` committed and executed against current Supabase: 10/10 PASS; audit report archived. This is a metadata check only.
+
+## Incorporation and financial service release gates
+- **VORVAN PRIVATE LIMITED: proposed; incorporation pending; MCA fees paid.** No COI/CIN or corporate registration claim until evidence provided by owner.
+- Keep all live CIBIL/bureau/KYC, loan applications, payments and actual lender offers OFF until applicable legal, lender/API, bureau/provider and security approvals.
+- **Next recommended single step:** VOR-001 follow-up — immutable baseline tag/release manifest and safer rollback documentation, **or** VOR-002 owner-authenticated role E2E if securely available. Do not require the owner to share an OTP/password in chat.
+
+## Developer handoff rule
+Each delivery: implement **one** narrowly scoped step → run tests → record PR/merge/deployment evidence → update this cumulative ledger → report **কাজ কমপ্লিট — NEXT বলুন** with exact remaining work.
