@@ -2,6 +2,8 @@
 import {createAdminReadinessSandbox,mountAdminReadinessSandbox} from "../../assets/admin-readiness-sandbox.js";
 function eq(a:unknown,b:unknown,label="assert"){if(a!==b)throw Error(label+": expected "+String(b)+" got "+String(a));}
 function yes(v:unknown,label:string){if(!v)throw Error(label);}
+function checkedSnapshot(session:ReturnType<typeof createAdminReadinessSandbox>){if(!session.ok||!("snapshot" in session))throw Error("Invalid synthetic session");const r=session.snapshot();if(!r.ok||!("queue" in r))throw Error("Invalid view");return r;}
+
 class Element{
  tag:string;className="";textContent="";value="";type="";selected=false;disabled=false;hidden=false;
  children:Element[]=[];style:{width:string}={width:""};attrs:Record<string,string>={};
@@ -31,7 +33,7 @@ function all(root:Element,className:string){
 Deno.test("VOR-010 real dashboard renderer works on synthetic DOM for owner/operator/auditor",()=>{
  const prior=(globalThis as {document?:unknown}).document;
  const previousFetch=globalThis.fetch;
- (globalThis as {document:unknown}).document={createElement:(tag:string)=>new Element(tag)};
+ (globalThis as unknown as {document:unknown}).document={createElement:(tag:string)=>new Element(tag)};
  globalThis.fetch=(()=>{throw Error("Unexpected network or production admin operation");}) as typeof fetch;
  try{
   for(const [role,count,mayChange,canReset] of [["owner",18,true,true],["operator",12,true,false],["auditor",18,false,false]] as const){
@@ -50,15 +52,15 @@ Deno.test("VOR-010 real dashboard renderer works on synthetic DOM for owner/oper
     const sel=selectors[0];sel.value="reviewed";sel.fire("change");
     eq(all(root,"vor010-task").length,18);
     eq(first(root,"vor010-stage").children[2].getAttribute("aria-valuenow"),"1");
-    eq(s.snapshot().change_history.length,1);
+    eq(checkedSnapshot(s).change_history.length,1);
     const reset=all(root,"small-button")[0];reset.fire("click");
-    eq(s.snapshot().change_history.length,0);eq(s.snapshot().queue[0].status,"todo");
+    eq(checkedSnapshot(s).change_history.length,0);eq(checkedSnapshot(s).queue[0].status,"todo");
     eq(first(root,"vor010-stage").children[2].getAttribute("aria-valuenow"),"0");
    }
   }
  }finally{
   if(prior===undefined)delete (globalThis as {document?:unknown}).document;
-  else (globalThis as {document:unknown}).document=prior;
+  else (globalThis as unknown as {document:unknown}).document=prior;
   globalThis.fetch=previousFetch;
  }
 });
