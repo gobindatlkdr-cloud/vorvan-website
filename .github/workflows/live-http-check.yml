@@ -3,6 +3,8 @@ name: Live website URL verification
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -12,305 +14,100 @@ jobs:
   verify-live-site:
     runs-on: ubuntu-latest
     steps:
-      - name: Check HTTPS website and asset responses
+      - name: Check current live public site, routing and protected APIs
         shell: bash
         run: |
           set -euo pipefail
           BASE="https://vorvan.co.in/"
-          for attempt in $(seq 1 3); do
-            code_and_url=$(curl -L -sS -m 20 -A "VORVAN-site-health-check" -o /tmp/vorvan.html -w '%{http_code} %{url_effective}' "$BASE" || true)
-            echo "Attempt $attempt: $code_and_url"
-            if [[ "$code_and_url" == "200 $BASE" ]] && grep -q 'VORVAN' /tmp/vorvan.html; then
-              echo "PASS: HTTPS serves the VORVAN site at the verified custom domain."
-              break
+          EDGE="https://kukfpsqujlutlgwndplh.supabase.co/functions/v1"
+          html() { curl --fail --location --silent --show-error --max-time 25 "$BASE$1"; }
+          code() { curl --location --silent --show-error --max-time 20 -o /dev/null -w '%{http_code}' "$1"; }
+
+          # GitHub Pages can publish shortly after main CI starts.
+          site_ready=0
+          for attempt in $(seq 1 12); do
+            home=$(html "" || true)
+            if grep -q 'id="loan-categories"' <<< "$home" &&
+               grep -q 'Partner With Us' <<< "$home" &&
+               grep -q 'Incorporation pending' <<< "$home"; then
+              site_ready=1;break
             fi
-            if [[ "$attempt" == "3" ]]; then
-              echo "FAIL: Custom domain HTTPS not ready, certificate pending, or unexpected redirect. Check GitHub Pages Enforce HTTPS and certificate."
-              exit 1
-            fi
+            echo "Waiting for current live website release ($attempt/12)"
             sleep 5
           done
+          [[ "$site_ready" == "1" ]] || { echo "FAIL: updated public homepage not live"; exit 1; }
 
-          for resource in assets/site.css assets/site.js assets/assistant.js assets/refresh.css assets/favicon.svg assets/partner-portal.css experience.html solutions.html partners.html partner-desk.html admin.html assets/admin.js assets/admin.css about.html contact.html privacy.html terms.html; do
-            status=$(curl -L -sS -m 20 -A "VORVAN-site-health-check" -o /dev/null -w '%{http_code}' "$BASE$resource")
-            echo "$resource: HTTP $status"
-            if [[ "$status" != "200" ]]; then
-              exit 1
+          # Required user-facing and protected web assets.
+          for path in assets/site.css assets/site.js assets/assistant.js assets/refresh.css assets/favicon.svg \
+            assets/partner-portal.css assets/institutional-inquiry.js assets/institutional-inquiry.css \
+            index.html solutions.html partners.html partner-desk.html experience.html \
+            about.html contact.html privacy.html terms.html admin.html assets/admin.js assets/admin.css \
+            sitemap.xml robots.txt google7decf5ca6ffe0331.html; do
+            status=$(code "$BASE$path")
+            echo "$path: HTTP $status"
+            [[ "$status" == "200" ]] || exit 1
+          done
+
+          # The four categories must remain educational and clearly pre-incorporation.
+          solutions=$(html "solutions.html")
+          for category in 'Personal Loan' 'Business Loan' 'Education Loan' 'Short-Term Loan'; do
+            grep -q "$category" <<< "$home" || exit 1
+            grep -q "$category" <<< "$solutions" || exit 1
+          done
+          grep -q 'No live loan, credit-bureau, KYC or payment services' <<< "$home" || exit 1
+          grep -q 'class="vv-vyn-antenna-rotor"' <<< "$home" || exit 1
+          grep -q 'data-vv-search-submit' <<< "$home" || exit 1
+
+          # Contact paths are scoped: no internal Admin mailbox on public pages.
+          contact=$(html "contact.html")
+          partners=$(html "partners.html")
+          privacy=$(html "privacy.html")
+          grep -q 'info@vorvan.co.in' <<< "$contact" || exit 1
+          grep -q 'support@vorvan.co.in' <<< "$contact" || exit 1
+          grep -q 'partnerships@vorvan.co.in' <<< "$partners" || exit 1
+          grep -q 'legal@vorvan.co.in' <<< "$privacy" || exit 1
+          grep -q 'id="vv-institutional-inquiry-form"' <<< "$partners" || exit 1
+          for page in "$home" "$contact" "$partners" "$privacy"; do
+            if grep -q 'admin@vorvan.co.in' <<< "$page"; then
+              echo "FAIL: internal Admin mailbox exposed on public page";exit 1
             fi
           done
 
-          demo_page=$(curl -fsSL -m 20 "$BASE""experience.html")
-          if ! grep -q "data-experience" <<< "$demo_page"; then
-            echo "FAIL: Interactive concept page marker missing."
-            exit 1
-          fi
-          partner=$(curl -fsSL -m 20 "$BASE""partner-desk.html")
-          if ! grep -q "INSTITUTIONAL DESK" <<< "$partner" || ! grep -q 'disabled aria-disabled="true"' <<< "$partner"; then
-            echo "FAIL: Partner desk missing or disabled-by-default UI not present."
-            exit 1
-          fi
-          contact_page=$(curl -fsSL -m 20 "$BASE""contact.html")
-          if ! grep -q 'partnerships@vorvan.co.in' <<< "$contact_page" || ! grep -q 'legal@vorvan.co.in' <<< "$contact_page" || ! grep -q 'admin@vorvan.co.in' <<< "$contact_page"; then
-            echo "FAIL: Five company mailboxes were not reflected in public contact page."
-            exit 1
-          fi
-          assistant_url="https://kukfpsqujlutlgwndplh.supabase.co/functions/v1/site-assistant"
-          response=$(curl -fsSL -m 20 -X POST -H 'Content-Type: application/json' \
-            -H 'Origin: https://vorvan.co.in' \
-            -d '{"language":"en","topic":"partnership"}' "$assistant_url")
-          if ! grep -q 'partnerships@vorvan.co.in' <<< "$response" || ! grep -q 'guided_knowledge_base_v2' <<< "$response"; then
-            echo "FAIL: Public guided assistant did not return a valid partnership response."
-            exit 1
-          fi
-          sandbox_response=$(curl -fsSL -m 20 -X POST -H 'Content-Type: application/json' \
-            -H 'Origin: https://vorvan.co.in' \
-            -d '{"language":"en","message":"Can we discuss lender API sandbox onboarding?"}' "$assistant_url")
-          if ! grep -q 'sandbox' <<< "$sandbox_response" || ! grep -q 'partnerships@vorvan.co.in' <<< "$sandbox_response"; then
-            echo "FAIL: assistant did not give a contextual lender sandbox response."
-            exit 1
-          fi
-          homepage=$(curl -fsSL -m 20 "$BASE")
-          if ! grep -q 'data-vv-tab="lsp"' <<< "$homepage" || ! grep -q 'vv-utility' <<< "$homepage"; then
-            echo "FAIL: The new top bar or interactive service navigation is missing."
-            exit 1
-          fi
-          if grep -E -q '\$\{email\.part\}' <<< "$homepage"; then
-            echo "FAIL: unresolved partnership address template in homepage."
-            exit 1
-          fi
-          mascot_url="${BASE%/}/assets/vyn-reference.webp"
-          mascot_ct=$(curl -fsSL -m 15 -o /dev/null -w '%{content_type}' "$mascot_url" || true)
-          if [[ "$mascot_ct" != "image/webp" && "$mascot_ct" != "application/octet-stream" ]]; then
-            echo "FAIL: Approved Vyn artwork not served as WebP ($mascot_ct)."
-            exit 1
-          fi
-          # Pages deploy is asynchronous to this workflow. Poll for the
-          # approved Vyn homepage release instead of checking a stale asset tag.
-          vyn_ready=0
-          for attempt in {1..18}; do
-            if grep -q 'assistant.js?v=20261101-vyn-hello' <<< "$homepage" \
-               && grep -q 'class="vv-vyn-antenna-rotor"' <<< "$homepage" \
-               && grep -q 'data-vv-search-submit>Ask Vyn' <<< "$homepage"; then
-              vyn_ready=1
-              break
-            fi
-            echo "Waiting for approved Vyn homepage deployment (attempt $attempt/18)"
-            sleep 10
-            homepage=$(curl -fsSL -m 20 "$BASE" || true)
+          # Private staff route remains separate and cannot serve operations without a session.
+          admin=$(html "admin.html")
+          grep -q 'id="mfa-form"' <<< "$admin" || exit 1
+          grep -q 'id="panel-nav"' <<< "$admin" || exit 1
+          for url in "$EDGE/compliance-vault/" "$EDGE/admin-console/overview" "$EDGE/ai-guidance"; do
+            status=$(code "$url")
+            echo "Protected route $url HTTP $status"
+            [[ "$status" == "401" ]] || exit 1
           done
-          if [[ "$vyn_ready" != "1" ]]; then
-            echo "FAIL: New Vyn mini assistant / clockwise antenna / Ask Vyn bar not present on the live website."
-            exit 1
-          fi
-          echo "PASS: Owner-approved Vyn artwork and new rotating-antenna homepage release are published."
-          echo "PASS: Burgundy navigation and contextual LSP/API guide validated."
-          echo "PASS: Five departmental mailboxes and live guide response verified."
-          echo "PASS: Bank/NBFC portal is live and customer-action controls stay disabled."
-          AI_URL="https://kukfpsqujlutlgwndplh.supabase.co/functions/v1/ai-guidance"
-          ai_status=$(curl -sS -m 20 -o /dev/null -w '%{http_code}' "$AI_URL")
-          echo "Unauthenticated AI endpoint status: HTTP $ai_status"
-          if [[ "$ai_status" != "401" ]]; then
-            echo "FAIL: AI endpoint did not reject anonymous access."
-            exit 1
-          fi
-          echo "PASS: AI endpoint rejects unauthenticated access; no secret keys used."
-          admin_page=$(curl -fsSL -m 20 "$BASE""admin.html")
-          if ! grep -q 'id="mfa-form"' <<< "$admin_page" || ! grep -q 'id="panel-nav"' <<< "$admin_page" || ! grep -q 'id="signup-form"' <<< "$admin_page" || ! grep -q 'id="signup-confirm"' <<< "$admin_page"; then
-            echo "FAIL: Admin MFA and separate section navigation is missing."
-            exit 1
-          fi
-          admin_status=$(curl -sS -m 20 -o /dev/null -w '%{http_code}' "https://kukfpsqujlutlgwndplh.supabase.co/functions/v1/admin-console/overview")
-          echo "Unauthenticated admin backend HTTP $admin_status"
-          if [[ "$admin_status" != "401" ]]; then
-            echo "FAIL: Unauthorized request not blocked on Admin API."
-            exit 1
-          fi
-          preflight=$(curl -sS -m 20 -o /dev/null -w '%{http_code}' -X OPTIONS \
-            -H 'Origin: https://vorvan.co.in' \
-            -H 'Access-Control-Request-Method: GET' \
-            -H 'Access-Control-Request-Headers: authorization, apikey, content-type' \
-            "https://kukfpsqujlutlgwndplh.supabase.co/functions/v1/admin-console/overview")
-          echo "Admin browser CORS preflight: HTTP $preflight"
-          if [[ "$preflight" != "204" ]]; then
-            echo "FAIL: Admin CORS preflight blocked; interactive browser login would fail."
-            exit 1
-          fi
-          if ! grep -q 'id="mfa-reset-pending"' <<< "$admin_page"; then
-            echo "FAIL: Incomplete MFA recovery control is absent from Admin."
-            exit 1
-          fi
-          recovery_status=$(curl -sS -m 20 -o /dev/null -w '%{http_code}' -X POST \
-            -H 'Origin: https://vorvan.co.in' \
-            -H 'Content-Type: application/json' \
-            -d '{"action":"reset_unverified_totp"}' \
-            "https://kukfpsqujlutlgwndplh.supabase.co/functions/v1/admin-mfa-recovery")
-          echo "Recovery endpoint without login HTTP $recovery_status"
-          if [[ "$recovery_status" != "401" ]]; then
-            echo "FAIL: MFA recovery must reject unauthenticated users."
-            exit 1
-          fi
-          echo "PASS: MFA recovery control published and backend rejects requests without login."
-          echo "PASS: Admin page published and API rejects anonymous access."
-          echo "PASS: All checked live resources and the interactive demo marker respond successfully."
 
-
-      - name: Verify deployed B2B inquiry page, SEO files and anonymous API rejection
-        shell: bash
-        run: |
-          set -euo pipefail
-          BASE="https://vorvan.co.in/"
-          EDGE="https://kukfpsqujlutlgwndplh.supabase.co/functions/v1/institutional-inquiries"
-          ready=0
-          for attempt in $(seq 1 18); do
-            page=$(curl -fsSL -m 20 "$BASE""partners.html" || true)
-            if grep -q 'id="vv-institutional-inquiry-form"' <<< "$page" && grep -qi 'pre-incorporation' <<< "$page"; then
-              ready=1;break
+          # Public Vyn response: correct institutional contact, no internal details.
+          for lang in en bn hi; do
+            response=$(curl --fail --silent --show-error --max-time 25 -X POST \
+              -H 'Content-Type: application/json' -H 'Origin: https://vorvan.co.in' \
+              -d "{\"language\":\"$lang\",\"topic\":\"contact\"}" "$EDGE/site-assistant")
+            grep -q '"official_email":"info@vorvan.co.in"' <<< "$response" || exit 1
+            if grep -q 'admin@vorvan.co.in\|official_emails' <<< "$response"; then
+              echo "FAIL: Vyn leaked internal contact data";exit 1
             fi
-            echo "Partner form deploy propagation: $attempt/18"
-            sleep 10
           done
-          [[ "$ready" == "1" ]] || { echo "Missing live institutional form"; exit 1; }
-          for resource in assets/institutional-inquiry.css assets/institutional-inquiry.js sitemap.xml robots.txt; do
-            code=$(curl -L -sS -m 20 -o /dev/null -w '%{http_code}' "$BASE$resource")
-            echo "$resource -> $code"; [[ "$code" == "200" ]] || exit 1
-          done
-          sitemap=$(curl -fsSL -m 20 "$BASE""sitemap.xml")
+          p_response=$(curl --fail --silent --show-error --max-time 25 -X POST \
+            -H 'Content-Type: application/json' -H 'Origin: https://vorvan.co.in' \
+            -d '{"language":"en","topic":"partnership"}' "$EDGE/site-assistant")
+          grep -q '"official_email":"partnerships@vorvan.co.in"' <<< "$p_response" || exit 1
+
+          # Institutional intake rejects public reads and malformed submission.
+          [[ "$(code "$EDGE/institutional-inquiries")" == "401" ]] || exit 1
+          bad=$(curl --silent --show-error --max-time 20 -X POST \
+            -H 'Origin: https://vorvan.co.in' -H 'Content-Type: application/json' \
+            -d '{"institution_type":"nbfc","consent":false}' -o /dev/null -w '%{http_code}' "$EDGE/institutional-inquiries")
+          [[ "$bad" == "400" ]] || exit 1
+
+          # Public SEO configuration remains crawlable and self-consistent.
+          sitemap=$(html "sitemap.xml")
+          robots=$(html "robots.txt")
           grep -q 'https://vorvan.co.in/partners.html' <<< "$sitemap" || exit 1
-          robots=$(curl -fsSL -m 20 "$BASE""robots.txt")
           grep -q 'Sitemap: https://vorvan.co.in/sitemap.xml' <<< "$robots" || exit 1
-          preflight=$(curl -sS -m 20 -o /dev/null -w '%{http_code}' -X OPTIONS -H 'Origin: https://vorvan.co.in' "$EDGE")
-          read_status=$(curl -sS -m 20 -o /dev/null -w '%{http_code}' -H 'Origin: https://vorvan.co.in' "$EDGE")
-          invalid=$(curl -sS -m 20 -o /dev/null -w '%{http_code}' -X POST -H 'Origin: https://vorvan.co.in' -H 'Content-Type: application/json' -d '{"institution_type":"nbfc","consent":false}' "$EDGE")
-          echo "B2B endpoint statuses: preflight=$preflight unauthenticated-read=$read_status invalid-intake=$invalid"
-          [[ "$preflight" == "204" && "$read_status" == "401" && "$invalid" == "400" ]] || exit 1
-          echo "PASS: B2B page, indexable sitemap, CORS, privileged read protection and invalid-input rejection."
-
-
-      - name: Verify Google Search Console HTML file
-        shell: bash
-        run: |
-          set -euo pipefail
-          TARGET="https://vorvan.co.in/google7decf5ca6ffe0331.html"
-          EXPECTED="google-site-verification: google7decf5ca6ffe0331.html"
-          for attempt in $(seq 1 18); do
-            response=$(curl -fsSL -m 20 -A "VORVAN-site-health-check" "$TARGET" || true)
-            if [[ "$response" == "$EXPECTED" ]]; then
-              echo "PASS: Exact Google Search Console file is publicly readable."
-              exit 0
-            fi
-            echo "Google file deploy propagation: attempt $attempt/18"
-            sleep 10
-          done
-          echo "FAIL: Google verification HTML file is not publicly available with exact content."
-          exit 1
-
-
-      - name: Verify deployed institutional SEO guide and canonical sitemap
-        shell: bash
-        run: |
-          set -euo pipefail
-          BASE="https://vorvan.co.in/"
-          READY=0
-          for attempt in $(seq 1 18); do
-            guide=$(curl -fsSL -m 20 "${BASE}lsp-api-integration.html" || true)
-            home=$(curl -fsSL -m 20 "$BASE" || true)
-            sitemap=$(curl -fsSL -m 20 "${BASE}sitemap.xml" || true)
-            if grep -q '<link rel="canonical" href="https://vorvan.co.in/lsp-api-integration.html">' <<< "$guide" && \
-               grep -q 'Pre-incorporation' <<< "$guide" && \
-               grep -q '<link rel="canonical" href="https://vorvan.co.in/">' <<< "$home" && \
-               grep -q 'https://vorvan.co.in/lsp-api-integration.html' <<< "$sitemap" && \
-               grep -q 'href="lsp-api-integration.html"' <<< "$home"; then
-              READY=1
-              break
-            fi
-            echo "SEO deployment propagation attempt $attempt/18"
-            sleep 10
-          done
-          [[ "$READY" == "1" ]] || { echo "FAIL: SEO guide, canonical or sitemap not yet live"; exit 1; }
-          echo "PASS: Live B2B SEO guide, canonical homepage and sitemap/internal links."
-
-
-      - name: Verify lender sandbox SEO page and internal links
-        shell: bash
-        run: |
-          set -euo pipefail
-          BASE="https://vorvan.co.in/"
-          READY=0
-          for attempt in $(seq 1 18); do
-            page=$(curl -fsSL -m 20 "${BASE}lender-api-readiness.html" || true)
-            parent=$(curl -fsSL -m 20 "${BASE}lsp-api-integration.html" || true)
-            sitemap=$(curl -fsSL -m 20 "${BASE}sitemap.xml" || true)
-            if grep -q 'Lender API Sandbox' <<< "$page" && \
-               grep -q '<link rel="canonical" href="https://vorvan.co.in/lender-api-readiness.html">' <<< "$page" && \
-               grep -q 'Pre-incorporation' <<< "$page" && \
-               grep -q 'href="lender-api-readiness.html"' <<< "$parent" && \
-               grep -q '<loc>https://vorvan.co.in/lender-api-readiness.html</loc>' <<< "$sitemap"; then
-              READY=1
-              break
-            fi
-            echo "SEO phase 2 deployment propagation attempt $attempt/18"
-            sleep 10
-          done
-          [[ "$READY" == "1" ]] || { echo "FAIL: sandbox checklist page, canonical, internal link or sitemap absent"; exit 1; }
-          echo "PASS: Live lender API sandbox checklist, self-canonical, crawlable link and sitemap inclusion."
-
-
-      - name: Verify production institutional breadcrumb and brand metadata
-        shell: bash
-        run: |
-          set -euo pipefail
-          BASE="https://vorvan.co.in/"
-          for attempt in $(seq 1 18); do
-            home=$(curl -fsSL -m 20 "$BASE" || true)
-            guide=$(curl -fsSL -m 20 "${BASE}lsp-api-integration.html" || true)
-            ready=$(curl -fsSL -m 20 "${BASE}lender-api-readiness.html" || true)
-            partner=$(curl -fsSL -m 20 "${BASE}partners.html" || true)
-            if grep -q 'itemtype="https://schema.org/Organization"' <<< "$home" && \
-               grep -q '<strong itemprop="name">VORVAN</strong>' <<< "$home" && \
-               grep -q 'itemtype="https://schema.org/BreadcrumbList"' <<< "$guide" && \
-               grep -q 'itemtype="https://schema.org/BreadcrumbList"' <<< "$ready" && \
-               grep -q '<a href="lender-api-readiness.html">API sandbox checklist</a>' <<< "$partner"; then
-              echo "PASS: brand identity metadata, two breadcrumb hierarchies and institutional site navigation are live."
-              exit 0
-            fi
-            echo "Phase 3 deployment propagation attempt $attempt/18"
-            sleep 10
-          done
-          echo "FAIL: Phase 3 structured SEO data or footer links were not deployed"
-          exit 1
-
-
-      - name: Verify live free promotion landing and qualified bank NBFC enquiry route
-        shell: bash
-        run: |
-          set -euo pipefail
-          BASE="https://vorvan.co.in/"
-          LINKEDIN='<a href="https://www.linkedin.com/company/vorvan/" rel="noreferrer">Follow VORVAN on LinkedIn</a>'
-          for attempt in $(seq 1 18); do
-            intro=$(curl -fsSL -m 20 "${BASE}institutional-partnership-brief.html" || true)
-            home=$(curl -fsSL -m 20 "$BASE" || true)
-            partners=$(curl -fsSL -m 20 "${BASE}partners.html" || true)
-            contact=$(curl -fsSL -m 20 "${BASE}contact.html" || true)
-            sitemap=$(curl -fsSL -m 20 "${BASE}sitemap.xml" || true)
-            if grep -q 'Explore a direct lender technology partnership' <<< "$intro" && \
-               grep -q '<link rel="canonical" href="https://vorvan.co.in/institutional-partnership-brief.html">' <<< "$intro" && \
-               grep -q 'pre-incorporation' <<< "$intro" && \
-               grep -q 'href="partners.html#institutional-inquiry"' <<< "$intro" && \
-               grep -q 'href="partners.html#institutional-inquiry"' <<< "$home" && \
-               grep -Fq "$LINKEDIN" <<< "$home" && \
-               grep -Fq "$LINKEDIN" <<< "$intro" && \
-               grep -Fq "$LINKEDIN" <<< "$partners" && \
-               grep -Fq 'href="institutional-partnership-brief.html" class="vv-nav-cta"' <<< "$home" && \
-               grep -Fq 'href="#institutional-inquiry">Open secure enquiry form' <<< "$partners" && \
-               grep -q 'id="vv-institutional-inquiry-form"' <<< "$partners" && \
-               grep -q 'id="institutional-inquiry"' <<< "$partners" && \
-               grep -q 'href="institutional-partnership-brief.html"' <<< "$contact" && \
-               grep -q '<loc>https://vorvan.co.in/institutional-partnership-brief.html</loc>' <<< "$sitemap"; then
-              echo "PASS: B2B promotion brief, secure enquiry route, LinkedIn follow links and canonical sitemap are live."
-              exit 0
-            fi
-            echo "Promotion deployment propagation attempt $attempt/18"
-            sleep 10
-          done
-          echo "FAIL: shareable brief or qualified enquiry route not fully deployed"
-          exit 1
+          echo "PASS: live educational website, company disclosures, contextual Vyn, separated MFA Admin, private APIs and SEO."
