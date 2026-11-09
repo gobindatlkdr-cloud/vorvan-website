@@ -45,5 +45,9 @@ jobs:
         run: deno test --allow-env backend/tests/admin_role_gates.test.ts
       - name: Run VOR-003 synthetic document Vault workflow tests
         run: deno test --allow-env backend/tests/company_vault_workflow.test.ts
+      - name: Run VOR-005 Vyn trilingual and safety API tests
+        run: deno test backend/tests/site_assistant_multilingual.test.ts
+      - name: Run VOR-005 Vyn multilingual UI and offline-fallback tests
+        run: node scripts/test_vyn_multilingual_ui.cjs
       - name: Type-check authenticated AI guidance backend
         run: deno check backend/ai-guidance/index.ts backend/admin-console/index.ts backend/site-assistant/index.ts backend/admin-mfa-recovery/index.ts backend/compliance-vault/index.ts backend/institutional-inquiries/index.ts
