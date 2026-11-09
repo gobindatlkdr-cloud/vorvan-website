@@ -6,6 +6,8 @@ import {
 import {PLAN_VERSION} from "../../assets/readiness-action-plan.js";
 function eq(a:unknown,b:unknown,label="assertion"){if(JSON.stringify(a)!==JSON.stringify(b))throw Error(label+" expected "+JSON.stringify(b)+" but got "+JSON.stringify(a));}
 function yes(v:unknown,label:string){if(!v)throw Error(label);}
+function denied(value:unknown,code:string){if(!value||typeof value!=="object"||!("code" in value))throw Error("Expected denial "+code);eq(value.code,code);}
+
 function open(role:string){
  const x=createAdminReadinessSandbox(role);
  if(!x.ok||!("snapshot" in x))throw Error("Unexpected denied: "+role);
@@ -56,22 +58,22 @@ Deno.test("Owner sees all 18 versioned templates across days and can simulate st
 Deno.test("Operator sees only 12 operations templates, never compliance templates",()=>{
  const s=open("operator"),r=view(s);
  eq(r.visible_count,12);eq(r.available_to_role,12);
- yes(r.queue.every(t=>t.assigned_scope==="operations"),"Only team-owned scope visible");
+ yes(r.queue.every((t:{assigned_scope:string})=>t.assigned_scope==="operations"),"Only team-owned scope visible");
  eq(r.milestones.map(m=>m.visible),[6,6,0]);
  const owner=view(open("owner"));
- const restricted=owner.queue.find(t=>t.assigned_scope==="compliance");
+ const restricted=owner.queue.find((t:{assigned_scope:string,id:string})=>t.assigned_scope==="compliance");
  yes(restricted,"Restricted synthetic template exists");
- eq(s.transition(restricted!.id,"reviewed").code,"out_of_scope");
+ denied(s.transition(restricted!.id,"reviewed"),"out_of_scope");
  eq(s.transition(r.queue[0].id,"reviewed").ok,true);
  eq(view(s).queue[0].status,"reviewed");
- eq(s.reset().code,"owner_only");
+ denied(s.reset(),"owner_only");
 });
 Deno.test("Auditor can see templates, gates and demo audit but cannot mutate or reset",()=>{
  const s=open("auditor"),r=view(s);
  eq(r.visible_count,18);eq(r.allowed.read,true);eq(r.allowed.change,false);
  eq(r.allowed.reset,false);eq(r.allowed.release,false);
- eq(s.transition(r.queue[0].id,"reviewed").code,"read_only_role");
- eq(s.reset().code,"owner_only");
+ denied(s.transition(r.queue[0].id,"reviewed"),"read_only_role");
+ denied(s.reset(),"owner_only");
  eq(view(s).queue[0].status,"todo");
 });
 Deno.test("All 7 production gates remain blocked for all roles after synthetic review",()=>{
@@ -103,7 +105,7 @@ Deno.test("Versioned task progress does NOT infer customer readiness or credit s
  const s=open("owner"),initial=view(s);
  for(const task of initial.queue)eq(s.transition(task.id,"reviewed").ok,true);
  const r=view(s);
- eq(r.queue.filter(x=>x.status==="reviewed").length,18);
+ eq(r.queue.filter((x:{status:string})=>x.status==="reviewed").length,18);
  eq(r.release_ready,false);eq(r.production_access_enabled,false);
  eq(r.real_customer_records,0);
  yes(!JSON.stringify(r).includes('"credit_score":790'),"No credit score field");
@@ -146,7 +148,7 @@ Deno.test("Unknown filters and mocked malformed rendering calls deny access",()=
  eq(mountAdminReadinessSandbox(null,null).ok,false);
  eq(mountAdminReadinessSandbox(null,{ok:true,role:"customer"}).ok,false);
  eq(mountAdminReadinessSandbox({},null).ok,false);
- const s=open("owner");eq(s.snapshot({},[],"all").ok,false);
+ const s=open("owner");eq(s.snapshot({} as string,[] as unknown as string,"all").ok,false);
 });
 Deno.test("Pure engine never contacts network and contains no live customer data",()=>{
  const old=globalThis.fetch;
@@ -155,7 +157,7 @@ Deno.test("Pure engine never contacts network and contains no live customer data
   for(const role of ROLES){
    const s=open(role);const r=view(s,"bn");
    yes(JSON.stringify(r).length<85000,"Output bounded");
-   yes(r.queue.every(t=>t.synthetic_only&&t.id.includes(PLAN_VERSION)),"Fixed synthetic ids only");
+   yes(r.queue.every((t:{synthetic_only:boolean,id:string})=>t.synthetic_only&&t.id.includes(PLAN_VERSION)),"Fixed synthetic ids only");
   }
  }finally{globalThis.fetch=old;}
 });
