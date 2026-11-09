@@ -23,7 +23,7 @@ const fixtures = new Map<string,Fixture>();
 const encode = (v:unknown) => btoa(JSON.stringify(v)).replaceAll("+","-").replaceAll("/","_").replace(/=+$/,"");
 function token(role:Role,aal:"aal1"|"aal2"="aal2",opts:{expired?:boolean;wrongSub?:boolean;unconfirmed?:boolean;valid?:boolean}={}):string {
   const uid=ids[role],exp=Math.floor(Date.now()/1000)+(opts.expired?-300:3600);
-  const jwt=encode({typ:"JWT",alg:"HS256"})+"."+encode({sub:opts.wrongSub?ids.blocked:uid,aal,exp,role:"authenticated"})+".synthetic";
+  const jwt=encode({typ:"JWT",alg:"HS256"})+"."+encode({sub:opts.wrongSub?ids.blocked:uid,aal,exp,role:"authenticated",jti:"fixture-"+fixtures.size})+".synthetic";
   fixtures.set(jwt,{uid,email:role==="owner"?"admin@vorvan.co.in":role+".synthetic@example.invalid",
     role:role==="blocked"?null:role,confirmed:!opts.unconfirmed,valid:opts.valid!==false&&!opts.expired});
   return jwt;
