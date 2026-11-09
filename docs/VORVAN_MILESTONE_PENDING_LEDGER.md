@@ -8,7 +8,7 @@ Status key: **DONE** = source + verification evidence; **PARTIAL** = substantive
 | M0 | VOR-002 | Admin MFA + role E2E | PARTIAL | **Synthetic request-handler role/MFA matrix and production metadata audit implemented;** real Owner AAL2 browser proof, actual Operator/Auditor test identities, token expiry/revocation and real cross-role E2E remain pending |
 | M0 | VOR-003 | Compliance Vault E2E | PARTIAL | **Real request-handler synthetic PDF/version/SHA-256/download/audit/role tests 13/13 PASS** ([CI 42648050436](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42648050436)); real Owner AAL2 + private Storage E2E, failure-reconciliation for post-metadata stages/audit, genuine Operator/Auditor RBAC, safe retries and evidence capture still pending |
 | M0 | VOR-004 | Supabase security remediation | PARTIAL | **Metadata RLS/GRANT review DONE (10/10 checks)**; finish leaked-password warning disposition, Data API settings review, threat model and live role tests |
-| M0 | VOR-005 | Public Vyn routing/UX QA | PARTIAL | Public internal email removed, contextual routing deployed; complete language/fallback/safety evaluation and browser UX |
+| M0 | VOR-005 | Public Vyn routing/UX QA | PARTIAL | **EN/BN/HI real-handler 10/10 PASS + synthetic DOM Vyn widget PASS, API-intent priority and no-sensitive-echo fixes committed**; live Edge deployment and real desktop/mobile/assistive-tech browser QA, PII bypass/rate-limit and public content review remain pending |
 | M1 | VOR-006 | Customer identity & consent | PENDING | Secure customer auth, own-record RLS, versioned consent, export/delete flow |
 | M1 | VOR-007 | Readiness questionnaire/rules | PENDING | Explainable rules, incomplete-input behavior, no real score/approval implication |
 | M1 | VOR-008 | Readiness Passport screens | PENDING | Localized, accessible UI with empty/error/consent states |
@@ -37,10 +37,12 @@ Status key: **DONE** = source + verification evidence; **PARTIAL** = substantive
 
 - **Current VOR-003 step:** actual Vault handler with synthetic PDF bytes, version history, SHA-256, prior/current download, audit, size/type/signature rejection, Owner/Operator/Auditor and incorporation gates tested **13/13 PASS**. Evidence: `backend/tests/company_vault_workflow.test.ts`, `docs/M0_VOR003_VAULT_WORKFLOW_20261109.md`, [CI run 42648050436](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42648050436). Live DB remains at **0 uploads/0 audit events**; real browser MFA/Storage E2E and failure reconciliation still required.
 
+- **Current VOR-005 step:** public Vyn trilingual guided-FAQ handler 10/10 tests PASS, first-party widget synthetic DOM PASS, improved identifier privacy suppression, API-over-partnership routing, offline fallback and contextual emails; evidence in `backend/tests/site_assistant_multilingual.test.ts`, `scripts/test_vyn_multilingual_ui.cjs`, `docs/M0_VOR005_VYN_MULTILINGUAL_SAFETY_20261109.md` and CI [run 42649746268](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42649746268). Real browser/accessibility/abuse and live deployment checks remain open.
+
 ## Incorporation and financial service release gates
 - **VORVAN PRIVATE LIMITED: proposed; incorporation pending; MCA fees paid.** No COI/CIN or corporate registration claim until evidence provided by owner.
 - Keep all live CIBIL/bureau/KYC, loan applications, payments and actual lender offers OFF until applicable legal, lender/API, bureau/provider and security approvals.
-- **Next recommended single step:** VOR-005 — public Vyn Bengali/Hindi/English topic routing, safe replies, fallback/accessibility and abuse/failure regression tests. VOR-003 real Owner MFA/Storage E2E and non-atomic multi-write recovery remain pending; VOR-002 real role tests also remain pending.
+- **Next recommended single step:** M0 VOR-004 — finish Supabase Auth/Data API security hardening and residual risk disposition (read-only configuration evidence, threat model and safe change PR). Preserve existing MFA/Vault real E2E, tag/restore and Vyn browser/abuse gaps until properly tested.
 
 ## Developer handoff rule
 Each delivery: implement **one** narrowly scoped step → run tests → record PR/merge/deployment evidence → update this cumulative ledger → report **কাজ কমপ্লিট — NEXT বলুন** with exact remaining work.
