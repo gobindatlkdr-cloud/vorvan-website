@@ -122,7 +122,7 @@ Deno.test("Actual VOR-008 UI script: multilingual, progress, editing, review, re
   eq(get("rp-question-view").hidden,true);
   eq(get("rp-passport-view").hidden,false);
   eq(get("rp-stat-count").textContent,"1 / 6");
-  eq(get("rp-stat-missing-count").textContent,5);
+  eq(get("rp-stat-missing-count").textContent,"5");
   yes(get("rp-actions-list").children.length>=5,"Missing questions produce next steps");
   eq(get("rp-passport-heading").focused,true);
   get("rp-edit").fire("click");
