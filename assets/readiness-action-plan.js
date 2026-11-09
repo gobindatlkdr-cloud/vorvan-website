@@ -5,6 +5,7 @@
  * No external I/O, dates, timers, PII, accounts, persisted data, or notifications.
  */
 import {CATEGORIES,LOCALES,ENGINE_VERSION,questionsFor} from "./readiness-questions.js";
+import {evaluateReadiness} from "./readiness-engine.js";
 export const PLAN_VERSION="sandbox-2026-11-09-90d-v1";
 export const MILESTONES=Object.freeze([
   Object.freeze({id:"d30",from:1,to:30,question_indices:Object.freeze([0,1])}),
@@ -65,10 +66,14 @@ const allowed=(arr,value)=>typeof value==="string"&&arr.includes(value);
 function validSnapshot(s){
  if(!s||typeof s!=="object"||!allowed(CATEGORIES,s.category)||!allowed(LOCALES,s.locale))return false;
  const r=s.result;
- return r&&r.ok===true&&r.category===s.category&&r.locale===s.locale&&r.version===ENGINE_VERSION&&
+ if(!(r&&r.ok===true&&r.category===s.category&&r.locale===s.locale&&r.version===ENGINE_VERSION&&
    r.kind==="education_only"&&r.credit_score===null&&r.eligibility_assessed===false&&
    r.approval_or_offer_available===false&&r.personal_data_stored===false&&
-   Array.isArray(r.explanations)&&Array.isArray(r.unanswered_question_ids);
+   Array.isArray(r.explanations)&&Array.isArray(r.unanswered_question_ids)))return false;
+ // Recalculate the canonical VOR-007 result from finite-choice snapshot answers.
+ // Do not trust caller-fabricated rationale, rule identifiers or financial data.
+ const expected=evaluateReadiness({mode:"synthetic_only",category:s.category,locale:s.locale,answers:s.answers});
+ return expected.ok===true&&JSON.stringify(r)===JSON.stringify(expected);
 }
 const taskId=(category,qid)=>PLAN_VERSION+":"+category+":"+qid;
 /**
