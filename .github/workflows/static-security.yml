@@ -51,5 +51,42 @@ jobs:
         run: deno test backend/tests/site_assistant_multilingual.test.ts
       - name: Run VOR-005 Vyn multilingual UI and offline-fallback tests
         run: node scripts/test_vyn_multilingual_ui.cjs
+      - name: M1 VOR-006 Customer Auth & Versioned Consent — disabled by default
+        run: deno test --allow-env backend/tests/customer_identity_disabled.test.ts
+      - name: M1 VOR-006 Customer Auth & Consent — synthetic integration
+        run: deno test --allow-env backend/tests/customer_identity_consent.test.ts
+      - name: Type-check sandbox Customer Identity backend and consent notice registry
+        run: deno check backend/customer-identity/index.ts backend/customer-identity/notices.ts
       - name: Type-check authenticated AI guidance backend
         run: deno check backend/ai-guidance/index.ts backend/admin-console/index.ts backend/site-assistant/index.ts backend/admin-mfa-recovery/index.ts backend/compliance-vault/index.ts backend/institutional-inquiries/index.ts
+
+  consent-rls-isolated-postgres:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: synthetic_only_not_a_real_secret
+          POSTGRES_DB: vorvan_sandbox
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d vorvan_sandbox"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Execute real PostgreSQL RLS tests in throwaway container
+        env:
+          PGPASSWORD: synthetic_only_not_a_real_secret
+        run: |
+          set -euo pipefail
+          if ! command -v psql >/dev/null; then
+            sudo apt-get update -qq && sudo apt-get install -y postgresql-client
+          fi
+          psql -v ON_ERROR_STOP=1 -h localhost -U postgres -d vorvan_sandbox \
+            -f backend/sandbox/vor006_rls_setup.sql \
+            -f backend/sandbox/vor006_customer_consent_schema.sql \
+            -f backend/sandbox/vor006_rls_tests.sql
+          echo 'PASS: isolated VOR-006 Postgres RLS and append-only checks; no production Supabase access'
