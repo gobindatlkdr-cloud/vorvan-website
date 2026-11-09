@@ -42,7 +42,7 @@ for(const s of ["GitHub Pages","Supabase","23","Seven active Edge Functions","ap
 assert.match(inventory,/Source missing from current repository tree/);
 assert.match(recovery,/Never run `git push --force`/);
 assert.match(recovery,/separate environment first/);
-assert.match(recovery,/not a tested full disaster-recovery guarantee/);
+assert.match(recovery,/not\\*\\* a tested full disaster-recovery guarantee|not a tested full disaster-recovery guarantee/);
 assert.match(recovery,/tag does not include Supabase Postgres or Storage contents/);
 assert.match(ledger,/VOR-001/);
 assert.match(ledger,/RULESET_NOT_VERIFIED|tag ruleset/);
