@@ -4,7 +4,7 @@ Status key: **DONE** = source + verification evidence; **PARTIAL** = substantive
 
 | Milestone | Ticket | Work package | Status | Remaining acceptance evidence |
 | --- | --- | --- | --- | --- |
-| M0 | VOR-001 | Audit and freeze source baseline | PARTIAL | SHA-pinned manifest, architecture and rollback docs authored; annotated-tag workflow/dry-run ready. Must verify tag creation, enforce tag ruleset, rehearse staging/production rollback, recover missing deployed API source and verify DB backup/restore |
+| M0 | VOR-001 | Audit and freeze source baseline | PARTIAL | **Annotated tag m0-baseline-20261109 verified at SHA d8456ffa…; source recovery dry-run PASS; architecture/runbook committed.** Still enforce GitHub tag protection ruleset (none configured), rehearse live/staging rollback, recover missing deployed API source, verify database backup/restore |
 | M0 | VOR-002 | Admin MFA + role E2E | PENDING | Owner AAL2 sign-in, operator/auditor least privilege, expired token, denied AAL1 with safe test accounts |
 | M0 | VOR-003 | Compliance Vault E2E | PENDING | Synthetic upload/download, checksum, version/event, rejection paths, role separation and evidence capture |
 | M0 | VOR-004 | Supabase security remediation | PARTIAL | **Metadata RLS/GRANT review DONE (10/10 checks)**; finish leaked-password warning disposition, Data API settings review, threat model and live role tests |
@@ -29,9 +29,9 @@ Status key: **DONE** = source + verification evidence; **PARTIAL** = substantive
 - Corporate website with **Personal, Business, Education, Short-Term** informational categories and professional **Partner With Us** landing.
 - Public Admin mailbox/link removed from customer-facing pages; context-specific departmental contact routing.
 - Secure private Company Vault backend and M0 bounded streaming upload/JSON parsing; public Vyn information separation; GitHub CI and live checks.
-- Pre-M0 source snapshot branch exists; SHA-pinned M0 manifest, append-only annotated tag workflow and isolated source recovery test have been added. **Tag ref protection not verified; neither is a database backup.**
+- Pre-M0 rollback branch and **verified annotated tag `m0-baseline-20261109`** now exist. Tag creation and isolated recovery run [42641757122](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42641757122) passed. **No GitHub tag protection ruleset exists, so the ref is not immutable against authorized deletion/update; this is not a database backup.**
 - **Earlier VOR-004 step:** `backend/security/m0_vor004_exposure_assertions.sql` committed and executed against current Supabase: 10/10 PASS; audit report archived. This is a metadata check only.
-- **Current VOR-001 step:** `docs/M0_VOR001_BASELINE_MANIFEST.json` pinned to pre-change main SHA `d8456ffa0fad97b653f590e0cf02429bd6288cc3`; architecture inventory, safe recovery runbook, one-time annotated tag creation workflow, and baseline CI regression test added. Ruleset enforcement and live recovery drill still pending.
+- **Current VOR-001 step:** Pinned baseline manifest, verified annotated tag and successful isolated source-recovery check, architecture inventory, safe rollback runbook, and CI regression checks implemented. Live/staging rollback, enforced tag immutability and DB recovery remain pending.
 
 ## Incorporation and financial service release gates
 - **VORVAN PRIVATE LIMITED: proposed; incorporation pending; MCA fees paid.** No COI/CIN or corporate registration claim until evidence provided by owner.
