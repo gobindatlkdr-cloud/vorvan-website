@@ -23,7 +23,7 @@ Code: `backend/readiness/questions.ts`, `backend/readiness/engine.ts`, `backend/
 
 `backend/readiness/demo.ts` runs hardcoded fake examples for all three categories; GitHub CI parses the emitted records and rejects any non-null CIBIL score, eligibility/offer flag or personal-data storage.
 
-**CI status and PR references:** to be added after the reviewed PR passes all checks and is merged. Do not claim the milestone is completely launched merely because its tests pass.
+**Verified PR checks:** [PR #26](https://github.com/gobindatlkdr-cloud/vorvan-website/pull/26), [Static Security CI #42659708723](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42659708723) **SUCCESS** (new VOR-007 Deno engine tests **16 passed, 0 failed**, Deno source typecheck PASS, and the three-category synthetic-demo no-score/approval/PII output check PASS). All existing M0 VOR-002/003/005 tests, VOR-006 Customer Auth, and isolated PostgreSQL 17 consent-RLS checks also PASS. [Live URL verification #42659708884](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42659708884) **SUCCESS**. Evidence was taken from the branch PR; repeat CI on any later changes before merging. No live customer or financial endpoints are enabled.
 
 ### Current release boundaries / pending
 
