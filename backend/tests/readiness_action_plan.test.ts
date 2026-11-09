@@ -9,9 +9,11 @@ import {
 import {questionsFor,ENGINE_VERSION} from "../../assets/readiness-questions.js";
 function eq(a:unknown,b:unknown,label="assert"){if(JSON.stringify(a)!==JSON.stringify(b))throw Error(label+": "+JSON.stringify(a)+" != "+JSON.stringify(b));}
 function yes(a:unknown,label:string){if(!a)throw Error(label);}
-function ready(p:ReturnType<typeof buildEducationalPlan>){
- if(!p.ok||!("milestones" in p))throw Error("Plan unexpectedly rejected: "+JSON.stringify(p));
- return p;
+type FullPlan=Extract<ReturnType<typeof buildEducationalPlan>,{milestones:unknown}>;
+function ready(value:unknown):FullPlan{
+ if(!value||typeof value!=="object"||!("milestones" in value))
+  throw Error("Plan unexpectedly rejected: "+JSON.stringify(value));
+ return value as FullPlan;
 }
 const snap=(category="personal",locale="en")=>createPassportSession({category,locale}).snapshot();
 Deno.test("Plan version and canonical VOR-007 six questions grouped into exact day 30/60/90 phases",()=>{
@@ -37,7 +39,7 @@ Deno.test("All three locales translate tasks, milestones, reasons, reminders and
    eq(p.locale,locale);eq(p.version,PLAN_VERSION);
    yes(p.tasks.every(t=>t.title.length>15&&t.reason.length>15&&t.action.length>14),"Full localized task");
    yes(p.milestones.every(m=>m.title.length>5),"Localized milestone");
-   yes(PLAN_COPY[locale].heading.length>16,"Localized heading");
+   yes(PLAN_COPY[locale as keyof typeof PLAN_COPY].heading.length>16,"Localized heading");
    yes(p.privacy_notice.length>75,"Localized no-score/no-notification disclosure");
   }
 });
@@ -82,11 +84,11 @@ Deno.test("Rejects forged task IDs, invalid simulated day and invalid reminder o
  }
  for(const day of [0,91,1.5,Infinity,NaN,"30",null]){
   yes(!state.setDay(day),"Only integer days 1..90 are allowed");
-  eq(buildEducationalPlan(s,new Set(),day,false).ok,false);
+  eq(buildEducationalPlan(s,new Set(),day as number,false).ok,false);
  }
  for(const flag of ["true",null,1,{}]){
   yes(!state.setReminderPreview(flag),"Preview requires boolean");
-  eq(buildEducationalPlan(s,new Set(),1,flag).ok,false);
+  eq(buildEducationalPlan(s,new Set(),1,flag as boolean).ok,false);
  }
  eq(state.getReminderPreviewEnabled(),false);
 });
