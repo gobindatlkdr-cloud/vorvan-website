@@ -58,6 +58,13 @@ python3 scripts/check_site.py
 
 Existing company security, Vault, MFA and isolated PostgreSQL consent-RLS regressions remain mandatory in `.github/workflows/static-security.yml`.
 
+## Verified GitHub merge, deployment and live browser smoke
+
+- [PR #29](https://github.com/gobindatlkdr-cloud/vorvan-website/pull/29) squash-merged into `main` at **`d9112041e4fcdf56ac860dbc53306270d89dfd56`**. [Static Security + Postgres RLS main run #42670350399](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42670350399) **SUCCESS**, [Live URL #42670352776](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42670352776) **SUCCESS**, [GitHub Pages build/deploy #42670350036](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42670350036) **SUCCESS**.
+- [Scoped live browser smoke `8d8d3485-f2d8-402f-8c3d-5a01ad80485c`](https://agent.tinyfish.ai/runs/8d8d3485-f2d8-402f-8c3d-5a01ad80485c) reported **10/10 checks PASS** on the publicly deployed `https://vorvan.co.in/readiness-passport.html` without entering personal data. Evidence included 30/60/90 milestone cards with 2 tasks each, independent 0/6→1/6 task progress while questionnaire remained 0/6, OFF-by-default reminder preview showing 1 fictional Day-30 topic after simulated Day 29 opt-in, no observed browser notification prompt, Bengali/Hindi language switch preserving task progress, Business/Education task/category reset, full reload clearing answers and preview, and no visible CIBIL/loan approval. No browser console/runtime errors observed.
+- **Translation QA limitation:** while the major plan headings, task/action text, progress, reminder preview and safety statements switched between Bengali/Hindi/English, browser review noticed some navigation/technical labels still in English. Track complete translation and screen-reader acceptance as pending, not a fully cleared localization audit.
+- Real browser smoke + code tests **do not** prove independent accessibility/VAPT, production Auth/consent compliance, server-side storage authorization, absence of all web request telemetry, or delivery behavior of a real notification system. None of those systems were activated.
+
 ## Remaining acceptance and production restrictions
 
 - VOR-009 implementation and automated synthetic tests are the scoped delivery; overall VOR-009 remains **PARTIAL** pending legal/product review, real Safari/Android/VoiceOver/TalkBack accessibility, adverse UX/security testing, documented customer-consent/retention and owner approval.
