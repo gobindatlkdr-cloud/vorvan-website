@@ -40,7 +40,7 @@ Deno.test("Passport rejects invalid navigation and unsafe category values",()=>{
  eq(ctrl.snapshot().category,"personal");eq(ctrl.snapshot().locale,"en");
  for(let i=0;i<6;i++){ctrl.goTo(i);yes(ctrl.choose("not_yet"),"safe answer accepted");}
  const s=ctrl.snapshot();
- eq(s.answered,6);eq(s.result.workflow_status,"educational_checklist_reviewed");
+ eq(s.answered,6);eq(evaluated(s).workflow_status,"educational_checklist_reviewed");
  eq(evaluated(s).next_steps.length,6);
  eq(evaluated(s).credit_score,null);
  eq(evaluated(s).eligibility_assessed,false);
