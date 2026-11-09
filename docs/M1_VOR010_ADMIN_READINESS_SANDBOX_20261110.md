@@ -29,7 +29,7 @@ SECURITY NOTE: Browser-side sandbox permissions are illustrative, NOT real backe
 
 ## Tests / acceptance
 
-GitHub CI invokes Deno role/scoping/source tests and actual module synthetic DOM tests, syntax/type checks, earlier MFA/Vault/Vyn, VOR-006 through VOR-009 and isolated PostgreSQL consent-RLS. Evidence links and PR/merge SHA added after verification.
+GitHub [PR #31](https://github.com/gobindatlkdr-cloud/vorvan-website/pull/31) branch [Static Security & RLS run #42676930137](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42676930137) **SUCCESS**: actual VOR-010 model **14/14 PASS**, admin UI and AAL2/ACL mount static+sandbox DOM **2/2 PASS** (new total 16/16); inherited VOR-007/008/009 including 6,561 source/browser parity, M0 MFA/Vault/Vyn, source check/type checks, and isolated PostgreSQL 17 User A/B consent RLS PASS. [Live website regression #42676930024](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42676930024) **SUCCESS** on the existing site. These are synthetic tests, **not** proof of an actual signed-in Owner/Operator/Auditor AAL2 E2E browser session. The new Admin UI is eligible for Pages publishing after merge.
 
 VOR-010 overall remains PARTIAL pending real Owner/Operator/Auditor AAL2 session E2E, mobile Safari/VoiceOver/Android accessibility, reviewed workflow content and independent VAPT. Real owner-scoped task tables, secure retention/RLS, audit and customer consent are not implemented. No real customer onboarding, score, lender approval or payments are active.
 
