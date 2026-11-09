@@ -74,6 +74,17 @@ jobs:
           assert all(r["total"]==6 and len(r["question_ids"])==6 for r in rows)
           print("PASS VOR-007: 3 simulated categories, 6 questions each, no live scoring, approval or PII")
           PY
+      - name: VOR-008 browser rules generated from exact VOR-007 source
+        run: |
+          node scripts/build_readiness_browser.cjs --check
+          node --check assets/readiness-questions.js
+          node --check assets/readiness-engine.js
+          node --check assets/readiness-controller.js
+          node --check assets/readiness-passport.js
+      - name: VOR-008 exhaustive browser/TypeScript parity (6561 cases)
+        run: deno test backend/tests/readiness_browser_parity.test.ts
+      - name: VOR-008 real Passport UI synthetic DOM, languages, no-PII tests
+        run: deno test --allow-read backend/tests/readiness_passport_ui.test.ts
       - name: Type-check authenticated AI guidance backend
         run: deno check backend/ai-guidance/index.ts backend/admin-console/index.ts backend/site-assistant/index.ts backend/admin-mfa-recovery/index.ts backend/compliance-vault/index.ts backend/institutional-inquiries/index.ts
 
