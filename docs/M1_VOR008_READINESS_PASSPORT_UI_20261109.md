@@ -48,7 +48,7 @@ The page is publicly viewable as a **fictional, informational sandbox**; its con
 
 ## CI and GitHub evidence
 
-To be appended with exact PR number, merged commit, branch/main CI runs, and any live browser smoke outcomes after successful verification. Do not treat a passing mock DOM test as real browser acceptance.
+**Verified PR branch evidence:** [PR #27](https://github.com/gobindatlkdr-cloud/vorvan-website/pull/27), [Static Security CI #42665571009](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42665571009) **SUCCESS**, [Live URL CI #42665570958](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42665570958) **SUCCESS**. The CI confirms browser assets match canonical TypeScript; **6,561 parity cases PASS**; actual Passport UI synthetic DOM, EN/BN/HI, focus, no-network, missing/progress/reset tests PASS; existing VOR-006 customer Auth and isolated Postgres17 User A/B RLS tests PASS. Any post-merge real-browser outcomes must be captured separately; mock DOM tests do not prove Safari/VoiceOver/TalkBack acceptance.
 
 ## Remaining work
 
