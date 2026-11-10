@@ -105,6 +105,19 @@ jobs:
         run: node scripts/test_institutional_form_retry.cjs
       - name: VOR-011 real institutional Edge handler intake/role/audit/retry integration
         run: deno test --allow-env backend/tests/institutional_inquiry_workflow.test.ts
+      - name: VOR-012 regenerate exact VOR-006 synthetic Coach notices and validate source
+        run: |
+          node scripts/build_vyn_coach_notices.cjs --check
+          node --check assets/vyn-coach-engine.js
+          node --check assets/vyn-coach-notices.js
+          node --check assets/vyn-coach-ui.js
+          node --check scripts/build_vyn_coach_notices.cjs
+      - name: VOR-012 consent-gated Vyn educational Coach multilingual safety and redaction tests
+        run: deno test backend/tests/vyn_coach_safety.test.ts
+      - name: VOR-012 actual sandbox Coach browser UI synthetic DOM tests
+        run: deno test --allow-read backend/tests/vyn_coach_ui.test.ts
+      - name: VOR-012 coach runtime and UI type-check
+        run: deno check assets/vyn-coach-engine.js assets/vyn-coach-ui.js
       - name: Type-check authenticated AI guidance backend
         run: deno check backend/ai-guidance/index.ts backend/admin-console/index.ts backend/site-assistant/index.ts backend/admin-mfa-recovery/index.ts backend/compliance-vault/index.ts backend/institutional-inquiries/index.ts
 

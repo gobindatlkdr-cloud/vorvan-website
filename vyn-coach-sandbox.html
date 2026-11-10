@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; connect-src 'none'; img-src 'self' data:; script-src 'self'; style-src 'self'; font-src 'self'; frame-src 'none'; object-src 'none'; worker-src 'none'; manifest-src 'none'; upgrade-insecure-requests">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#741943">
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="VORVAN Vyn Coach: fictional educational, trilingual, offline consent-gated demo. No personal data, credit score, lender offers or onboarding.">
+<title>Vyn Coach — Synthetic Educational Sandbox | VORVAN</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/vyn-coach-sandbox.css">
+<script type="module" src="assets/vyn-coach-ui.js"></script>
+</head>
+<body>
+<a class="vc-skip" href="#vc-main">Skip to Vyn Coach demo</a>
+<div id="vc-app">
+<header class="vc-header">
+  <div class="vc-wrap vc-top">
+    <a class="vc-logo" href="index.html" aria-label="VORVAN homepage"><span class="vc-monogram" aria-hidden="true">V</span><span>VORVAN<small>DIGITAL FINANCE TECHNOLOGY</small></span></a>
+    <nav aria-label="Website links"><a href="index.html">Home</a><a href="readiness-passport.html">Readiness Passport</a><a href="privacy.html">Privacy</a></nav>
+    <label class="vc-lang" for="vc-language"><span id="vc-language-label">Language</span><select id="vc-language"><option value="en">English</option><option value="bn">বাংলা</option><option value="hi">हिंदी</option></select></label>
+  </div>
+</header>
+<main id="vc-main">
+ <section class="vc-hero">
+  <div class="vc-wrap vc-hero-grid">
+   <div><span class="vc-overline">VORVAN EXPERIENCE LAB · M2 / VOR-012 · OFFLINE SANDBOX</span>
+    <h1 id="vc-title">Vyn · educational coach</h1>
+    <p id="vc-subtitle">Fictional planning assistant — no credit or loan decisions</p>
+    <p class="vc-hero-note">Pre-incorporation demonstration. No real customer account, legal consent, live CIBIL, loan approval, payment, KYC or third-party AI service is available here.</p>
+   </div>
+   <div class="vc-orb" aria-hidden="true"><span class="vc-orb-star">✦</span><strong>VYN</strong><small>SYNTHETIC LEARNING</small></div>
+  </div>
+ </section>
+ <div class="vc-wrap vc-main-content">
+  <p class="vc-safety" role="note"><span aria-hidden="true">●</span><span id="vc-foot-safety">No CIBIL score • No loan approval • No financial data storage</span></p>
+  <p id="vc-status" role="status" aria-live="polite"></p>
+  <section class="vc-card vc-gate" id="vc-consent-gate" aria-labelledby="vc-consent-title">
+   <div class="vc-step">01 / DEMO PERMISSION — NOT LEGALLY VERIFIED CONSENT</div>
+   <h2 id="vc-consent-title">Start a temporary demo session</h2>
+   <p id="vc-consent-description">This public preview is not customer login or legally verified consent. It uses only fictional checkbox choices in memory. Do not type personal or financial details.</p>
+   <p id="vc-notice-version" class="vc-meta">Demo Notice v.sandbox-2026-11-09-v1</p>
+   <div class="vc-demo-notices" aria-label="Unapproved sandbox terms and privacy notices">
+     <p id="vc-terms-notice-text">SANDBOX NOTICE: VORVAN is pre-incorporation. This does not open a live account.</p>
+     <p id="vc-privacy-notice-text">SANDBOX PRIVACY NOTICE: Use fictional inputs only and share no personal records.</p>
+   </div>
+   <div class="vc-consents" role="group" aria-label="Temporary demo-only acknowledgements">
+    <label><input type="checkbox" id="vc-terms"><span id="vc-terms-label">I acknowledge the unapproved demo Terms notice.</span></label>
+    <label><input type="checkbox" id="vc-privacy"><span id="vc-privacy-label">I acknowledge the unapproved demo Privacy notice.</span></label>
+    <label><input type="checkbox" id="vc-opt-in"><span id="vc-opt-label">I voluntarily opt in to this temporary synthetic Coach demonstration.</span></label>
+   </div>
+   <p class="vc-meta">This is a local acknowledgement only. <a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a>. Reloading resets the demo. No data is sent to a server.</p>
+   <button type="button" class="vc-primary" id="vc-start">Start demo</button>
+  </section>
+  <section class="vc-coach" id="vc-coach" aria-label="Synthetic Vyn Coaching" hidden>
+   <div class="vc-panel-header"><div><span class="vc-step">02 / EDUCATIONAL CHECKLIST</span><h2 id="vc-category-label">Choose an educational category</h2></div>
+    <button type="button" class="vc-revoke" id="vc-revoke">Withdraw demo permission &amp; clear answers</button>
+   </div>
+   <div class="vc-columns">
+    <section class="vc-card" aria-labelledby="vc-questions-heading">
+      <label class="vc-field" for="vc-category"><span class="vc-visually-hidden">Educational category</span><select id="vc-category"><option value="personal">Personal</option><option value="business">Business</option><option value="education">Education</option></select></label>
+      <h3 id="vc-questions-heading">Fictional planning checklist</h3>
+      <p class="vc-meta">Use fictional fixed-choice answers only. These are not customer details or verified financial information.</p>
+      <div id="vc-questions" class="vc-questions"></div>
+      <div class="vc-progress"><span id="vc-progress" aria-live="polite">0 / 6 fictional topics reviewed</span><progress id="vc-progress-bar" value="0" max="6"></progress></div>
+    </section>
+    <section class="vc-card vc-conversation" aria-labelledby="vc-answer-heading">
+      <span class="vc-step">03 / LOCAL EDUCATIONAL GUIDANCE</span>
+      <label class="vc-field" for="vc-topic"><span id="vc-topic-label">What should Vyn explain?</span>
+        <select id="vc-topic"><option value="plan">Next learning steps</option><option value="questions">Questions for a lender</option><option value="privacy">Privacy &amp; redaction</option><option value="human">Talk to a human</option></select>
+      </label>
+      <label class="vc-field" for="vc-prompt"><span id="vc-note-label">Optional practice question (do not include PII)</span>
+        <textarea id="vc-prompt" maxlength="240" rows="3" autocomplete="off" spellcheck="false" placeholder="Example: What should I review next? Never enter OTP, PAN, Aadhaar, phone, email or account data."></textarea>
+      </label>
+      <button type="button" class="vc-primary" id="vc-send">Ask Vyn (offline)</button>
+      <div class="vc-response-box"><h3 id="vc-answer-heading">Vyn's safe guidance</h3><p id="vc-answer" tabindex="-1" aria-live="polite">Select a topic and ask Vyn. The response stays in this browser tab.</p></div>
+      <a id="vc-human" class="vc-human" href="mailto:support@vorvan.co.in" hidden>Open human-support email (no message sent automatically)</a>
+      <p class="vc-meta" id="vc-memory-note">To erase the demo, withdraw permission or reload the page.</p>
+    </section>
+   </div>
+  </section>
+ </div>
+</main>
+<footer class="vc-footer"><div class="vc-wrap"><span>© VORVAN · Proposed company · Registration pending</span><span>Private browser-only simulation · No live credit products</span></div></footer>
+</div>
+</body>
+</html>

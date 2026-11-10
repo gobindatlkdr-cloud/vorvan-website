@@ -50,7 +50,7 @@ for page in PAGES:
             issue(f"{page.name}: site-name social metadata missing")
         if not re.search(r'<title>[^<]{20,85}</title>', html):
             issue(f"{page.name}: descriptive title missing")
-    if page.name in ("admin.html", "404.html", "readiness-passport.html") and not re.search(
+    if page.name in ("admin.html", "404.html", "readiness-passport.html", "vyn-coach-sandbox.html") and not re.search(
         r'<meta name="robots" content="noindex', html
     ):
         issue(f"{page.name}: this page must not be indexed")
@@ -58,6 +58,13 @@ for page in PAGES:
         issue(f"{page.name}: missing Content Security Policy")
     if '<meta name="referrer" content="no-referrer">' not in html:
         issue(f"{page.name}: missing referrer restriction")
+    if page.name == "vyn-coach-sandbox.html":
+        if "connect-src 'none'" not in html or "form-action 'none'" not in html:
+            issue("vyn-coach-sandbox.html: outbound network and forms must remain disabled")
+        if 'id="vc-terms"' not in html or 'id="vc-privacy"' not in html or 'id="vc-opt-in"' not in html:
+            issue("vyn-coach-sandbox.html: explicit demo permissions required")
+        if re.search(r"<(?:form|iframe|object|embed)\b", html, re.I):
+            issue("vyn-coach-sandbox.html: real forms or embeds forbidden")
     if page.name == "readiness-passport.html":
         if "connect-src 'none'" not in html or "form-action 'none'" not in html:
             issue("readiness-passport.html: network and forms must remain disabled")
@@ -81,7 +88,8 @@ for page in PAGES:
         issue(f"{page.name}: form, frame or embed is not permitted")
     if re.search(r'\s(?:style|on[a-z]+)\s*=', html, re.I):
         issue(f"{page.name}: inline style or event handler blocked by CSP")
-    allowed_script = (r'assets/readiness-passport\.js' if page.name == "readiness-passport.html"
+    allowed_script = (r'assets/vyn-coach-ui\.js' if page.name == "vyn-coach-sandbox.html"
+        else r'assets/readiness-passport\.js' if page.name == "readiness-passport.html"
         else r'assets/(?:site|admin)\.js' if page.name == "admin.html"
         else r'assets/(?:site|assistant|institutional-inquiry)\.js' if page.name == "partners.html"
         else r'assets/(?:site|assistant)\.js')
