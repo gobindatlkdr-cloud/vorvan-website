@@ -1,6 +1,6 @@
 # VORVAN — M2 / VOR-012 Vyn Personalized Educational Coach Sandbox
 
-**Date:** 10 November 2026 (IST). **Scope:** independent, fixed-rule, consent-gated **synthetic-only** coach and multilingual browser demo. **Company status:** VORVAN incorporation pending; MCA fees paid; no COI or CIN. No production borrower account, credit score, bureau integration, lender offer, KYC or payment.
+**Date:** 10 November 2026 (IST). **Scope:** independent, fixed-rule, consent-gated **synthetic-only** coach and multilingual browser demo. **Company status:** VORVAN PRIVATE LIMITED is registered, based on the owner's 10 November 2026 confirmation. This source/code audit does not independently certify or publish the COI, CIN or PAN; incorporation does not confer RBI lending permissions. No production borrower account, credit score, bureau integration, lender offer, KYC or payment.
 
 ## Reused verified foundations
 
@@ -36,6 +36,13 @@
 **Verified PR #35 CI evidence, exact branch head `b4c71cfc551a67207e9d56ed18bff1cbc3fb95ff`:** [Static Security #42744572387](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42744572387) **SUCCESS**, [Live URL Verification #42744572289](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42744572289) **SUCCESS**. New VOR-012 tests: **19/19** real Coach engine Deno tests PASS and **1/1** actual UI synthetic DOM test PASS. Deterministic VOR-006 notice-copy generator/parity check PASS, JS syntax and Deno type-check PASS. Prior VOR-002–011 security/regression tests, VOR-008 canonical VOR-007 parity **6,561 cases**, and genuine throwaway PostgreSQL 17 consent/institutional audit-RLS tests PASS. This is isolated/synthetic evidence, **not** real Supabase Auth/legal consent or human SLA validation. These checks will be re-run if the evidence file or ledger changes. [PR #35](https://github.com/gobindatlkdr-cloud/vorvan-website/pull/35).
 
 **Release scope:** GitHub Pages can publish the isolated `vyn-coach-sandbox.html` URL for a visibly fictional demo. There is **no new Supabase Edge Function, real Auth enrollment, company record, paid AI API, credit report or lender connection**. This is not a production personalized financial-advice service.
+
+## 10 November 2026 — additional live browser smoke and registration-copy correction
+
+- **Actual read-only live browser test:** [Vyn Coach smoke run](https://agent.tinyfish.ai/runs/ef9d9465-c573-4f44-b12a-cb5789f98ca1), **8/8 scoped checks PASS**. Observed page load/sandbox disclaimers, no-coach-before-opt-in, three separate draft notice/Coach checkboxes, local start, EN/BN/HI selector, 6 synthetic choices and progress, a harmless educational prompt, support/legal contact links without sending, and revoke/reset to blocked state. This does **not** constitute a real customer login, user-data handling test, screen-reader acceptance, legal consent, or delivery of a support case.
+- **Detected stale registration claim during browser run:** historical VOR-012 HTML and draft VOR-006 Terms notice incorrectly stated "pre-incorporation / registration pending". The owner subsequently confirmed that **VORVAN PRIVATE LIMITED is registered**. The note must not silently overwrite legal/regulatory checks: no CIN/PAN disclosed here, and registration **does not** imply approval to lend, pull bureau reports, run payments or offer loans.
+- **Focused correction:** update the Coach's English/Bengali/Hindi static disclaimers, hero/footer and canonical demo Terms notice with registered-company text; bump the **unapproved draft notice version** from `sandbox-2026-11-09-v1` to `sandbox-2026-11-10-v2`; keep generated browser notices byte-exact with `backend/customer-identity/notices.ts`. Existing v1 mock acknowledgements must fail the version gate. No live customer consent data is affected because the VOR-006 module remains disabled and no production consent records exist.
+- **Additional regression:** guard the current three-language registration wording, verify old-version rejection, and verify no "registration pending" HTML text. Retain all security CORS/CSP, consent-before-use, no-network/no-financial-guidance rules and synthetic Deno tests. PR and CI/Pages references to be added after verification.
 
 ## Open acceptance items (VOR-012 overall PARTIAL)
 

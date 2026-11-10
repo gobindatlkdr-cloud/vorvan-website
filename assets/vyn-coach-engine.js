@@ -25,7 +25,7 @@ const TEXT=Object.freeze({
   unsafe:"I cannot approve a loan, calculate a personal credit score, guarantee acceptance, accept fees or collect KYC. Please consult a regulated lender through its official channels.",
   malformed:"This is a synthetic demo only. Please select a permitted educational topic and use fictional inputs.",
   next:"Suggested next step:",empty:"No further synthetic action was selected; check official informational resources instead.",
-  disclaimer:"Synthetic educational guidance only. No CIBIL score, lender eligibility, loan offer, KYC, payments or professional financial advice. VORVAN incorporation remains pending.",
+  disclaimer:"Synthetic educational guidance only. No CIBIL score, lender eligibility, loan offer, KYC, payments or professional financial advice. VORVAN PRIVATE LIMITED is registered; no RBI lending licence or operational authorisation is claimed.",
   escalation:"Open the team mailbox yourself; no message or chat content is sent automatically."
  },
  bn:{
@@ -40,7 +40,7 @@ const TEXT=Object.freeze({
   unsafe:"আমি ঋণ অনুমোদন, ব্যক্তিগত ক্রেডিট স্কোর গণনা, নিশ্চয়তা, ফি গ্রহণ বা KYC সংগ্রহ করতে পারি না। অফিসিয়াল অনুমোদিত ঋণদাতার সঙ্গে যোগাযোগ করুন।",
   malformed:"এটি শুধু কৃত্রিম ডেমো। অনুমোদিত শিক্ষামূলক বিষয় বাছুন এবং কাল্পনিক তথ্য ব্যবহার করুন।",
   next:"পরবর্তী শিক্ষামূলক কাজ:",empty:"আর কোনো কাল্পনিক কাজ নির্বাচিত নেই; অফিসিয়াল তথ্যমূলক উৎস দেখুন।",
-  disclaimer:"শুধু কৃত্রিম শিক্ষামূলক নির্দেশনা। CIBIL স্কোর, ঋণযোগ্যতা, অফার, KYC, পেমেন্ট বা পেশাগত আর্থিক পরামর্শ নয়। VORVAN-এর নিবন্ধন এখনও বাকি।",
+  disclaimer:"শুধু কৃত্রিম শিক্ষামূলক নির্দেশনা। CIBIL স্কোর, ঋণযোগ্যতা, অফার, KYC, পেমেন্ট বা পেশাগত আর্থিক পরামর্শ নয়। VORVAN PRIVATE LIMITED নিবন্ধিত; এখানে RBI ঋণদানের লাইসেন্স বা কার্যক্রমের অনুমোদন দাবি করা হচ্ছে না।",
   escalation:"আপনি নিজে টিমের ইমেইল খুলতে পারবেন; কোনো মেসেজ বা চ্যাট স্বয়ংক্রিয়ভাবে পাঠানো হয় না।"
  },
  hi:{
@@ -55,7 +55,7 @@ const TEXT=Object.freeze({
   unsafe:"मैं ऋण मंजूर, व्यक्तिगत क्रेडिट स्कोर का अनुमान, गारंटी, शुल्क स्वीकार या KYC एकत्र नहीं कर सकता। आधिकारिक ऋणदाता से बात करें।",
   malformed:"यह सिर्फ़ काल्पनिक डेमो है। अनुमत शैक्षिक विषय चुनें और काल्पनिक उदाहरण प्रयोग करें।",
   next:"अगला शैक्षिक कदम:",empty:"कोई और काल्पनिक कदम नहीं चुना गया; आधिकारिक जानकारी देखें।",
-  disclaimer:"केवल काल्पनिक शैक्षिक मार्गदर्शन। CIBIL स्कोर, ऋण पात्रता, प्रस्ताव, KYC, भुगतान या पेशेवर वित्तीय सलाह नहीं। VORVAN पंजीकरण लंबित है।",
+  disclaimer:"केवल काल्पनिक शैक्षिक मार्गदर्शन। CIBIL स्कोर, ऋण पात्रता, प्रस्ताव, KYC, भुगतान या पेशेवर वित्तीय सलाह नहीं। VORVAN PRIVATE LIMITED पंजीकृत है; यहाँ RBI ऋण लाइसेंस या संचालन अनुमति का दावा नहीं है।",
   escalation:"आप स्वयं टीम का ईमेल खोल सकते हैं; कोई संदेश या चैट अपने-आप नहीं भेजी जाएगी।"
  }
 });

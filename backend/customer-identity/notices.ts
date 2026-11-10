@@ -5,12 +5,12 @@
 export type Language="en"|"bn"|"hi";
 export type Purpose="terms_acknowledgement"|"privacy_acknowledgement"|"optional_updates";
 export type Decision="acknowledged"|"granted"|"withdrawn";
-export const NOTICE_VERSION="sandbox-2026-11-09-v1";
+export const NOTICE_VERSION="sandbox-2026-11-10-v2";
 export const NOTICES:Record<Purpose,Record<Language,string>>={
  terms_acknowledgement:{
-  en:"SANDBOX NOTICE: VORVAN is pre-incorporation. This software demonstration does not open a live account, request a credit score, verify KYC, charge fees, offer credit, or create a lending agreement. This acknowledgement is only a synthetic test.",
-  bn:"স্যান্ডবক্স নোটিশ: VORVAN-এর কোম্পানি নিবন্ধন এখনও সম্পন্ন হয়নি। এটি বাস্তব অ্যাকাউন্ট, CIBIL, KYC, পেমেন্ট বা ঋণের আবেদন নয়। এই স্বীকৃতি কেবল পরীক্ষার জন্য।",
-  hi:"सैंडबॉक्स सूचना: VORVAN का कंपनी पंजीकरण अभी लंबित है। यह वास्तविक खाता, CIBIL, KYC, भुगतान या ऋण आवेदन नहीं है। यह स्वीकार केवल परीक्षण के लिए है।"
+  en:"SANDBOX NOTICE: VORVAN PRIVATE LIMITED is registered. This software demonstration is not an authorised lending service and does not open a live account, request a credit score, verify KYC, charge fees, offer credit, or create a lending agreement. This acknowledgement is only a synthetic test.",
+  bn:"স্যান্ডবক্স নোটিশ: VORVAN PRIVATE LIMITED নিবন্ধিত কোম্পানি। এই ডেমো অনুমোদিত ঋণসেবা নয়; বাস্তব অ্যাকাউন্ট, CIBIL, KYC, পেমেন্ট বা ঋণের আবেদনও নয়। এই স্বীকৃতি কেবল পরীক্ষার জন্য।",
+  hi:"सैंडबॉक्स सूचना: VORVAN PRIVATE LIMITED एक पंजीकृत कंपनी है। यह डेमो अधिकृत ऋण सेवा, वास्तविक खाता, CIBIL, KYC, भुगतान या ऋण आवेदन नहीं है। यह स्वीकार केवल परीक्षण के लिए है।"
  },
  privacy_acknowledgement:{
   en:"SANDBOX PRIVACY NOTICE: Use synthetic identities only. Do not share passwords, OTPs, identity documents, account numbers or personal credit information. Real customer-data processing is disabled pending legal review.",
