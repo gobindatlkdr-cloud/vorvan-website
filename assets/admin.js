@@ -478,7 +478,23 @@ function institutionalInbox(container){
        feedback.textContent="Saved. This is only an internal review stage, not institutional access.";
       }catch(e){feedback.textContent="Not saved: "+e.message;}finally{save.disabled=state.role==="auditor";}
     });
-    append(controls,el("p","meta","Internal status"),status,note,save,feedback);
+    const auditButton=el("button","","View review history");auditButton.type="button";
+    const auditList=el("div","details","History available to MFA-approved staff only.");
+    auditButton.addEventListener("click",async()=>{
+      auditButton.disabled=true;auditList.textContent="Loading history…";
+      try{
+       const r=await fetch(API+"/functions/v1/institutional-inquiries?view=audit&id="+encodeURIComponent(record.id),
+        {method:"GET",headers:authHeaders(true),cache:"no-store"});
+       const v=await r.json().catch(()=>({}));if(!r.ok)throw Error(v.code||"audit_unavailable");
+       auditList.replaceChildren();
+       for(const ev of (Array.isArray(v.events)?v.events:[])){
+        auditList.append(el("p","",new Date(ev.created_at).toLocaleString()+" · "+ev.action));
+       }
+       if(!auditList.children.length)auditList.textContent="No recorded audit events.";
+      }catch(e){auditList.textContent="Audit history unavailable: "+e.message;}
+      finally{auditButton.disabled=false;}
+    });
+    append(controls,el("p","meta","Internal status"),status,note,save,feedback,auditButton,auditList);
     append(card,left,controls);list.append(card);
    }
   }catch(err){list.textContent="Inbox unavailable: "+err.message+". Do not share your login or OTP.";}

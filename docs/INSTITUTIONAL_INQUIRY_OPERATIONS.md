@@ -20,3 +20,11 @@ No service/secret key in public assets. Allowed origin restricted. Payload size 
 
 ## Known limitations
 This is an inquiry intake, not a bank-only login and not a Google Reviews gate. No automated email notification, CAPTCHA/Turnstile, anti-bot IP assurance, identity proof or penetration test. Public form can be submitted by a misrepresenting party, so manual verification is compulsory. End-to-end external visitor test, real email delivery and Google Search Console owner verification are separate steps.
+
+## VOR-011 retry and transactional audit enhancement (2026-11-10)
+
+The public form sends a one-use UUID held only in browser-tab memory and reused if a response times out or fails. If the submitted fields change, it generates a new UUID. A retry with the same ID and same normalized content receives the previous receipt; a reused ID with different content is rejected. A network failure cannot prove the inquiry was not saved; use the unchanged form to retry safely, or contact partnerships@vorvan.co.in. No auto-onboarding occurs.
+
+A database AFTER INSERT / review UPDATE SECURITY INVOKER trigger atomically records `created`, `status_updated`, or `note_updated` audit events. If the audit insert fails, the inquiry insert/review update is rolled back. The MFA-protected Owner/Operator/Auditor inbox can inspect an inquiry's audit history; Auditor cannot PATCH. Per-email HMAC throttling and honeypot are best-effort; corporate email domains do not authenticate institutional authority. This does not include CAPTCHA, strong bot prevention, retention automation or independently validated real MFA login.
+
+See [VOR-011 test and release evidence](M1_VOR011_INQUIRY_ATOMIC_E2E_20261110.md). No real lender/customer-data records are part of the synthetic CI tests.
