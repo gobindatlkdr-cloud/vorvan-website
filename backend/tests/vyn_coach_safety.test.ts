@@ -250,7 +250,7 @@ Deno.test("VOR-012 notice v2 acknowledges registered company without implying le
  eq(DEMO_NOTICE_VERSION,"sandbox-2026-11-10-v2");
  eq(NOTICE_VERSION,DEMO_NOTICE_VERSION);
  for(const locale of LANGUAGES){
-  const notice=NOTICES.terms_acknowledgement[locale];
+  const notice=NOTICES.terms_acknowledgement[locale as "en"|"bn"|"hi"];
   yes(notice.includes("VORVAN PRIVATE LIMITED"),"Registered legal name must appear in "+locale);
   yes(!/pre-incorporation|নিবন্ধন এখনও সম্পন্ন হয়নি|पंजीकरण अभी लंबित है/i.test(notice),
       "Outdated pending-registration copy forbidden in "+locale);
