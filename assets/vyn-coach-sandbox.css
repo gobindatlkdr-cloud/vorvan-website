@@ -16,3 +16,5 @@ button,select,textarea{font:inherit}button{cursor:pointer}button:disabled{cursor
 @media(max-width:850px){.vc-top{gap:12px;flex-wrap:wrap;padding:14px 0}.vc-top nav{order:3;width:100%;justify-content:space-around}.vc-hero-grid{grid-template-columns:1fr}.vc-orb{width:150px;height:150px}.vc-orb strong{font-size:46px}.vc-columns{grid-template-columns:1fr}.vc-panel-header{align-items:flex-start;flex-direction:column}}
 @media(max-width:520px){.vc-wrap{width:calc(100% - 28px)}.vc-hero{padding:28px 0}.vc-orb{display:none}.vc-card{padding:20px;border-radius:16px}.vc-top nav{font-size:12px;gap:8px}.vc-logo{font-size:18px}.vc-monogram{width:38px;height:38px}.vc-top .vc-lang{margin-left:auto}.vc-panel-header{margin-top:18px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+
+.vc-demo-notices{background:#fff7fa;border-left:3px solid var(--burgundy);padding:12px 17px;border-radius:8px;color:var(--deep);font-size:13px}.vc-demo-notices p{margin:5px 0 12px}
