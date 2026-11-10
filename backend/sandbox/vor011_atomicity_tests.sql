@@ -80,7 +80,7 @@ END $$;
 RESET ROLE;
 -- Force an audit failure; UPDATE must not commit, even if the API caller retries.
 ALTER TABLE public.vorvan_institutional_inquiry_audit
- ADD CONSTRAINT synthetic_audit_fail CHECK (action <> 'status_updated');
+ ADD CONSTRAINT synthetic_audit_fail CHECK (action <> 'status_updated') NOT VALID;
 SET ROLE service_role;
 DO $$
 BEGIN
@@ -101,7 +101,7 @@ RESET ROLE;
 ALTER TABLE public.vorvan_institutional_inquiry_audit DROP CONSTRAINT synthetic_audit_fail;
 -- Also force INSERT audit failure; the entire new intake must roll back.
 ALTER TABLE public.vorvan_institutional_inquiry_audit
- ADD CONSTRAINT synthetic_insert_fail CHECK (action <> 'created');
+ ADD CONSTRAINT synthetic_insert_fail CHECK (action <> 'created') NOT VALID;
 SET ROLE service_role;
 DO $$
 BEGIN
