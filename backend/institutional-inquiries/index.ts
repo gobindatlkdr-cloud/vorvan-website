@@ -68,7 +68,7 @@ function intake(x:Record<string,unknown>|null):Record<string,string>|null{
 // Rate limiting is best-effort, not an atomic quota or anti-bot proof.
 async function hmac(label:string,data:string):Promise<string>{
   const key=secret();if(!key)throw Error("secret_unavailable");
-  const cryptoKey=await crypto.subtle.importKey("raw",new TextEncoder().encode(key),"HMAC",false,["sign"]);
+  const cryptoKey=await crypto.subtle.importKey("raw",new TextEncoder().encode(key),{name:"HMAC",hash:"SHA-256"},false,["sign"]);
   const signed=await crypto.subtle.sign("HMAC",cryptoKey,new TextEncoder().encode(label+"|"+data));
   return [...new Uint8Array(signed)].map(b=>b.toString(16).padStart(2,"0")).join("");
 }
