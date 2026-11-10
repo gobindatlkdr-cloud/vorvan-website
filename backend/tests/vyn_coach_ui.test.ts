@@ -22,6 +22,10 @@ Deno.test("Actual Vyn Coach DOM: consent gating, progress, tri-language, PII blo
  const js=await Deno.readTextFile("assets/vyn-coach-ui.js");
  const css=await Deno.readTextFile("assets/vyn-coach-sandbox.css");
  yes(html.includes("connect-src 'none'"),"Network CSP must be disabled");
+ yes(html.includes("Registered company"),"Registered-company wording required");
+ yes(!html.includes("Registration pending")&&!html.includes("Pre-incorporation demonstration"),"Outdated registration-status claim forbidden");
+ yes(html.includes("sandbox-2026-11-10-v2"),"Current unapproved notice version is visible");
+
  yes(html.includes("form-action 'none'"),"No form submission allowed");
  yes(html.includes('name="robots" content="noindex,nofollow"'),"No marketing/indexing before legal approval");
  yes(html.includes('src="assets/vyn-coach-ui.js"'),"Only first-party UI module");
