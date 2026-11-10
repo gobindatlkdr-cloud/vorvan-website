@@ -5,8 +5,9 @@
  * NO fetch, persistence, cookies, analytics, history or network.
  */
 import {evaluateReadiness,getQuestionnaire} from "./readiness-engine.js";
+import {NOTICE_VERSION} from "./vyn-coach-notices.js";
 export const COACH_VERSION="m2-vor012-sandbox-2026-11-10-v1";
-export const DEMO_NOTICE_VERSION="sandbox-2026-11-09-v1"; // VOR-006 unapproved notice version
+export const DEMO_NOTICE_VERSION=NOTICE_VERSION; // Generated from VOR-006 unapproved notice registry
 export const LANGUAGES=Object.freeze(["en","bn","hi"]);
 export const CATEGORIES=Object.freeze(["personal","business","education"]);
 export const TOPICS=Object.freeze(["plan","questions","privacy","human"]);
@@ -114,6 +115,10 @@ export function createCoachSession(opts={}){
     payload.coach_opt_in!==true)return false;
   permission=true;answers=Object.create(null);lastStatus="consented";return true;
  }
+ function clearAnswer(id){
+  if(!permission||typeof id!=="string"||!form().questions.some(q=>q.id===id))return false;
+  delete answers[id];lastStatus="answer_cleared";return true;
+ }
  function revoke(){
   permission=false;answers=Object.create(null);lastStatus="revoked";
   return snapshot();
@@ -168,5 +173,5 @@ export function createCoachSession(opts={}){
     raw_message_reflected:false,output_policy:NO_SAFE_ECHO
   });
  }
- return Object.freeze({snapshot,grantConsent,revoke,chooseLanguage,chooseCategory,chooseAnswer,reply});
+ return Object.freeze({snapshot,grantConsent,revoke,chooseLanguage,chooseCategory,chooseAnswer,clearAnswer,reply});
 }
