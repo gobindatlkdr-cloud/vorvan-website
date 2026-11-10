@@ -245,3 +245,19 @@ Deno.test("Version integrity and unsupported locale/category fail closed",()=>{
  eq(s.grantConsent({mode:"synthetic_only",notice_version:"expired",terms_acknowledged:true,privacy_acknowledged:true,coach_opt_in:true}),false);
  eq(denied(s.reply({topic:"plan"})).code,"consent_required");
 });
+
+Deno.test("VOR-012 notice v2 acknowledges registered company without implying lending authorisation",()=>{
+ eq(DEMO_NOTICE_VERSION,"sandbox-2026-11-10-v2");
+ eq(NOTICE_VERSION,DEMO_NOTICE_VERSION);
+ for(const locale of LANGUAGES){
+  const notice=NOTICES.terms_acknowledgement[locale];
+  yes(notice.includes("VORVAN PRIVATE LIMITED"),"Registered legal name must appear in "+locale);
+  yes(!/pre-incorporation|নিবন্ধন এখনও সম্পন্ন হয়নি|पंजीकरण अभी लंबित है/i.test(notice),
+      "Outdated pending-registration copy forbidden in "+locale);
+  const session=createCoachSession({locale});
+  const stale=session.grantConsent({mode:"synthetic_only",notice_version:"sandbox-2026-11-09-v1",
+    terms_acknowledged:true,privacy_acknowledged:true,coach_opt_in:true});
+  eq(stale,false,"Old draft notice version must NOT allow coaching");
+  yes(grant(session),"Fresh v2 draft acknowledgements accepted for synthetic session");
+ }
+});
