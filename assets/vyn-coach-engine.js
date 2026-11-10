@@ -67,10 +67,11 @@ const MASK="[REDACTED]";
 const PATTERNS=Object.freeze([
  ["email",/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/gi],
  ["pan",/\b[A-Z]{5}\d{4}[A-Z]\b/gi],
+ // Match 13–19 digit card-like sequences BEFORE 12-digit Aadhaar to avoid partial masking.
+ ["card",/(?<!\d)(?:\d[ -]?){13,19}(?!\d)/g],
  ["aadhaar",/(?<!\d)[2-9]\d{3}[\s-]?\d{4}[\s-]?\d{4}(?!\d)/g],
  ["phone",/(?<!\d)(?:\+91[\s-]?)?[6-9]\d{4}[\s-]?\d{5}(?!\d)/g],
  ["ifsc",/\b[A-Z]{4}0[A-Z0-9]{6}\b/gi],
- ["card",/(?<!\d)(?:\d[ -]?){13,19}(?!\d)/g],
  ["bank",/\b(?:bank\s+a\/?c|account\s*(?:no\.?|number)?|a\/c)\s*[:=#-]?\s*[a-z0-9 -]{6,32}/gi],
  ["credential",/\b(?:otp|one.time.password|pin|password|passcode|cvv|api[_ -]?key|secret|token)\s*(?::|=|is|number)?\s*[a-z0-9!@#$%^&*_.-]{3,40}/gi],
  ["upi",/\b[a-z0-9._-]{2,}@[a-z][a-z0-9.-]{2,}\b/gi]
