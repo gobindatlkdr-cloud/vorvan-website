@@ -2,7 +2,8 @@
  * VOR-012 browser UI. All local and in-memory. This form DOES NOT submit anywhere.
  * Dynamic text only through textContent; never echo original practice text.
  */
-import {createCoachSession,DEMO_NOTICE_VERSION,TOPICS} from "./vyn-coach-engine.js";
+import {createCoachSession,DEMO_NOTICE_VERSION} from "./vyn-coach-engine.js";
+import {NOTICES as DEMO_NOTICES} from "./vyn-coach-notices.js";
 const root=document.getElementById("vc-app");
 if(root){
  const el=id=>root.querySelector("#"+id);
@@ -66,6 +67,7 @@ if(root){
    select.value=state.answers[q.id]||"";
    select.addEventListener("change",()=>{
     if(select.value)session.chooseAnswer(q.id,select.value);
+    else session.clearAnswer(q.id);
     // No free text or network requests; selection is synthetic memory only.
     renderProgress();clearReply();
    });
@@ -97,6 +99,8 @@ if(root){
   set("vc-send",d.ask);set("vc-answer-heading",d.response);
   set("vc-foot-safety",d.noScore);set("vc-memory-note",d.reset);
   set("vc-notice-version",d.notice+DEMO_NOTICE_VERSION);
+  set("vc-terms-notice-text",DEMO_NOTICES.terms_acknowledgement[locale()]);
+  set("vc-privacy-notice-text",DEMO_NOTICES.privacy_acknowledgement[locale()]);
   category.setAttribute("aria-label",d.category);
   const topicsText={plan:d.plan,questions:d.questionsTopic,privacy:d.privacyTopic,human:d.humanTopic};
   for(const option of [...topic.options])option.textContent=topicsText[option.value]||option.value;
