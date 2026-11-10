@@ -101,6 +101,8 @@ jobs:
           node --check assets/admin-readiness-sandbox.js
           node --check assets/admin.js
           deno check assets/admin-readiness-sandbox.js
+      - name: VOR-011 real institutional Edge handler intake/role/audit/retry integration
+        run: deno test --allow-env backend/tests/institutional_inquiry_workflow.test.ts
       - name: Type-check authenticated AI guidance backend
         run: deno check backend/ai-guidance/index.ts backend/admin-console/index.ts backend/site-assistant/index.ts backend/admin-mfa-recovery/index.ts backend/compliance-vault/index.ts backend/institutional-inquiries/index.ts
 
@@ -134,3 +136,8 @@ jobs:
             -f backend/sandbox/vor006_customer_consent_schema.sql \
             -f backend/sandbox/vor006_rls_tests.sql
           echo 'PASS: isolated VOR-006 Postgres RLS and append-only checks; no production Supabase access'
+          psql -v ON_ERROR_STOP=1 -h localhost -U postgres -d vorvan_sandbox \
+            -f backend/sandbox/vor011_inquiry_fixture.sql \
+            -f backend/migrations/vor011_atomic_inquiry_audit.sql \
+            -f backend/sandbox/vor011_atomicity_tests.sql
+          echo 'PASS: isolated VOR-011 atomic audit and retry-key tests; no production Supabase access'
