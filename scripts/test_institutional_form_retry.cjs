@@ -2,6 +2,14 @@
 /** VOR-011 actual website form script in a synthetic DOM; no live network. */
 const assert=require("node:assert/strict"),vm=require("node:vm"),fs=require("node:fs");
 const source=fs.readFileSync("assets/institutional-inquiry.js","utf8");
+const page=fs.readFileSync("partners.html","utf8");
+const styles=fs.readFileSync("assets/institutional-inquiry.css","utf8");
+// Honeypot intentionally must NOT appear in visible/accessibility form controls.
+// This is a source assertion: visually hidden bait remains in the HTML DOM.
+assert.match(page,/class="vv-inquiry-honey" aria-hidden="true"/);
+assert.match(page,/<input id="ii-homepage" name="homepage" autocomplete="off" tabindex="-1">/);
+assert.match(styles,/\.vv-inquiry-honey\{position:absolute!important;left:-10000px!important;/);
+
 const fields={
  institution_type:"nbfc",institution_name:"Synthetic Institution",
  institution_website:"https://synthetic-bank.invalid",contact_name:"Fictional Contact",
