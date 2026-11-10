@@ -101,6 +101,8 @@ jobs:
           node --check assets/admin-readiness-sandbox.js
           node --check assets/admin.js
           deno check assets/admin-readiness-sandbox.js
+      - name: VOR-011 public institutional form retry and privacy-safe UX
+        run: node scripts/test_institutional_form_retry.cjs
       - name: VOR-011 real institutional Edge handler intake/role/audit/retry integration
         run: deno test --allow-env backend/tests/institutional_inquiry_workflow.test.ts
       - name: Type-check authenticated AI guidance backend
