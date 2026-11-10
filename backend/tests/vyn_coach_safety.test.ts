@@ -91,7 +91,7 @@ Deno.test("Missing, unsure, not-yet and all-reviewed produce accurate educationa
  yes(first.message.includes("Please review"),"incomplete guidance");
  const ids=questionnaire(s).map((q:{id:string})=>q.id);
  s.chooseAnswer(ids[0],"unsure");
- eq(s.reply({topic:"plan"}).status,"needs_more_information");
+ eq(good(s.reply({topic:"plan"})).status,"needs_more_information");
  for(const id of ids)s.chooseAnswer(id,"considered");
  const full=good(s.reply({topic:"plan"}));
  eq(full.status,"educational_checklist_reviewed");
