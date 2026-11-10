@@ -39,7 +39,6 @@ Deno.test("Actual Vyn Coach DOM: consent gating, progress, tri-language, PII blo
  const get=(id:string)=>{const item=elements.get(id);if(!item)throw Error("missing "+id);return item;};
  const page={lang:"en"};
  const root=get("vc-app");root.dataset={};
- root["querySelector" as "id"]=undefined as never; // replaced below without external libraries
  (root as unknown as {querySelector:(selector:string)=>Fake|null}).querySelector=(selector)=>
   selector.startsWith("#")?elements.get(selector.slice(1))||null:null;
  for(const [id,values] of [
