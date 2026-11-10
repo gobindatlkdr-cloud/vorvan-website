@@ -33,7 +33,7 @@
 
 ## GitHub CI and release evidence
 
-**Required before merge:** the PR must pass exact-head Static Security and Live URL runs, including VOR-012 engine and actual UI-module tests, canonical VOR-006 generated notices check, runtime typechecking, unchanged VOR-007/VOR-008 canonical parity, VOR-006 customer consent tests and isolated PostgreSQL RLS regressions. Record actual run IDs/results **after execution**; do not infer completion from source commits.
+**Verified PR #35 CI evidence, exact branch head `b4c71cfc551a67207e9d56ed18bff1cbc3fb95ff`:** [Static Security #42744572387](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42744572387) **SUCCESS**, [Live URL Verification #42744572289](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/42744572289) **SUCCESS**. New VOR-012 tests: **19/19** real Coach engine Deno tests PASS and **1/1** actual UI synthetic DOM test PASS. Deterministic VOR-006 notice-copy generator/parity check PASS, JS syntax and Deno type-check PASS. Prior VOR-002–011 security/regression tests, VOR-008 canonical VOR-007 parity **6,561 cases**, and genuine throwaway PostgreSQL 17 consent/institutional audit-RLS tests PASS. This is isolated/synthetic evidence, **not** real Supabase Auth/legal consent or human SLA validation. These checks will be re-run if the evidence file or ledger changes. [PR #35](https://github.com/gobindatlkdr-cloud/vorvan-website/pull/35).
 
 **Release scope:** GitHub Pages can publish the isolated `vyn-coach-sandbox.html` URL for a visibly fictional demo. There is **no new Supabase Edge Function, real Auth enrollment, company record, paid AI API, credit report or lender connection**. This is not a production personalized financial-advice service.
 
