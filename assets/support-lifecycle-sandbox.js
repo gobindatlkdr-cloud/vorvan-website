@@ -45,6 +45,9 @@ const ALLOWED=Object.freeze({
  escalated:Object.freeze(["in_progress"]),
  closed:Object.freeze([])
 });
+export function nextStatuses(status){
+ return typeof status==="string"&&Object.hasOwn(ALLOWED,status)?Object.freeze([...ALLOWED[status]]):Object.freeze([]);
+}
 const denial=(code)=>Object.freeze({ok:false,code});
 const isRole=v=>typeof v==="string"&&ROLES.includes(v);
 const isUUID=v=>typeof v==="string"&&UUID.test(v);
