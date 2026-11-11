@@ -19,7 +19,7 @@ const AREAS={
  compliance:["Legal & Compliance","Review checklist, consents, contracts and compliance readiness"]
 };
 const $=(id)=>document.getElementById(id);
-const state={access:"",refresh:"",role:"",tasks:[],modules:[],counters:{},area:"overview",mfaFactor:"",mfaSetup:false,user:null,events:[],readinessSandbox:null};
+const state={access:"",refresh:"",role:"",tasks:[],modules:[],counters:{},area:"overview",mfaFactor:"",mfaSetup:false,user:null,events:[],readinessSandbox:null,supportSandbox:null};
 function visible(id,yes){$(id).hidden=!yes}
 function message(id,msg,ok=false){const el=$(id);el.textContent=msg;el.classList.toggle("ok",ok)}
 function el(tag,cl,text){const x=document.createElement(tag);if(cl)x.className=cl;if(text!==undefined)x.textContent=String(text);return x}
@@ -32,7 +32,7 @@ async function auth(path,method="GET",body=undefined,session=true){
  return result;
 }
 function setTokens(result){if(result.access_token){state.access=result.access_token;state.refresh=result.refresh_token||state.refresh}}
-function clearSession(){state.access="";state.refresh="";state.mfaFactor="";state.user=null;state.tasks=[];state.modules=[];state.role="";state.readinessSandbox=null;$("password").value="";$("signup-password").value="";$("signup-confirm").value="";$("mfa-code").value="";$("mfa-secret").textContent="";$("mfa-qr").removeAttribute("src");visible("mfa-setup",false);visible("dashboard-view",false);visible("mfa-view",false);visible("signup-view",false);visible("login-view",true);visible("logout",false)}
+function clearSession(){state.access="";state.refresh="";state.mfaFactor="";state.user=null;state.tasks=[];state.modules=[];state.role="";state.readinessSandbox=null;state.supportSandbox=null;$("password").value="";$("signup-password").value="";$("signup-confirm").value="";$("mfa-code").value="";$("mfa-secret").textContent="";$("mfa-qr").removeAttribute("src");visible("mfa-setup",false);visible("dashboard-view",false);visible("mfa-view",false);visible("signup-view",false);visible("login-view",true);visible("logout",false)}
 async function login(event){
  event.preventDefault();message("login-message","");
  const password=$("password").value;
@@ -409,6 +409,32 @@ function infoPanel(area){
   mail.append(list);container.append(mail)
  }
  if(area==="partners"||area==="support")tracker(container,area);
+  if(area==="support"){
+   // VOR-013 is a SECOND, clearly fictional panel; the existing live tracker above
+   // is not replaced. Server /overview verified approved company role + AAL2.
+   const warning=el("article","panel-box");
+   append(warning,el("h2","","VOR-013 · Synthetic Support & Complaints Lab"),
+    el("p","","Fictional templates ONLY. No real grievance intake, actual SLA, notification, customer record, or backend audit. Never type borrower information."));
+   const mount=el("div","vor013-mount","Loading fictional support workflow…");
+   append(container,warning,mount);
+   const validatedRole=state.role;
+   if(!state.access||!["owner","operator","auditor"].includes(validatedRole)){
+    mount.textContent="Verified Admin MFA and assigned role required.";
+   }else{
+    import("./support-lifecycle-sandbox.js").then(mod=>{
+     if(state.area!=="support"||!state.access||state.role!==validatedRole)return;
+     if(!state.supportSandbox||state.supportSandbox.role!==validatedRole)
+      state.supportSandbox=mod.createSupportLifecycleSandbox(validatedRole);
+     return import("./support-lifecycle-ui.js").then(ui=>{
+      if(state.area!=="support"||!state.access||state.role!==validatedRole)return;
+      const result=ui.mountSupportLifecycleSandbox(mount,state.supportSandbox);
+      if(!result.ok)mount.textContent="Synthetic support queue unavailable.";
+     });
+    }).catch(()=>{
+     if(state.area==="support")mount.textContent="Demo support queue unavailable; no case data was accessed.";
+    });
+   }
+  }
  if(area==="partners")institutionalInbox(container);
   if(area==="compliance")vaultPanel(container);
  if(area==="security"){
