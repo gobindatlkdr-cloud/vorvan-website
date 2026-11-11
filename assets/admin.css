@@ -159,3 +159,24 @@
 .vor015-panel ol,.vor015-panel ul{padding-left:20px}
 @media(max-width:620px){.vor015-panel{padding:14px}.vor015-controls,.vor015-order-actions{flex-direction:column;align-items:stretch}.vor015-panel select,.vor015-panel button{width:100%}}
 @media(prefers-reduced-motion:reduce){.vor015-panel *{animation:none!important;transition:none!important}}
+
+
+/* VOR-018 fictional lender/bureau offline adapter Admin panel, burgundy-only */
+.vor018-mount{grid-column:1/-1;min-width:0}
+.vor018-panel{background:#fff;border:1px solid #eacbdd;border-radius:18px;padding:22px;color:#5e2945;min-width:0}
+.vor018-panel h2{font-size:22px;color:#791a49;margin:0 0 9px}
+.vor018-panel h3{font-size:17px;color:#731b45;margin:18px 0 10px}
+.vor018-panel h4{font-size:15px;color:#781c46;margin:0 0 9px}
+.vor018-panel p,.vor018-panel li{font-size:13px;line-height:1.7;overflow-wrap:anywhere}
+.vor018-controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:14px;border:1px solid #ebcfde;border-radius:14px;background:#fff8fc;margin:15px 0}
+.vor018-panel select{background:#fff;color:#72204a;border:1px solid #d9b5c7;border-radius:10px;padding:10px;max-width:100%;min-width:155px}
+.vor018-panel button{background:#892353;border:1px solid #751943;border-radius:10px;color:#fff;font-weight:720;padding:10px 12px}
+.vor018-panel button:disabled{opacity:.48;cursor:not-allowed}
+.vor018-panel button:focus-visible,.vor018-panel select:focus-visible{outline:3px solid #bb6b9a;outline-offset:3px}
+.vor018-contracts,.vor018-calls,.vor018-audit,.vor018-gates{margin:15px 0;padding:16px 18px;border:1px solid #efd9e4;border-radius:14px;background:#fffbfd}
+.vor018-feedback,.vor018-summary{padding:12px 14px;border:1px solid #efd1e0;border-radius:12px;background:#fff4f9}
+.vor018-item{padding:14px 0;border-top:1px solid #edd5e1}
+.vor018-item:first-of-type{border-top:none}
+.vor018-panel ul,.vor018-panel ol{padding-left:20px}
+@media(max-width:640px){.vor018-panel{padding:14px}.vor018-controls{flex-direction:column;align-items:stretch}.vor018-panel button,.vor018-panel select{width:100%}}
+@media(prefers-reduced-motion:reduce){.vor018-panel *{transition:none!important;animation:none!important}}

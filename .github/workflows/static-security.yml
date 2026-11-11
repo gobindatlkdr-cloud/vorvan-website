@@ -155,6 +155,15 @@ jobs:
           node --check assets/subscription-payment-sandbox.js
           node --check assets/subscription-payment-ui.js
           deno check assets/subscription-payment-sandbox.js assets/subscription-payment-ui.js
+      - name: VOR-018 lender/bureau offline contract, consent, RBAC, 422/503 retry and zero-data tests
+        run: deno test backend/tests/lender_bureau_mock.test.ts
+      - name: VOR-018 actual Admin adapter monitoring UI synthetic DOM and session gate tests
+        run: deno test --allow-read backend/tests/lender_bureau_mock_ui.test.ts
+      - name: VOR-018 lender/bureau offline engine and UI source checks
+        run: |
+          node --check assets/lender-bureau-mock.js
+          node --check assets/lender-bureau-mock-ui.js
+          deno check assets/lender-bureau-mock.js assets/lender-bureau-mock-ui.js
       - name: Type-check authenticated AI guidance backend
         run: deno check backend/ai-guidance/index.ts backend/admin-console/index.ts backend/site-assistant/index.ts backend/admin-mfa-recovery/index.ts backend/compliance-vault/index.ts backend/institutional-inquiries/index.ts
 
