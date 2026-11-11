@@ -31,6 +31,8 @@ Deno.test("VOR-013 actual UI mounts synthetic support queue; Owner can create/ad
   let found=all(root);
   const create=found.find(x=>x.textContent==="Create fictional case");
   yes(create,"create button");
+  const category=found.find(x=>x.attrs["aria-label"]==="Fictional issue category");
+  yes(category,"category selector");category!.value="general";
   create!.fire("click");
   eq(desk.snapshot().cases.length,1);eq(desk.snapshot().audit.length,1);
   found=all(root);
