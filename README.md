@@ -1,8 +1,8 @@
-# VORVAN — Official pre-incorporation website
+# VORVAN — Official company website
 
 **Public website:** https://vorvan.co.in/
 **Source:** GitHub Pages, `main` branch, custom HTTPS domain.
-**Business status:** proposed **VORVAN PRIVATE LIMITED**. MCA incorporation fees paid, incorporation still pending, no CIN/COI issued. Do not describe the entity as incorporated until genuine government documents are verified.
+**Business status:** **VORVAN PRIVATE LIMITED** is registered per the owner's confirmation of 10 November 2026. This repository does not publish or independently verify the COI/CIN/PAN. Registration does not imply any RBI lending licence, credit bureau access or lender/API agreement.
 
 ## Public navigation
 
@@ -29,4 +29,4 @@ The reference website for the November 2026 refresh was Credila, for navigation 
 
 ## Operations
 
-Public partnership queries use the separate bank/NBFC institutional route. Staff perform normal admin work through approved access controls. After verified incorporation and applicable lender agreements, update legal wording and any locked financial flows only through separately reviewed changes and testing.
+Public partnership queries use the separate bank/NBFC institutional route. Staff perform normal admin work through approved access controls. Before any regulated financial feature is activated, independently verify incorporation documents and obtain all applicable lender/API, privacy, security, legal and owner approvals through separately reviewed changes and testing.

@@ -81,7 +81,7 @@ Deno.test("Admin page uses existing verified /overview, checks AAL2 before dashb
  yes(admin.includes('state.role!==validatedRole'),"Async role/session invalidation rechecked");
  yes(admin.includes('import("./admin-readiness-sandbox.js")'),"Only dashboard area dynamically imports module");
  yes(admin.includes('state.readinessSandbox=null'),"Sign out clears simulated session");
- yes(admin.includes('state.area==="readiness"?"overview":state.area'),"Real admin backend task write form never accepts fake readiness area");
+ yes(admin.includes('const syntheticOnly=state.area==="readiness"||state.area==="governance"')&&admin.includes('if(!syntheticOnly)tasks()'),"Real admin task write form never accepts either readiness or governance sandbox area");
  yes(backend.includes('claims.aal!=="aal2"'),"Existing real server AAL2 enforcement");
  yes(backend.includes('vorvan_admin_acl'),"Existing real server ACL enforcement");
  yes(!/\bfetch\s*\(|\bXMLHttpRequest\b|\blocalStorage\b|\bsessionStorage\b|\bsendBeacon\b|\bWebSocket\b/.test(sandbox.replace(/\/\*[\s\S]*?\*\//g,"")),"Sandbox engine never calls network/storage");

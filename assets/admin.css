@@ -94,3 +94,23 @@
 .vor010-mount a:focus-visible,.vor010-mount button:focus-visible,.vor010-mount select:focus-visible{outline:3px solid #aa2b65;outline-offset:3px}
 @media(max-width:800px){.vor010-gates{grid-template-columns:1fr}.vor010-milestones{grid-template-columns:1fr}.vor010-task{align-items:flex-start;flex-direction:column}.vor010-task label{width:100%;max-width:100%}}
 @media(prefers-reduced-motion:reduce){.vor010-sandbox *{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+
+/* VOR-014 fictional AI governance panel — burgundy, role-scoped, no live data. */
+.vor014-mount{grid-column:1/-1;min-width:0}
+.vor014-panel{padding:22px;border:1px solid #edd0df;border-radius:18px;background:#fff;color:#562842;min-width:0}
+.vor014-panel h2{font-size:22px;margin:0 0 9px;color:#721a43}
+.vor014-panel h3{font-size:17px;margin:0 0 12px;color:#731d47}
+.vor014-panel h4{font-size:14px;margin:0 0 7px;color:#831d4e}
+.vor014-panel p,.vor014-panel li{font-size:13px;line-height:1.65;color:#70485d;overflow-wrap:anywhere}
+.vor014-panel ul,.vor014-panel ol{padding-left:20px;margin:8px 0}
+.vor014-panel li{padding:4px 0}
+.vor014-actions{display:flex;gap:10px;flex-wrap:wrap;margin:17px 0}
+.vor014-panel button{background:#891f51;border:1px solid #73143f;color:white;padding:9px 13px;border-radius:10px;font-weight:730}
+.vor014-panel button:disabled{opacity:.48;cursor:not-allowed}
+.vor014-panel select{width:100%;max-width:255px;margin-right:9px;border:1px solid #dab3c9;border-radius:10px;padding:9px;background:#fff9fc;color:#72214a}
+.vor014-feedback{padding:12px 14px;background:#fff3f8;border:1px solid #efd0e0;border-radius:12px}
+.vor014-registry,.vor014-metrics,.vor014-flags,.vor014-gates,.vor014-audit{margin:18px 0;padding:17px 18px;border:1px solid #f0dce6;background:#fffbfd;border-radius:14px}
+.vor014-flag{border-top:1px solid #f2dce8;padding:15px 0}
+.vor014-flag:first-of-type{border-top:0}
+@media(max-width:640px){.vor014-panel{padding:15px}.vor014-actions button{width:100%}.vor014-panel select{max-width:none;margin:0 0 8px}.vor014-flag button{width:100%}}
