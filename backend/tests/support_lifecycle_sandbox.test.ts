@@ -207,3 +207,26 @@ Deno.test("Actual Support Sandbox model makes zero network or browser storage ca
   eq(calls,0);eq(s.snapshot().backend_writes,0);
  }finally{globalThis.fetch=old;}
 });
+
+Deno.test("Seeded synthetic role-scoped queue: Owner/Auditor see both; Operator only operations",()=>{
+ const owner=createSupportLifecycleSandbox("owner",{sampleCases:true});
+ const operator=createSupportLifecycleSandbox("operator",{sampleCases:true});
+ const auditor=createSupportLifecycleSandbox("auditor",{sampleCases:true});
+ if(!owner.ok||!operator.ok||!auditor.ok)throw Error("fixture setup failed");
+ const own=owner.snapshot(),ops=operator.snapshot(),audit=auditor.snapshot();
+ eq(own.queue.length,2);eq(ops.queue.length,1);eq(audit.queue.length,2);
+ eq(own.audit.length,2);eq(ops.audit.length,1);eq(audit.audit.length,2);
+ yes(ops.queue.every(x=>x.scope==="operations"),"Ops never sees compliance");
+ yes(own.audit.every(x=>x.actor_role==="synthetic_fixture"),"No fake employee impersonation");
+ const compliance=own.queue.find(x=>x.scope==="compliance")!;
+ err(operator.update({mode:"synthetic_only",case_id:compliance.id,target_status:"triaged",
+  expected_version:1,request_id:uuid()}),"out_of_scope");
+ err(auditor.update({mode:"synthetic_only",case_id:compliance.id,target_status:"triaged",
+  expected_version:1,request_id:uuid()}),"read_only_role");
+ eq(owner.snapshot().backend_writes,0);eq(auditor.snapshot().customer_records,0);
+});
+Deno.test("Fixture seed configuration rejects unknown fields and simulated personal data",()=>{
+ err(createSupportLifecycleSandbox("owner",{sampleCases:true,user_id:"fictional"}),"invalid_options");
+ err(createSupportLifecycleSandbox("owner",{sampleCases:"yes"}),"invalid_options");
+ err(createSupportLifecycleSandbox("owner",null),"invalid_options");
+});
