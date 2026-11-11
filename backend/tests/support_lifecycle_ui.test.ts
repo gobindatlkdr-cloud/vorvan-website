@@ -89,3 +89,27 @@ Deno.test("Fake/inconsistent admin roles cannot mount the UI",()=>{
  eq(mountSupportLifecycleSandbox(root,invalid).ok,false);
  eq(root.children.length,0);
 });
+
+Deno.test("Actual Auditor panel shows fictional role-scoped examples and no write buttons",()=>{
+ const root=new Fake("main");root.ownerDocument={createElement:(tag:string)=>new Fake(tag)};
+ const audit=createSupportLifecycleSandbox("auditor",{sampleCases:true});
+ if(!audit.ok)throw Error("invalid synthetic role");
+ const result=mountSupportLifecycleSandbox(root,audit);
+ eq(result.ok,true);
+ eq(root.children[4].children.length,2);
+ const firstCard=root.children[4].children[0];
+ eq(firstCard.children[4].children.length,0);
+ yes(root.children[3].textContent.includes("2 visible fictional cases"),"Auditor read-only queue count");
+ eq(root.children[5].children[1].children.length,2);
+ eq(root.children[1].children[2].disabled,true);
+});
+Deno.test("Actual Operator panel hides security fixture, never permits compliance-only controls",()=>{
+ const root=new Fake("main");root.ownerDocument={createElement:(tag:string)=>new Fake(tag)};
+ const op=createSupportLifecycleSandbox("operator",{sampleCases:true});
+ if(!op.ok)throw Error("role missing");
+ const result=mountSupportLifecycleSandbox(root,op);
+ eq(result.ok,true);eq(root.children[4].children.length,1);
+ const title=root.children[4].children[0].children[0].textContent;
+ yes(title.includes("page navigation"),"Only Operations sample visible");
+ eq(root.children[5].children[1].children.length,1);
+});
