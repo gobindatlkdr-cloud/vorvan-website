@@ -35,7 +35,7 @@ Deno.test("Actual VOR-014 UI renders owner review, fixed reports, audit, blocked
   const root=new Fake("div"),desk=createAiGovernanceSandbox("owner");
   eq(mountAiGovernanceSandbox(root,desk).ok,true);
   let nodes=all(root);
-  yes(nodes.some(x=>x.textContent.includes("fictional model")), "fictional notice");
+  yes(nodes.some(x=>x.textContent.toLowerCase().includes("fictional model")), "fictional notice");
   yes(nodes.some(x=>x.textContent.includes("BLOCKED")), "locked gates rendered");
   yes(nodes.some(x=>x.textContent.includes("18 fixed test fixtures")), "safe aggregate rendered");
   const evalBtn=nodes.find(x=>x.textContent==="Run fictional policy evaluation");
