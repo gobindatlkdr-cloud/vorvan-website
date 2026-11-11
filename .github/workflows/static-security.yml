@@ -136,6 +136,16 @@ jobs:
           node --check assets/ai-governance-sandbox.js
           node --check assets/ai-governance-ui.js
           deno check assets/ai-governance-sandbox.js assets/ai-governance-ui.js
+      - name: VOR-016 fictional identity and consent notice, rights workflows and no-PII tests
+        run: deno test backend/tests/privacy_requests_sandbox.test.ts
+      - name: VOR-016 actual Admin privacy queue and fictional export UI DOM tests
+        run: deno test --allow-read backend/tests/privacy_requests_ui.test.ts
+      - name: VOR-016 syntax, TypeScript checks and canonical notice registry parity
+        run: |
+          node --check assets/privacy-requests-sandbox.js
+          node --check assets/privacy-requests-ui.js
+          deno check assets/privacy-requests-sandbox.js assets/privacy-requests-ui.js
+          node scripts/build_vyn_coach_notices.cjs --check
       - name: Type-check authenticated AI guidance backend
         run: deno check backend/ai-guidance/index.ts backend/admin-console/index.ts backend/site-assistant/index.ts backend/admin-mfa-recovery/index.ts backend/compliance-vault/index.ts backend/institutional-inquiries/index.ts
 
