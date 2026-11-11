@@ -29,7 +29,8 @@ jobs:
             home=$(html "" || true)
             if grep -q 'id="loan-categories"' <<< "$home" &&
                grep -q 'Partner With Us' <<< "$home" &&
-               grep -q 'Incorporation pending' <<< "$home"; then
+               grep -q 'Registered company (owner-confirmed)' <<< "$home" &&
+               ! grep -q 'Incorporation pending' <<< "$home"; then
               site_ready=1;break
             fi
             echo "Waiting for current live website release ($attempt/12)"
@@ -48,7 +49,7 @@ jobs:
             [[ "$status" == "200" ]] || exit 1
           done
 
-          # The four categories must remain educational and clearly pre-incorporation.
+          # The four categories must remain educational; company registration is not lending authorisation.
           solutions=$(html "solutions.html")
           for category in 'Personal Loan' 'Business Loan' 'Education Loan' 'Short-Term Loan'; do
             grep -q "$category" <<< "$home" || exit 1
