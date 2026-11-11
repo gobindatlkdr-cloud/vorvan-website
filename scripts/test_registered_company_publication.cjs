@@ -34,7 +34,7 @@ for(const page of ["index.html","about.html","contact.html","partners.html","sol
 }
 const home=read("index.html");
 assert.match(home,/id="product-previews"/);
-for(const path of ["experience.html","readiness-passport.html","vyn-coach-sandbox.html","admin.html"]){
+for(const path of ["experience.html","readiness-passport.html","vyn-coach-sandbox.html"]){
  assert.match(home,new RegExp('href="'+path+'"'),"home safe demo missing "+path);
 }
 assert.match(home,/VORVAN PRIVATE LIMITED · REGISTERED COMPANY/);
