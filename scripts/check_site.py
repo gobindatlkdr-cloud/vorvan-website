@@ -213,8 +213,8 @@ if brief.count('href="partners.html#institutional-inquiry"') < 2:
     issue("institutional brief: missing direct secure enquiry CTAs")
 if '<form' in brief.lower():
     issue("institutional brief: unexpected form; use existing institutional endpoint")
-if 'pre-incorporation' not in brief.lower():
-    issue("institutional brief: required truthful incorporation disclaimer missing")
+if 'registered company' not in brief.lower():
+    issue("institutional brief: registered-company disclaimer missing")
 if 'href="partners.html#institutional-inquiry"' not in (ROOT / "index.html").read_text(encoding="utf-8"):
     issue("homepage: missing direct institutional enquiry CTA")
 partners = (ROOT / "partners.html").read_text(encoding="utf-8")
