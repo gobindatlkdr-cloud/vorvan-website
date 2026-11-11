@@ -424,7 +424,7 @@ function infoPanel(area){
     import("./support-lifecycle-sandbox.js").then(mod=>{
      if(state.area!=="support"||!state.access||state.role!==validatedRole)return;
      if(!state.supportSandbox||state.supportSandbox.role!==validatedRole)
-      state.supportSandbox=mod.createSupportLifecycleSandbox(validatedRole);
+      state.supportSandbox=mod.createSupportLifecycleSandbox(validatedRole,{sampleCases:true});
      return import("./support-lifecycle-ui.js").then(ui=>{
       if(state.area!=="support"||!state.access||state.role!==validatedRole)return;
       const result=ui.mountSupportLifecycleSandbox(mount,state.supportSandbox);
