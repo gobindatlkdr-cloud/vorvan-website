@@ -82,8 +82,11 @@ function sla(rec,nowMs){
 }
 /** Role is passed ONLY after parent admin.js verifies a current MFA/ACL session.
  * This role is an in-memory simulation, never an authorization boundary for real data. */
-export function createSupportLifecycleSandbox(role){
+export function createSupportLifecycleSandbox(role,options={}){
  if(!isRole(role))return denial("unauthorized_role");
+ if(!plain(options)||Object.keys(options).some(k=>k!=="sampleCases")||
+    (Object.hasOwn(options,"sampleCases")&&typeof options.sampleCases!=="boolean"))
+  return denial("invalid_options");
  const cases=[],events=[],requests=new Map();
  let auditSequence=0;
  function visible(id){return cases.find(x=>x.id===id)||null}
@@ -203,6 +206,22 @@ export function createSupportLifecycleSandbox(role){
   if(role!=="owner")return denial("owner_only");
   cases.length=0;events.length=0;requests.clear();auditSequence=0;
   return immutable({ok:true,synthetic_only:true,all_demo_data_cleared:true});
+ }
+ if(options.sampleCases===true){
+  // Two fixed fictional cases let Auditors view a sample queue (read-only), and
+  // Operators view ONLY the operations fixture. No role can expose real records.
+  for(const [index,key] of ["website_navigation","security_warning"].entries()){
+   const item=FIXED_CASES.find(x=>x.id===key);
+   const id="e0000000-0000-4000-8000-"+String(index+1).padStart(12,"0");
+   const rec={id,template_id:item.id,category:item.category,scope:item.scope,
+    subject:item.subject,summary:item.summary,status:"new",version:1,
+    created_at_ms:START_MS,last_event_at_ms:START_MS,acknowledged_at_ms:null,
+    responded_at_ms:null,resolved_at_ms:null,closed_at_ms:null};
+   cases.push(rec);
+   events.push(immutable({seq:++auditSequence,case_id:id,action:"fixture_created",
+     from_status:null,to_status:"new",actor_role:"synthetic_fixture",
+     request_id:id,at:toIso(START_MS),synthetic_only:true}));
+  }
  }
  return immutable({ok:true,role,version:SUPPORT_VERSION,add,update,escalate,snapshot,reset});
 }
