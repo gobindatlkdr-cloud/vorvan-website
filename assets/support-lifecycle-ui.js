@@ -1,5 +1,6 @@
 /** VOR-013 browser-only synthetic Support Queue; caller must verify AAL2 & role via admin-console. */
-import {CATEGORIES,STATES,createSupportLifecycleSandbox,PRESETS,VERSION} from "./support-lifecycle-sandbox.js";
+import {CATEGORIES,STATES,VERSION} from "./support-lifecycle-sandbox.js";
+export {createSupportLifecycleSandbox} from "./support-lifecycle-sandbox.js";
 const make=(tag,text="",className="")=>{const e=document.createElement(tag);e.textContent=text;if(className)e.className=className;return e;};
 const append=(p,...children)=>{p.append(...children);return p;};
 export function mountSupportLifecycleSandbox(root,desk){
