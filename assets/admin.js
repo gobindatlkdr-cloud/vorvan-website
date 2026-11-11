@@ -12,6 +12,7 @@ const AREAS={
  ai:["AI Backend","Synthetic credit guidance status, security and deployment"],
  governance:["AI Governance & Reporting (Sandbox)","Fictional version registry, safety flags, role-scoped analytics and permanently locked release gates"],
  privacy:["Privacy Requests & Export (Sandbox)","Synthetic fixed-choice access/correction/delete/export/consent-withdrawal lifecycle — never live processing"],
+ payments:["Subscription & Payment (Sandbox)","Fictional three/six-month plans, simulated payment events, refunds and blocked checkout"],
  customers:["Customer Operations","Confidential account operations stay locked until approved"],
  readiness:["Readiness Operations (Sandbox)","Synthetic 30/60/90-day template queues, simulated role scopes and locked go-live gates"],
  support:["Support & Grievances","Issue tracking and business correspondence work queue"],
@@ -21,7 +22,7 @@ const AREAS={
  compliance:["Legal & Compliance","Review checklist, consents, contracts and compliance readiness"]
 };
 const $=(id)=>document.getElementById(id);
-const state={access:"",refresh:"",role:"",tasks:[],modules:[],counters:{},area:"overview",mfaFactor:"",mfaSetup:false,user:null,events:[],readinessSandbox:null,supportSandbox:null,governanceSandbox:null,privacySandbox:null};
+const state={access:"",refresh:"",role:"",tasks:[],modules:[],counters:{},area:"overview",mfaFactor:"",mfaSetup:false,user:null,events:[],readinessSandbox:null,supportSandbox:null,governanceSandbox:null,privacySandbox:null,paymentSandbox:null};
 function visible(id,yes){$(id).hidden=!yes}
 function message(id,msg,ok=false){const el=$(id);el.textContent=msg;el.classList.toggle("ok",ok)}
 function el(tag,cl,text){const x=document.createElement(tag);if(cl)x.className=cl;if(text!==undefined)x.textContent=String(text);return x}
@@ -34,7 +35,7 @@ async function auth(path,method="GET",body=undefined,session=true){
  return result;
 }
 function setTokens(result){if(result.access_token){state.access=result.access_token;state.refresh=result.refresh_token||state.refresh}}
-function clearSession(){state.access="";state.refresh="";state.mfaFactor="";state.user=null;state.tasks=[];state.modules=[];state.role="";state.readinessSandbox=null;state.supportSandbox=null;state.governanceSandbox=null;state.privacySandbox=null;$("password").value="";$("signup-password").value="";$("signup-confirm").value="";$("mfa-code").value="";$("mfa-secret").textContent="";$("mfa-qr").removeAttribute("src");visible("mfa-setup",false);visible("dashboard-view",false);visible("mfa-view",false);visible("signup-view",false);visible("login-view",true);visible("logout",false)}
+function clearSession(){state.access="";state.refresh="";state.mfaFactor="";state.user=null;state.tasks=[];state.modules=[];state.role="";state.readinessSandbox=null;state.supportSandbox=null;state.governanceSandbox=null;state.privacySandbox=null;state.paymentSandbox=null;$("password").value="";$("signup-password").value="";$("signup-confirm").value="";$("mfa-code").value="";$("mfa-secret").textContent="";$("mfa-qr").removeAttribute("src");visible("mfa-setup",false);visible("dashboard-view",false);visible("mfa-view",false);visible("signup-view",false);visible("login-view",true);visible("logout",false)}
 async function login(event){
  event.preventDefault();message("login-message","");
  const password=$("password").value;
@@ -197,7 +198,7 @@ async function call(path,method="GET",body){
  return json;
 }
 async function load(){
- const data=await call("/overview");state.tasks=Array.isArray(data.tasks)?data.tasks:[];state.modules=Array.isArray(data.modules)?data.modules:[];state.counters=data.counters||{};const verifiedRole=data.role||"unknown";if(state.role!==verifiedRole){state.readinessSandbox=null;state.supportSandbox=null;state.governanceSandbox=null;state.privacySandbox=null;}state.role=verifiedRole;
+ const data=await call("/overview");state.tasks=Array.isArray(data.tasks)?data.tasks:[];state.modules=Array.isArray(data.modules)?data.modules:[];state.counters=data.counters||{};const verifiedRole=data.role||"unknown";if(state.role!==verifiedRole){state.readinessSandbox=null;state.supportSandbox=null;state.governanceSandbox=null;state.privacySandbox=null;state.paymentSandbox=null;}state.role=verifiedRole;
  $("admin-role").textContent="Approved role: "+state.role;
  message("dashboard-message","Last refreshed: "+new Date().toLocaleString(),true);
 }
@@ -357,6 +358,28 @@ function vaultPanel(parent){
 
 function infoPanel(area){
  const container=el("div","panel-grid");
+ if(area==="payments"){
+  const notice=el("article","panel-box");
+  append(notice,el("span","status","FICTIONAL PAYMENT TRAINING · NO CHARGES"),
+   el("h2","","Subscription & Payments — Synthetic Sandbox"),
+   el("p","","Three- and six-month illustrative plans, fake INR transaction states, duplicate webhook protection and refund review. No real gateway or customer data."));
+  const mount=el("div","vor015-mount","Loading fictional payment workflow…");
+  container.append(notice,mount);
+  // Parent dashboard appears only after server-verified /overview ACL and AAL2 MFA.
+  const validatedRole=state.role;
+  if(!state.access||!["owner","operator","auditor"].includes(validatedRole)){
+   mount.textContent="Approved AAL2 Admin session required; no payment functions opened.";return container;
+  }
+  import("./subscription-payment-ui.js").then(mod=>{
+   if(state.area!=="payments"||!state.access||state.role!==validatedRole)return;
+   if(!state.paymentSandbox||state.paymentSandbox.snapshot().role!==validatedRole)
+    state.paymentSandbox=mod.createSubscriptionPaymentSandbox(validatedRole);
+   const result=mod.mountSubscriptionPaymentSandbox(mount,state.paymentSandbox);
+   if(!result.ok)mount.textContent="Fictional payment module unavailable.";
+  }).catch(()=>{if(state.area==="payments")mount.textContent="Fictional module unavailable; no live billing accessed.";});
+  return container;
+ }
+
  if(area==="privacy"){
   const notice=el("article","panel-box");
   append(notice,el("span","status","SYNTHETIC ONLY · NO REAL IDENTITY OR PERSONAL DATA"),
@@ -575,7 +598,7 @@ function institutionalInbox(container){
 function render(){
  const [title,subtitle]=AREAS[state.area];$("page-title").textContent=title;$("page-subtitle").textContent=subtitle;$("panel-content").replaceChildren(infoPanel(state.area));$("new-task-toggle").disabled=state.role==="auditor";
  for(const b of document.querySelectorAll("#panel-nav button")){b.classList.toggle("selected",b.dataset.area===state.area)}
- const syntheticOnly=state.area==="readiness"||state.area==="governance"||state.area==="privacy";
+ const syntheticOnly=state.area==="readiness"||state.area==="governance"||state.area==="privacy"||state.area==="payments";
  $("new-task-toggle").hidden=syntheticOnly;document.querySelector(".worklist").hidden=syntheticOnly;
  $("task-area").value=syntheticOnly?"overview":state.area;if(!syntheticOnly)tasks();
 }
