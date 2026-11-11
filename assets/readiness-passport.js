@@ -39,9 +39,9 @@ const labels={
   noExplanations:"No answers yet. Choose any topic above to begin this fictional exercise.",
   edit:"← Edit answers",restart:"Restart fictional demo",
   releaseKicker:"RELEASE BOUNDARY",releaseTitle:"Built for learning, not lending.",
-  releaseText:"VORVAN PRIVATE LIMITED is registered (owner-confirmed); this educational feature remains in development. It is not customer registration, financial advice, a loan offer, a CIBIL score or a lender application. Secure customer login and legally approved consent are not active.",
+  releaseText:"VORVAN PRIVATE LIMITED is registered; this educational feature remains in development. It is not customer registration, financial advice, a loan offer, a CIBIL score or a lender application. Secure customer login and legally approved consent are not active.",
   explore:"Explore loan categories ↗",
-  footer:"VORVAN PRIVATE LIMITED · Registered company (owner-confirmed) · No live lending, credit-bureau, KYC or payment services.",
+  footer:"VORVAN PRIVATE LIMITED · No live lending, credit-bureau, KYC or payment services.",
   error:"This fictional demonstration cannot show a result. Restart the page. No answers have been uploaded."
  },
  bn:{
@@ -74,9 +74,9 @@ const labels={
   noExplanations:"এখনও উত্তর নেই। উপরের যেকোনো বিষয় দিয়ে কাল্পনিক অনুশীলন শুরু করুন।",
   edit:"← উত্তর বদলান",restart:"নতুন করে শুরু করুন",
   releaseKicker:"পরিসেবার সীমা",releaseTitle:"শুধু শেখার জন্য, ঋণ দেওয়ার জন্য নয়।",
-  releaseText:"VORVAN PRIVATE LIMITED কোম্পানি নিবন্ধিত হয়েছে (মালিকের নিশ্চিত তথ্য অনুযায়ী); এই শিক্ষামূলক ফিচার এখনও নির্মাণাধীন। এটি গ্রাহক নিবন্ধন, আর্থিক পরামর্শ, ঋণের অফার, CIBIL স্কোর বা আবেদন নয়। নিরাপদ গ্রাহক লগইন ও আইনগত অনুমোদিত সম্মতি এখনও চালু নেই।",
+  releaseText:"VORVAN PRIVATE LIMITED কোম্পানি নিবন্ধিত হয়েছে; এই শিক্ষামূলক ফিচার এখনও নির্মাণাধীন। এটি গ্রাহক নিবন্ধন, আর্থিক পরামর্শ, ঋণের অফার, CIBIL স্কোর বা আবেদন নয়। নিরাপদ গ্রাহক লগইন ও আইনগত অনুমোদিত সম্মতি এখনও চালু নেই।",
   explore:"ঋণের বিভাগ দেখুন ↗",
-  footer:"VORVAN PRIVATE LIMITED · নিবন্ধিত কোম্পানি (মালিকের নিশ্চিত তথ্য অনুযায়ী) · কোনো বাস্তব ঋণ/CIBIL/KYC/পেমেন্ট সেবা নেই।",
+  footer:"VORVAN PRIVATE LIMITED · নিবন্ধিত কোম্পানি · কোনো বাস্তব ঋণ/CIBIL/KYC/পেমেন্ট সেবা নেই।",
   error:"এই ডেমোর ফল দেখানো যাচ্ছে না। পেজ আবার খুলুন। কোনো উত্তর আপলোড হয়নি।"
  },
  hi:{
@@ -109,9 +109,9 @@ const labels={
   noExplanations:"अभी कोई उत्तर नहीं दिया। काल्पनिक अभ्यास शुरू करने के लिए ऊपर विषय चुनें।",
   edit:"← उत्तर बदलें",restart:"नया डेमो शुरू करें",
   releaseKicker:"सेवा की सीमा",releaseTitle:"सिर्फ सीखने के लिए, ऋण के लिए नहीं।",
-  releaseText:"VORVAN PRIVATE LIMITED का कंपनी पंजीकरण हो चुका है (स्वामी की पुष्टि के अनुसार); यह शैक्षिक सुविधा अभी विकासाधीन है। यह ग्राहक पंजीकरण, वित्तीय सलाह, ऋण प्रस्ताव, CIBIL स्कोर या आवेदन नहीं है। सुरक्षित ग्राहक लॉगिन और कानूनी सहमति अभी सक्रिय नहीं हैं।",
+  releaseText:"VORVAN PRIVATE LIMITED का कंपनी पंजीकरण हो चुका है; यह शैक्षिक सुविधा अभी विकासाधीन है। यह ग्राहक पंजीकरण, वित्तीय सलाह, ऋण प्रस्ताव, CIBIL स्कोर या आवेदन नहीं है। सुरक्षित ग्राहक लॉगिन और कानूनी सहमति अभी सक्रिय नहीं हैं।",
   explore:"ऋण श्रेणियाँ देखें ↗",
-  footer:"VORVAN PRIVATE LIMITED · पंजीकृत कंपनी (स्वामी की पुष्टि के अनुसार) · कोई लाइव ऋण/CIBIL/KYC/भुगतान सेवा नहीं।",
+  footer:"VORVAN PRIVATE LIMITED · पंजीकृत कंपनी · कोई लाइव ऋण/CIBIL/KYC/भुगतान सेवा नहीं।",
   error:"यह काल्पनिक परिणाम नहीं दिखाया जा सकता। पेज फिर खोलें। कोई उत्तर अपलोड नहीं हुआ।"
  }
 };
