@@ -137,3 +137,25 @@
 .vor016-preview{padding:15px;border:1px dashed #c999b3;border-radius:12px;background:#fff6fa;white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;max-width:100%}
 @media(max-width:620px){.vor016-panel{padding:14px}.vor016-controls{align-items:stretch;flex-direction:column}.vor016-panel select,.vor016-panel button{width:100%}.vor016-item-actions{flex-direction:column}}
 @media(prefers-reduced-motion:reduce){.vor016-panel *{animation:none!important;transition:none!important}}
+
+
+/* VOR-015 fictional subscription/payment Admin sandbox — burgundy only, no live checkout */
+.vor015-mount{grid-column:1/-1;min-width:0}
+.vor015-panel{background:#fff;border:1px solid #e8cad9;border-radius:18px;padding:22px;color:#592740;min-width:0}
+.vor015-panel h2{font-size:22px;color:#751945;margin:0 0 9px}
+.vor015-panel h3{font-size:17px;color:#781b49;margin:17px 0 10px}
+.vor015-panel h4{font-size:15px;color:#791d48;margin:0 0 8px}
+.vor015-panel p,.vor015-panel li{font-size:13px;line-height:1.7;overflow-wrap:anywhere}
+.vor015-plans,.vor015-queue,.vor015-audit,.vor015-gates{margin:15px 0;border:1px solid #efd7e4;border-radius:14px;padding:15px 18px;background:#fffafd}
+.vor015-controls{display:flex;gap:11px;align-items:center;flex-wrap:wrap;padding:15px 16px;background:#fff6fa;border:1px solid #efcfdf;border-radius:14px}
+.vor015-panel select{background:white;border:1px solid #dab0c6;color:#6f2047;border-radius:10px;padding:10px;min-width:160px;max-width:100%}
+.vor015-panel button{background:#8a2053;border:1px solid #73183f;border-radius:10px;padding:10px 13px;font-weight:730;color:white}
+.vor015-panel button:disabled{opacity:.48;cursor:not-allowed}
+.vor015-panel button:focus-visible,.vor015-panel select:focus-visible{outline:3px solid #b9578d;outline-offset:3px}
+.vor015-feedback,.vor015-totals{padding:11px 13px;background:#fff3f8;border:1px solid #eed0dd;border-radius:12px}
+.vor015-order{border-top:1px solid #efd6e2;padding:14px 0}
+.vor015-order:first-of-type{border-top:none}
+.vor015-order-actions{display:flex;gap:8px;flex-wrap:wrap}
+.vor015-panel ol,.vor015-panel ul{padding-left:20px}
+@media(max-width:620px){.vor015-panel{padding:14px}.vor015-controls,.vor015-order-actions{flex-direction:column;align-items:stretch}.vor015-panel select,.vor015-panel button{width:100%}}
+@media(prefers-reduced-motion:reduce){.vor015-panel *{animation:none!important;transition:none!important}}
