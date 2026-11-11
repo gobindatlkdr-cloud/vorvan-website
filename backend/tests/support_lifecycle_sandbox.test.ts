@@ -73,7 +73,7 @@ Deno.test("Overdue security incident requires training escalation before resolut
  eq(item.sla.escalation_team,"security");eq(item.sla.target_hours,8);
  const reject=d.transition("DEMO-0001","resolved");eq(reject.ok,false);
  eq(d.acknowledgeEscalation("DEMO-0001").ok,true);
- eq(d.acknowledgeEscalation("DEMO-0001").idempotent,true);
+ const replay=d.acknowledgeEscalation("DEMO-0001");eq("idempotent" in replay?replay.idempotent:false,true);
  eq(d.transition("DEMO-0001","resolved").ok,true);
  item=get(d).cases[0];eq(item.sla.overdue,false);eq(item.sla.remaining_hours,null);
 });
@@ -83,6 +83,7 @@ Deno.test("Escalation route and controlled acknowledgement are auditable",()=>{
  eq(d.transition("DEMO-0001","escalated").ok,true);
  const events=d.auditFor("DEMO-0001");
  eq(events.ok,true);if(!events.ok)throw Error("missing audit");
+ if(!("events" in events))throw Error("audit response missing");
  eq(events.events.length,2);eq(events.events[1].to,"escalated");
  eq(get(d).cases[0].assignee_team,"grievance");
  eq(get(d).cases[0].escalation_acknowledged,true);
@@ -98,13 +99,14 @@ Deno.test("All audit events are frozen chronological append-only snapshots",()=>
  yes(Object.isFrozen(before.audit[0]),"frozen event");yes(Object.isFrozen(before.cases[0]),"frozen case snapshot");
  eq(before.audit[0].action,"created");eq(before.audit[1].action,"status_transition");
  const a=d.auditFor("DEMO-0001");if(!a.ok)throw Error("audit failed");
+ if(!("events" in a))throw Error("audit events missing");
  eq(a.events[0].event_no,1);eq(a.events[1].event_no,2);
  eq(d.auditFor("DEMO-9999").ok,false);
 });
 Deno.test("Reset erases synthetic cases and audit but cannot affect external service",()=>{
  const d=createSupportLifecycleSandbox("owner",start);d.intake(sample("general"));d.advanceClock(3);
  eq(d.reset().ok,true);eq(get(d).cases.length,0);eq(get(d).audit.length,0);eq(get(d).now_ms,start);
- eq(d.intake(sample("general")).case?.id,"DEMO-0001");
+ const fresh=d.intake(sample("general"));eq("case" in fresh?fresh.case?.id:null,"DEMO-0001");
 });
 Deno.test("Invalid role, clock, oversized advance and negative time are rejected",()=>{
  for(const role of ["customer","anonymous","viewer"]){
