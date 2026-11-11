@@ -63,6 +63,7 @@ create table if not exists public.vorvan_customer_enquiries (
    check (status in ('received','reviewing','needs_information','closed')),
  staff_reply varchar(500) not null default ''
    check (staff_reply !~ '[<>[:cntrl:]]'),
+ updated_by_admin uuid,
  created_at timestamptz not null default now(),
  updated_at timestamptz not null default now()
 );
@@ -92,7 +93,8 @@ create trigger vorvan_enquiry_updated before update on public.vorvan_customer_en
  for each row execute function private.touch_updated_at();
 
 revoke all on public.vorvan_customer_enquiries from public, anon, authenticated;
-grant select on public.vorvan_customer_enquiries to authenticated;
+grant select(id,user_id,loan_category,enquiry_topic,message,status,staff_reply,created_at,updated_at)
+ on public.vorvan_customer_enquiries to authenticated;
 grant insert(user_id,loan_category,enquiry_topic,message)
  on public.vorvan_customer_enquiries to authenticated;
 grant all on public.vorvan_customer_enquiries to service_role;
@@ -106,6 +108,27 @@ create table if not exists private.vorvan_customer_enquiry_admin_audit(
   created_at timestamptz not null default now()
 );
 alter table private.vorvan_customer_enquiry_admin_audit enable row level security;
+-- An audited status or response update is atomic with its audit event.
+-- Edge owner verification supplies updated_by_admin, never a public customer.
+create or replace function private.vorvan_customer_enquiry_audit_change()
+returns trigger language plpgsql set search_path = '' as $fn$
+begin
+  if (new.status is distinct from old.status) or
+     (new.staff_reply is distinct from old.staff_reply) then
+    if new.updated_by_admin is null then
+      raise exception 'verified_admin_actor_required';
+    end if;
+    insert into private.vorvan_customer_enquiry_admin_audit(enquiry_id,actor_user_id,old_status,new_status)
+      values(new.id,new.updated_by_admin,old.status,new.status);
+  end if;
+  return new;
+end;
+$fn$;
+revoke all on function private.vorvan_customer_enquiry_audit_change() from public, anon, authenticated;
+drop trigger if exists vorvan_enquiry_admin_audit_change on public.vorvan_customer_enquiries;
+create trigger vorvan_enquiry_admin_audit_change
+  after update of status,staff_reply on public.vorvan_customer_enquiries
+  for each row execute function private.vorvan_customer_enquiry_audit_change();
 revoke all on private.vorvan_customer_enquiry_admin_audit from public, anon, authenticated;
 grant all on private.vorvan_customer_enquiry_admin_audit to service_role;
 grant usage, select on sequence private.vorvan_customer_enquiry_admin_audit_id_seq to service_role;
