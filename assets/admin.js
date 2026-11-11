@@ -19,7 +19,7 @@ const AREAS={
  compliance:["Legal & Compliance","Review checklist, consents, contracts and compliance readiness"]
 };
 const $=(id)=>document.getElementById(id);
-const state={access:"",refresh:"",role:"",tasks:[],modules:[],counters:{},area:"overview",mfaFactor:"",mfaSetup:false,user:null,events:[],readinessSandbox:null};
+const state={access:"",refresh:"",role:"",tasks:[],modules:[],counters:{},area:"overview",mfaFactor:"",mfaSetup:false,user:null,events:[],readinessSandbox:null,supportSandbox:null};
 function visible(id,yes){$(id).hidden=!yes}
 function message(id,msg,ok=false){const el=$(id);el.textContent=msg;el.classList.toggle("ok",ok)}
 function el(tag,cl,text){const x=document.createElement(tag);if(cl)x.className=cl;if(text!==undefined)x.textContent=String(text);return x}
@@ -32,7 +32,7 @@ async function auth(path,method="GET",body=undefined,session=true){
  return result;
 }
 function setTokens(result){if(result.access_token){state.access=result.access_token;state.refresh=result.refresh_token||state.refresh}}
-function clearSession(){state.access="";state.refresh="";state.mfaFactor="";state.user=null;state.tasks=[];state.modules=[];state.role="";state.readinessSandbox=null;$("password").value="";$("signup-password").value="";$("signup-confirm").value="";$("mfa-code").value="";$("mfa-secret").textContent="";$("mfa-qr").removeAttribute("src");visible("mfa-setup",false);visible("dashboard-view",false);visible("mfa-view",false);visible("signup-view",false);visible("login-view",true);visible("logout",false)}
+function clearSession(){state.access="";state.refresh="";state.mfaFactor="";state.user=null;state.tasks=[];state.modules=[];state.role="";state.readinessSandbox=null;state.supportSandbox=null;$("password").value="";$("signup-password").value="";$("signup-confirm").value="";$("mfa-code").value="";$("mfa-secret").textContent="";$("mfa-qr").removeAttribute("src");visible("mfa-setup",false);visible("dashboard-view",false);visible("mfa-view",false);visible("signup-view",false);visible("login-view",true);visible("logout",false)}
 async function login(event){
  event.preventDefault();message("login-message","");
  const password=$("password").value;
@@ -355,6 +355,32 @@ function vaultPanel(parent){
 
 function infoPanel(area){
  const container=el("div","panel-grid");
+ if(area==="support"){
+  const notice=el("article","panel-box");
+  append(notice,el("span","status","FICTIONAL ONLY · NO LIVE COMPLAINT DATA"),
+    el("h2","","Support & Complaints — Training Sandbox"),
+    el("p","","Temporary role-scoped examples; no production tickets, user information, customer identities, email delivery or real SLA commitments."));
+  const mount=el("div","vor013-mount","Loading fictional support workflow…");
+  container.append(notice,mount);
+  const validatedRole=state.role;
+  if(!state.access||!["owner","operator","auditor"].includes(validatedRole)){
+   mount.textContent="Verified company Admin role and AAL2 MFA required.";return container;
+  }
+  import("./support-lifecycle-ui.js").then(mod=>{
+   if(state.area!=="support"||!state.access||state.role!==validatedRole)return;
+   if(!state.supportSandbox||state.supportSandbox.snapshot().role!==validatedRole)
+    state.supportSandbox=mod.createSupportLifecycleSandbox
+      ?mod.createSupportLifecycleSandbox(validatedRole):null;
+   if(!state.supportSandbox){
+    import("./support-lifecycle-sandbox.js").then(m=>{
+     if(state.area!=="support"||!state.access||state.role!==validatedRole)return;
+     state.supportSandbox=m.createSupportLifecycleSandbox(validatedRole);
+     mod.mountSupportLifecycleSandbox(mount,state.supportSandbox);
+    }).catch(()=>{mount.textContent="Sandbox unavailable; no live support data accessed.";});
+   }else mod.mountSupportLifecycleSandbox(mount,state.supportSandbox);
+  }).catch(()=>{if(state.area==="support")mount.textContent="Sandbox unavailable; no live support data accessed.";});
+  return container;
+ }
  if(area==="readiness"){
   const notice=el("article","panel-box");
   append(notice,el("span","status","FICTIONAL · NEVER PRODUCTION"),
