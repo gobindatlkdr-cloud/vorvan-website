@@ -112,3 +112,41 @@ jobs:
           grep -q 'https://vorvan.co.in/partners.html' <<< "$sitemap" || exit 1
           grep -q 'Sitemap: https://vorvan.co.in/sitemap.xml' <<< "$robots" || exit 1
           echo "PASS: live educational website, company disclosures, contextual Vyn, separated MFA Admin, private APIs and SEO."
+
+      - name: Verify published registered-company copy and live public demo entry points
+        if: github.event_name == 'push'
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="https://vorvan.co.in"
+          ready=0
+          for attempt in $(seq 1 24); do
+            home=$(curl --fail --location --silent --show-error --max-time 20 "$BASE/?release=20261111" || true)
+            passport=$(curl --fail --location --silent --show-error --max-time 20 "$BASE/readiness-passport.html?release=20261111" || true)
+            if grep -Fq 'id="product-previews"' <<< "$home" &&
+               grep -Fq 'VORVAN PRIVATE LIMITED · REGISTERED COMPANY' <<< "$home" &&
+               grep -Fq 'assets/readiness-passport.js?v=20261111-registered-company' <<< "$passport" &&
+               ! grep -Fq 'A proposed fintech initiative' <<< "$home"; then
+              ready=1
+              break
+            fi
+            echo "Waiting for public Pages release content ($attempt/24)"
+            sleep 5
+          done
+          [[ "$ready" == "1" ]] || { echo "FAIL: published registered company homepage/passport not observed";exit 1; }
+          for asset in "experience.html" "readiness-passport.html" "vyn-coach-sandbox.html" \
+            "admin.html" "assets/readiness-passport.js?v=20261111-registered-company" \
+            "assets/admin.js?v=20261111-registered-company"; do
+            status=$(curl --location --silent --show-error --max-time 20 -o /dev/null -w '%{http_code}' "$BASE/$asset")
+            [[ "$status" == "200" ]] || { echo "$asset returned HTTP $status";exit 1; }
+          done
+          dynamic=$(curl --fail --location --silent --show-error --max-time 20 "$BASE/assets/readiness-passport.js?v=20261111-registered-company")
+          admin_js=$(curl --fail --location --silent --show-error --max-time 20 "$BASE/assets/admin.js?v=20261111-registered-company")
+          grep -Fq 'VORVAN PRIVATE LIMITED is registered (owner-confirmed)' <<< "$dynamic" || exit 1
+          grep -Fq 'নিবন্ধিত কোম্পানি' <<< "$dynamic" || exit 1
+          grep -Fq 'पंजीकृत कंपनी' <<< "$dynamic" || exit 1
+          ! grep -Eqi 'pre-incorporation|incorporation pending|registration pending' <<< "$dynamic" || exit 1
+          grep -Fq 'COI verification pending in vault' <<< "$admin_js" || exit 1
+          grep -Fq 'incorporation_required:' <<< "$admin_js" || exit 1
+          ! grep -Eqi 'pre-incorporation|incorporation pending' <<< "$admin_js" || exit 1
+          echo 'PASS: live company registration wording, three public demos, MFA Admin and regulated-service gates'
