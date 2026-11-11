@@ -1,0 +1,30 @@
+/* VOR-013 fictional Support and Complaints Lab — secondary admin-only panel. */
+.vor013-mount{--vor013-burgundy:#741943;--vor013-deep:#4b1130;--vor013-paper:#fff9fc;--vor013-line:#d8adbf;
+ color:#2d1b27;background:var(--vor013-paper);border:1px solid var(--vor013-line);
+ border-radius:16px;padding:clamp(14px,3vw,28px);box-shadow:0 3px 20px #2e061514}
+.vor013-header h2{color:var(--vor013-deep);margin:0 0 8px;font-size:clamp(19px,3vw,24px)}
+.vor013-header p{line-height:1.6;margin:7px 0;color:#5e4252}
+.vor013-controls{display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin:18px 0}
+.vor013-controls label{display:grid;gap:6px;min-width:175px;color:#4b1130;font-size:14px;font-weight:600;flex:1}
+.vor013-controls select,.vor013-case-actions select{font:inherit;min-width:0;padding:9px;border:1px solid #bc9ba9;
+ background:#fff;color:#302530;border-radius:7px;width:100%}
+.vor013-mount button{font:inherit;border:1px solid var(--vor013-burgundy);border-radius:8px;background:var(--vor013-burgundy);
+ color:white;padding:9px 13px;cursor:pointer}
+.vor013-mount button:hover{background:var(--vor013-deep)}
+.vor013-mount button:disabled{opacity:.5;cursor:not-allowed}
+.vor013-mount :is(button,select):focus-visible{outline:3px solid #c83c7d;outline-offset:3px}
+.vor013-message{min-height:25px;color:#8b2035;font-weight:600}
+.vor013-message.is-ok{color:#17614a}
+.vor013-meta{color:#684e5e;font-size:13px}
+.vor013-queue{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,310px),1fr));gap:14px}
+.vor013-case{background:#fff;border:1px solid #e2c6d4;border-radius:12px;padding:15px;overflow-wrap:anywhere}
+.vor013-case h3{margin:0;color:var(--vor013-deep);font-size:17px}
+.vor013-case p{margin:8px 0;line-height:1.5}
+.vor013-sla{font-size:12px;color:#644b58}
+.vor013-case-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.vor013-case-actions select{flex:1;min-width:130px;width:auto}
+.vor013-audit{margin-top:22px;border-top:1px solid #dcc2cd;padding-top:15px}
+.vor013-audit h3{margin:0 0 9px;color:var(--vor013-deep)}
+.vor013-audit p{font-size:12px;margin:5px 0;overflow-wrap:anywhere}
+@media(max-width:650px){.vor013-controls{display:grid}.vor013-case-actions{display:grid}}
+@media(prefers-reduced-motion:reduce){.vor013-mount *{scroll-behavior:auto!important;transition:none!important}}
