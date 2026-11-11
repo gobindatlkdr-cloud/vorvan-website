@@ -78,7 +78,7 @@ export function mountSupportLifecycleSandbox(root,sandbox){
     ", resolution "+rec.sla.deadline_at.resolution+
     ". "+(breaches.length?"Simulated overdue: "+breaches.join(", "):"No simulated overdue target.");
    const actions=make("div",undefined,"vor013-case-actions");
-   const permission=snap.permissions.transition&&sandbox.role!=="operator"||sandbox.role==="operator"&&rec.scope==="operations";
+   const permission=snap.permissions.transition&&(sandbox.role!=="operator"||rec.scope==="operations");
    const options=nextStatuses(rec.status);
    if(permission&&options.length){
     const select=make("select");select.setAttribute("aria-label","Next demo status for "+rec.subject);
