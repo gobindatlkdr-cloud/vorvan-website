@@ -8,6 +8,7 @@ const add=(root,...children)=>{root.append(...children);return root;};
 const selector=(label,options)=>{
  const el=make("select");el.setAttribute("aria-label",label);
  for(const [value,title] of options){const opt=make("option",title);opt.value=value;el.append(opt);}
+ if(options.length)el.value=options[0][0]; // same deterministic default in real and synthetic DOM
  return el;
 };
 const prettify=x=>x.replaceAll("_"," ");
