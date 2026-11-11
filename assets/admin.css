@@ -114,3 +114,26 @@
 .vor014-flag{border-top:1px solid #f2dce8;padding:15px 0}
 .vor014-flag:first-of-type{border-top:0}
 @media(max-width:640px){.vor014-panel{padding:15px}.vor014-actions button{width:100%}.vor014-panel select{max-width:none;margin:0 0 8px}.vor014-flag button{width:100%}}
+
+
+/* VOR-016 privacy rights training panel — burgundy, accessible, never real customer data */
+.vor016-mount{grid-column:1/-1;min-width:0}
+.vor016-panel{background:#fff;border:1px solid #e9cbd9;border-radius:18px;padding:22px;min-width:0;color:#552a40}
+.vor016-panel h2{font-size:22px;margin:0 0 10px;color:#751a48}
+.vor016-panel h3{font-size:17px;color:#721940;margin:18px 0 9px}
+.vor016-panel h4{font-size:15px;color:#751a48;margin:0 0 7px}
+.vor016-panel p,.vor016-panel li{font-size:13px;line-height:1.7;overflow-wrap:anywhere}
+.vor016-controls{display:flex;gap:11px;flex-wrap:wrap;align-items:center;padding:17px;background:#fff9fc;border:1px solid #eed5e0;border-radius:14px;margin:17px 0}
+.vor016-notice{flex-basis:100%;padding:12px;border-radius:10px;border:1px solid #e7c4d5;background:#fff}
+.vor016-panel select{background:#fff;border:1px solid #dab7c8;color:#68203f;border-radius:10px;padding:10px;min-width:150px;max-width:100%}
+.vor016-panel button{border:1px solid #771b49;border-radius:10px;padding:10px 13px;background:#8e1f56;color:#fff;font-weight:740}
+.vor016-panel button:disabled{opacity:.48;cursor:not-allowed}
+.vor016-panel button:focus-visible,.vor016-panel select:focus-visible{outline:3px solid #bc6493;outline-offset:3px}
+.vor016-feedback{padding:13px;background:#fff3f8;border:1px solid #efcfdf;border-radius:12px}
+.vor016-queue,.vor016-history,.vor016-blockers{margin:18px 0;padding:15px 18px;background:#fffcfe;border:1px solid #efdce6;border-radius:14px}
+.vor016-item{border-top:1px solid #efd4e2;padding:17px 0}
+.vor016-item:first-of-type{border-top:none}
+.vor016-item-actions{display:flex;flex-wrap:wrap;gap:8px}
+.vor016-preview{padding:15px;border:1px dashed #c999b3;border-radius:12px;background:#fff6fa;white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;max-width:100%}
+@media(max-width:620px){.vor016-panel{padding:14px}.vor016-controls{align-items:stretch;flex-direction:column}.vor016-panel select,.vor016-panel button{width:100%}.vor016-item-actions{flex-direction:column}}
+@media(prefers-reduced-motion:reduce){.vor016-panel *{animation:none!important;transition:none!important}}
