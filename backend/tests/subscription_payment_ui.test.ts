@@ -117,5 +117,5 @@ Deno.test("UI does not create actual payment links, money collection or provider
  yes(html.includes("CSP")||html.includes("Content-Security-Policy"),"Admin CSP");
  yes(!/razorpay\.|cashfree\.|stripe\.com|phonepe\.|\/checkout|\/payments\/capture/.test(ui+engine),"no real gateway endpoints");
  yes(!/\bfetch\s*\(|\bXMLHttpRequest\b|\blocalStorage\b|\bsessionStorage\b/.test(engine.replace(/\/\*[\s\S]*?\*\//g,"")),"engine local only");
- yes(admin.includes('new-task-toggle').toString(),"existing task mode");
+ yes(admin.includes('if(!syntheticOnly)tasks()')&&admin.includes('state.area==="payments"'),"synthetic payments never fetch real Admin task area");
 });
