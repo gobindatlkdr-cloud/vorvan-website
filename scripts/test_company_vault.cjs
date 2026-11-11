@@ -23,7 +23,7 @@ const docs=(schema.match(/^\('[a-z_]+','[^']+'/gm)||[]).length;
 assert.equal(docs,15,"15 seeded compliance checklist documents");
 for(const p of ["index.html","about.html","partners.html","privacy.html","terms.html","contact.html","partner-desk.html","solutions.html"]){
  const h=fs.readFileSync(p,"utf8");
- assert.match(h,/Incorporation pending/);
+ assert.match(h,/Registered company/);
  assert.match(h,/No live loan, credit-bureau, KYC or payment services/);
 }
 assert.doesNotMatch(admin,/SUPABASE_SERVICE_ROLE_KEY|sb_secret_/);
