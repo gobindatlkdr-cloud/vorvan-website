@@ -13,8 +13,8 @@ Deno.test("Owner reads fixed version registry, policies and safety gates",()=>{
  eq(s.registry.length,3);eq(s.policies.length,6);eq(s.flags.length,6);
  eq(MODEL_REGISTRY.length,3);eq(POLICY_REGISTRY.length,6);
  for(const m of s.registry){eq(m.deployment,"not_deployed");eq(m.contains_real_prompts,false);}
- yes(s.registry.every(x=>Object.isFrozen(x)),"frozen models");
- yes(s.release_gates.every(x=>Object.isFrozen(x)),"frozen gates");
+ yes(s.registry.every((x:unknown)=>Object.isFrozen(x)),"frozen models");
+ yes(s.release_gates.every((x:unknown)=>Object.isFrozen(x)),"frozen gates");
 });
 Deno.test("No unverified or customer role can create synthetic admin governance",()=>{
  for(const role of ["customer","viewer","anonymous","",null,undefined,{}]){
