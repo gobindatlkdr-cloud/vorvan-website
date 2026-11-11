@@ -273,7 +273,7 @@ async function vaultRequest(path,method="GET",body,rawType){
  const res=await fetch(API+"/functions/v1/compliance-vault"+path,{method,headers:h,body:body===undefined?undefined:rawType?body:JSON.stringify(body),cache:"no-store"});
  const data=await res.json().catch(()=>({}));
  if(!res.ok){
-  const hints={mfa_required:"Please sign in and complete MFA.",admin_access_denied:"Admin role not approved.",incorporation_required:"Incorporation pending: approval is locked.",owner_approval_required:"Owner approval required.",verified_requires_uploaded_file:"Upload a genuine document first.",file_signature_mismatch:"File signature does not match its MIME type.",file_storage_failed:"Private Storage upload failed."};
+  const hints={mfa_required:"Please sign in and complete MFA.",admin_access_denied:"Admin role not approved.",incorporation_required:"Registration evidence has not been verified in the document vault; approval remains locked.",owner_approval_required:"Owner approval required.",verified_requires_uploaded_file:"Upload a genuine document first.",file_signature_mismatch:"File signature does not match its MIME type.",file_storage_failed:"Private Storage upload failed."};
   throw Error(hints[data.code]||"Compliance API: "+(data.code||res.status));
  }
  return data;
@@ -296,8 +296,8 @@ function vaultPanel(parent){
  async function refresh(){
   const r=await vaultRequest("/"),c=r.company||{};company.replaceChildren();list.replaceChildren();events.replaceChildren();
   const top=el("div","vault-summary");
-  top.append(el("strong","",c.incorporation_status==="incorporated"?"Incorporated":"Pre-Incorporation · Certificate Pending"));
-  for(const [key,yes,no] of [["ca_documents_verified","CA documents verified","CA verification pending"],["mca_fee_paid","MCA fee paid","MCA fee pending"],["coi_issued","COI issued","COI not issued"]])top.append(el("span","",c[key]?yes:no));
+  top.append(el("strong","",c.incorporation_status==="incorporated"?"Company registration verified in vault":"Registered company (owner-confirmed) · COI verification pending in vault"));
+  for(const [key,yes,no] of [["ca_documents_verified","CA documents verified","CA verification pending"],["mca_fee_paid","MCA fee verified","MCA payment not verified in vault"],["coi_issued","COI verified in vault","COI not verified in vault"]])top.append(el("span","",c[key]?yes:no));
   if(c.cin)top.append(el("span","","CIN: "+c.cin));company.append(top);
   const docs=r.documents||[];tell("Secure checklist loaded — "+docs.length+" records; "+docs.filter(d=>d.stage==="verified").length+" verified.",true);
   let cat="";
@@ -306,7 +306,7 @@ function vaultPanel(parent){
    const item=el("article","vault-item"),head=el("div","vault-head");
    append(head,el("strong","",d.title),el("span","vault-tag",d.stage.replaceAll("_"," ")));
    append(item,head,el("p","",d.description||""),el("p","vault-meta",(d.versions||0)+" private file version(s)"));
-   if(d.post_incorporation&&c.incorporation_status!=="incorporated")item.append(el("p","vault-warning","After incorporation — final verification locked"));
+   if(d.post_incorporation&&c.incorporation_status!=="incorporated")item.append(el("p","vault-warning","Registered-company evidence must be verified in vault before final approval"));
    const tools=el("div","vault-tools"),select=el("select");
    select.setAttribute("aria-label","Document status: "+d.title);
    for(const st of ["pending","draft","under_review","verified","blocked"]){

@@ -2,12 +2,13 @@
 
 **Public website:** https://vorvan.co.in/
 **Source:** GitHub Pages, `main` branch, custom HTTPS domain.
-**Business status:** **VORVAN PRIVATE LIMITED** is registered per the owner's confirmation of 10 November 2026. This repository does not publish or independently verify the COI/CIN/PAN. Registration does not imply any RBI lending licence, credit bureau access or lender/API agreement.
+**Business status:** **VORVAN PRIVATE LIMITED** is registered per the owner's confirmation of 10 November 2026. Homepage and all dynamic Readiness Passport language variants must consistently show this status. This repository does not publish or independently verify the COI/CIN/PAN. Registration does not imply any RBI lending licence, credit bureau access or lender/API agreement.
 
 ## Public navigation
 
 - **Home:** overview and four **planned** loan categories (personal, business, education and short-term).
 - **Loan Categories:** `solutions.html` — separate anchored category descriptions and a clearly fictional product demo.
+- **Public educational demos:** homepage `#product-previews` links to `experience.html` (fictional credit awareness), `readiness-passport.html` (trilingual fixed-choice learning), and `vyn-coach-sandbox.html` (offline educational guidance). These are live static pages only; no CIBIL, loan, KYC, billing or customer consent services are activated.
 - **Partner With Us:** `partners.html` — formal direct LSP/lender API discussion for verified banks and NBFCs only, with its existing institutional enquiry form.
 - **About / Contact:** general company information and website support.
 
