@@ -11,6 +11,7 @@ const AREAS={
  partners:["Bank / NBFC Partners","Direct LSP and API collaboration; customer requests remain disabled"],
  ai:["AI Backend","Synthetic credit guidance status, security and deployment"],
  governance:["AI Governance & Reporting (Sandbox)","Fictional version registry, safety flags, role-scoped analytics and permanently locked release gates"],
+ privacy:["Privacy Requests & Export (Sandbox)","Synthetic fixed-choice access/correction/delete/export/consent-withdrawal lifecycle — never live processing"],
  customers:["Customer Operations","Confidential account operations stay locked until approved"],
  readiness:["Readiness Operations (Sandbox)","Synthetic 30/60/90-day template queues, simulated role scopes and locked go-live gates"],
  support:["Support & Grievances","Issue tracking and business correspondence work queue"],
@@ -20,7 +21,7 @@ const AREAS={
  compliance:["Legal & Compliance","Review checklist, consents, contracts and compliance readiness"]
 };
 const $=(id)=>document.getElementById(id);
-const state={access:"",refresh:"",role:"",tasks:[],modules:[],counters:{},area:"overview",mfaFactor:"",mfaSetup:false,user:null,events:[],readinessSandbox:null,supportSandbox:null,governanceSandbox:null};
+const state={access:"",refresh:"",role:"",tasks:[],modules:[],counters:{},area:"overview",mfaFactor:"",mfaSetup:false,user:null,events:[],readinessSandbox:null,supportSandbox:null,governanceSandbox:null,privacySandbox:null};
 function visible(id,yes){$(id).hidden=!yes}
 function message(id,msg,ok=false){const el=$(id);el.textContent=msg;el.classList.toggle("ok",ok)}
 function el(tag,cl,text){const x=document.createElement(tag);if(cl)x.className=cl;if(text!==undefined)x.textContent=String(text);return x}
@@ -33,7 +34,7 @@ async function auth(path,method="GET",body=undefined,session=true){
  return result;
 }
 function setTokens(result){if(result.access_token){state.access=result.access_token;state.refresh=result.refresh_token||state.refresh}}
-function clearSession(){state.access="";state.refresh="";state.mfaFactor="";state.user=null;state.tasks=[];state.modules=[];state.role="";state.readinessSandbox=null;state.supportSandbox=null;state.governanceSandbox=null;$("password").value="";$("signup-password").value="";$("signup-confirm").value="";$("mfa-code").value="";$("mfa-secret").textContent="";$("mfa-qr").removeAttribute("src");visible("mfa-setup",false);visible("dashboard-view",false);visible("mfa-view",false);visible("signup-view",false);visible("login-view",true);visible("logout",false)}
+function clearSession(){state.access="";state.refresh="";state.mfaFactor="";state.user=null;state.tasks=[];state.modules=[];state.role="";state.readinessSandbox=null;state.supportSandbox=null;state.governanceSandbox=null;state.privacySandbox=null;$("password").value="";$("signup-password").value="";$("signup-confirm").value="";$("mfa-code").value="";$("mfa-secret").textContent="";$("mfa-qr").removeAttribute("src");visible("mfa-setup",false);visible("dashboard-view",false);visible("mfa-view",false);visible("signup-view",false);visible("login-view",true);visible("logout",false)}
 async function login(event){
  event.preventDefault();message("login-message","");
  const password=$("password").value;
@@ -196,7 +197,7 @@ async function call(path,method="GET",body){
  return json;
 }
 async function load(){
- const data=await call("/overview");state.tasks=Array.isArray(data.tasks)?data.tasks:[];state.modules=Array.isArray(data.modules)?data.modules:[];state.counters=data.counters||{};const verifiedRole=data.role||"unknown";if(state.role!==verifiedRole){state.readinessSandbox=null;state.supportSandbox=null;state.governanceSandbox=null;}state.role=verifiedRole;
+ const data=await call("/overview");state.tasks=Array.isArray(data.tasks)?data.tasks:[];state.modules=Array.isArray(data.modules)?data.modules:[];state.counters=data.counters||{};const verifiedRole=data.role||"unknown";if(state.role!==verifiedRole){state.readinessSandbox=null;state.supportSandbox=null;state.governanceSandbox=null;state.privacySandbox=null;}state.role=verifiedRole;
  $("admin-role").textContent="Approved role: "+state.role;
  message("dashboard-message","Last refreshed: "+new Date().toLocaleString(),true);
 }
@@ -356,6 +357,27 @@ function vaultPanel(parent){
 
 function infoPanel(area){
  const container=el("div","panel-grid");
+ if(area==="privacy"){
+  const notice=el("article","panel-box");
+  append(notice,el("span","status","SYNTHETIC ONLY · NO REAL IDENTITY OR PERSONAL DATA"),
+   el("h2","","Privacy Requests & Export — Training Sandbox"),
+   el("p","","Fixed fictional identity fixtures and role-scoped review; real access/correction/deletion/consent withdrawal or data export is disabled."));
+  const mount=el("div","vor016-mount","Loading fictional privacy rights workflow…");
+  container.append(notice,mount);
+  // Only server-approved company Admin /overview and AAL2 MFA can reach this dashboard.
+  const validatedRole=state.role;
+  if(!state.access||!["owner","operator","auditor"].includes(validatedRole)){
+   mount.textContent="Verified company Admin role and AAL2 MFA required.";return container;
+  }
+  import("./privacy-requests-ui.js").then(mod=>{
+   if(state.area!=="privacy"||!state.access||state.role!==validatedRole)return;
+   if(!state.privacySandbox||state.privacySandbox.snapshot().role!==validatedRole)
+    state.privacySandbox=mod.createPrivacyRequestsSandbox(validatedRole);
+   const result=mod.mountPrivacyRequestsSandbox(mount,state.privacySandbox);
+   if(!result.ok)mount.textContent="Fictional privacy workflow unavailable.";
+  }).catch(()=>{if(state.area==="privacy")mount.textContent="Fictional privacy workflow unavailable; no personal data accessed.";});
+  return container;
+ }
  if(area==="governance"){
   const notice=el("article","panel-box");
   append(notice,el("span","status","FICTIONAL ONLY · NO LIVE MODEL OR CUSTOMER DATA"),
@@ -553,7 +575,7 @@ function institutionalInbox(container){
 function render(){
  const [title,subtitle]=AREAS[state.area];$("page-title").textContent=title;$("page-subtitle").textContent=subtitle;$("panel-content").replaceChildren(infoPanel(state.area));$("new-task-toggle").disabled=state.role==="auditor";
  for(const b of document.querySelectorAll("#panel-nav button")){b.classList.toggle("selected",b.dataset.area===state.area)}
- const syntheticOnly=state.area==="readiness"||state.area==="governance";
+ const syntheticOnly=state.area==="readiness"||state.area==="governance"||state.area==="privacy";
  $("new-task-toggle").hidden=syntheticOnly;document.querySelector(".worklist").hidden=syntheticOnly;
  $("task-area").value=syntheticOnly?"overview":state.area;if(!syntheticOnly)tasks();
 }
