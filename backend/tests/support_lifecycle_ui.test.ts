@@ -1,5 +1,5 @@
 /** VOR-013 executes real first-party Support UI with synthetic DOM; never logs in or writes data. */
-import {createSupportLifecycleSandbox} from "../../assets/support-lifecycle-sandbox.js";
+import {createSupportLifecycleSandbox,START_MS} from "../../assets/support-lifecycle-sandbox.js";
 import {mountSupportLifecycleSandbox} from "../../assets/support-lifecycle-ui.js";
 function eq(a:unknown,b:unknown,n="assert"){if(JSON.stringify(a)!==JSON.stringify(b))
  throw Error(n+" "+JSON.stringify(a)+" != "+JSON.stringify(b));}
@@ -63,7 +63,7 @@ Deno.test("Actual VOR-013 Admin Support UI: MFA-bound injection, fictional intak
   const escalation=actions.children.find(x=>x.textContent==="Simulate escalation");
   yes(escalation,"Overdue simulated escalation action available");
   escalation!.fire("click");
-  eq(engine.snapshot(1731402000000).queue[0].status,"escalated");
+  eq(engine.snapshot(START_MS+240*3600000).queue[0].status,"escalated");
   eq(engine.snapshot().audit.length,3);
   yes(audit.children[1].children.length>=3,"Audit timeline rendered");
   reset.fire("click");eq(queue.children.length,1);
