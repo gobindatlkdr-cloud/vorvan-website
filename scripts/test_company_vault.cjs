@@ -8,7 +8,8 @@ const schema=fs.readFileSync("backend/migrations/step12d_compliance_vault.sql","
 assert.match(admin,/function vaultPanel\(parent\)/);
 assert.match(admin,/functions\/v1\/compliance-vault/);
 assert.match(admin,/if\(area==="compliance"\)vaultPanel\(container\)/);
-assert.match(html,/PRE-INCORPORATION/);
+assert.match(html,/REGISTERED COMPANY · LENDING STAGED/);
+assert.doesNotMatch(html,/PRE-INCORPORATION/);
 assert.match(html,/Legal & Documents/);
 assert.match(backend,/jwt\.aal!=="aal2"/);
 assert.match(backend,/owner_only_file_access/);
@@ -27,4 +28,4 @@ for(const p of ["index.html","about.html","partners.html","privacy.html","terms.
  assert.match(h,/No live loan, credit-bureau, KYC or payment services/);
 }
 assert.doesNotMatch(admin,/SUPABASE_SERVICE_ROLE_KEY|sb_secret_/);
-console.log("PASS: pre-incorporation disclosure, 15 documents, private vault, owner MFA and frontend integration");
+console.log("PASS: registered-company admin banner, legacy vault checklist, 15 documents, private vault, owner MFA and frontend integration");
