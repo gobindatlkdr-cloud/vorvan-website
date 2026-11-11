@@ -114,7 +114,7 @@ export function createSupportLifecycleSandbox(role){
   const rec={
    id:raw.request_id,template_id:item.id,category:item.category,scope:item.scope,
    subject:item.subject,summary:item.summary,
-   status:"new",version:1,created_at_ms:nowMs,acknowledged_at_ms:null,
+   status:"new",version:1,created_at_ms:nowMs,last_event_at_ms:nowMs,acknowledged_at_ms:null,
    responded_at_ms:null,resolved_at_ms:null,closed_at_ms:null
   };
   cases.push(rec);
@@ -140,9 +140,9 @@ export function createSupportLifecycleSandbox(role){
   if(!permitted(role,rec))return denial(role==="auditor"?"read_only_role":"out_of_scope");
   if(rec.version!==raw.expected_version)return denial("stale_version");
   if(!ALLOWED[rec.status].includes(raw.target_status))return denial("invalid_transition");
-  if(nowMs<rec.created_at_ms)return denial("invalid_clock");
+  if(nowMs<rec.last_event_at_ms)return denial("clock_reversal");
   if(events.length>=MAX_AUDIT)return denial("audit_capacity");
-  const previous=rec.status;rec.status=raw.target_status;rec.version++;
+  const previous=rec.status;rec.status=raw.target_status;rec.version++;rec.last_event_at_ms=nowMs;
   if(raw.target_status==="triaged"&&rec.acknowledged_at_ms===null)rec.acknowledged_at_ms=nowMs;
   if(raw.target_status==="in_progress"&&rec.responded_at_ms===null)rec.responded_at_ms=nowMs;
   if(raw.target_status==="resolved")rec.resolved_at_ms=nowMs;
@@ -173,7 +173,7 @@ export function createSupportLifecycleSandbox(role){
   if(!sla(rec,nowMs).escalation_suggested&&rec.category!=="security")
    return denial("not_due_for_escalation");
   if(events.length>=MAX_AUDIT)return denial("audit_capacity");
-  const from=rec.status;rec.status="escalated";rec.version++;
+  const from=rec.status;rec.status="escalated";rec.version++;rec.last_event_at_ms=nowMs;
   emit("escalation_simulated",rec,from,"escalated",nowMs,raw.request_id);
   const result=immutable({ok:true,case_id:rec.id,status:rec.status,version:rec.version,
    idempotent:false,simulated:true,notification_sent:false,real_escalation_created:false});
