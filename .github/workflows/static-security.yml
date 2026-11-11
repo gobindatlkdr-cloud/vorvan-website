@@ -118,6 +118,15 @@ jobs:
         run: deno test --allow-read backend/tests/vyn_coach_ui.test.ts
       - name: VOR-012 coach runtime and UI type-check
         run: deno check assets/vyn-coach-engine.js assets/vyn-coach-ui.js
+      - name: VOR-013 support and complaints synthetic SLA, RBAC, escalation and audit tests
+        run: deno test backend/tests/support_lifecycle_sandbox.test.ts
+      - name: VOR-013 actual Admin Support UI and session-gate synthetic DOM tests
+        run: deno test --allow-read backend/tests/support_lifecycle_ui.test.ts
+      - name: VOR-013 support engine/UI static checks
+        run: |
+          node --check assets/support-lifecycle-sandbox.js
+          node --check assets/support-lifecycle-ui.js
+          deno check assets/support-lifecycle-sandbox.js assets/support-lifecycle-ui.js
       - name: Type-check authenticated AI guidance backend
         run: deno check backend/ai-guidance/index.ts backend/admin-console/index.ts backend/site-assistant/index.ts backend/admin-mfa-recovery/index.ts backend/compliance-vault/index.ts backend/institutional-inquiries/index.ts
 
