@@ -15,7 +15,7 @@ assert.match(reader,/reader\.cancel\(\)/);
 assert.match(vault,/jwt\.aal!=="aal2"/);
 assert.match(vault,/owner_only_file_access/);
 assert.match(vault,/incorporation_required/);
-assert.match(html,/PRE-INCORPORATION/);
+assert.match(html,/REGISTERED COMPANY/);
 assert.match(admin,/const COMPANY="admin@vorvan\.co\.in"/);
 assert.doesNotMatch(vyn,/admin@vorvan\.co\.in/);
 assert.doesNotMatch(vyn,/official_emails:EMAIL/);
@@ -23,6 +23,6 @@ assert.match(vyn,/official_email:emailForTopic\(topic\)/);
 for(const page of ["index.html","solutions.html","contact.html","partners.html","privacy.html","terms.html"]){
  const source=fs.readFileSync(page,"utf8");
  assert.doesNotMatch(source,/href="admin\.html"|admin@vorvan\.co\.in|Staff access/,page+" publicly exposes private admin");
- assert.match(source,/Incorporation pending/,page+" missing pending incorporation disclosure");
+ assert.match(source,/Registered company/,page+" missing current company disclosure");
 }
-console.log("PASS M0: bounded request body, MFA and owner controls preserved, Vyn internal mailbox hidden, feature-gated site disclaimers");
+console.log("PASS M0: registered-company copy, bounded request body, MFA and owner controls preserved, Vyn internal mailbox hidden, feature-gated site disclaimers");
