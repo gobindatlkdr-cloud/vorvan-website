@@ -6,7 +6,7 @@
 
 This milestone adds a *fictional*, fixed-choice AI governance training sandbox to the existing VORVAN Admin console. It does **not** approve models, grant financial services authority, process prompt text, infer from any users, perform customer analytics, or authorize production. No Supabase migration, Edge deployment, real customer/loan data, live AI calls, outbound email, notifications or browser persistence.
 
-The company is **registered per owner confirmation**; exact COI/CIN/PAN have not been verified/published in this repository. Neither registration nor this demo means RBI licence, verified lender partnership or bureau rights. The old Admin banner and README pre-incorporation wording were corrected on this scoped branch, including the corresponding regression assertion.
+The company is **registered per owner confirmation**; exact COI/CIN/PAN have not been verified/published in this repository. Neither registration nor this demo means RBI licence, verified lender partnership or bureau rights. The old Admin banner, README and public informational pages displaying outdated pre-incorporation text were corrected on this scoped branch, alongside their regression assertions.
 
 ## Source changes
 
@@ -37,7 +37,7 @@ The company is **registered per owner confirmation**; exact COI/CIN/PAN have not
 
 ## Verification, deployment and rollback
 
-The new regression scripts are wired to Static Security GitHub Actions. A checked PR must pass the full security/TypeScript/Deno test suite and GitHub Pages/Live URL before the work can be described as merged and delivered; report specific URLs and counts only after independently checking Actions.
+**Verified PR-source CI evidence:** [VOR-014 PR #41](https://github.com/gobindatlkdr-cloud/vorvan-website/pull/41) at checked head d2d31c877c225fc1c78bab987b79e053d06d54e7. [Static Security #43058152984](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/43058152984) SUCCESS: **18/18** real governance engine tests, **3/3** actual synthetic Admin DOM tests, JS/Deno syntax/type checks, all existing MFA/Vault/Vyn/Support/Institutional tests, and isolated PostgreSQL17 consent/inquiry RLS jobs PASS. [Live URL #43058153139](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/43058153139) SUCCESS. These are synthetic checks; genuine Admin AAL2 browser UAT, independent VAPT and legal sign-off are NOT claimed. Final post-merge Pages evidence must be independently checked; it is not a live AI deployment.
 
 **Manual UAT not yet performed**: genuine Owner/Operator/Auditor AAL2 browser clickthrough, Safari/Android assistive-technology accessibility, independent security/VAPT, audit durability and production-grade human oversight. No claim of deployment of a real inference system.
 
