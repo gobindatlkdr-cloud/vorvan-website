@@ -77,7 +77,7 @@ async function verifiedOwner(req:Request):Promise<string|"mfa_required"|"denied"
  return uid;
 }
 function path(req:Request){
- const p=new URL(req.url).pathname;
+ const p=new globalThis.URL(req.url).pathname;
  for(const prefix of ["/functions/v1/customer-operations","/customer-operations"]){
   if(p===prefix)return "/";
   if(p.startsWith(prefix+"/"))return p.slice(prefix.length).replace(/\/+$/,"")||"/";
