@@ -180,3 +180,27 @@
 .vor018-panel ul,.vor018-panel ol{padding-left:20px}
 @media(max-width:640px){.vor018-panel{padding:14px}.vor018-controls{flex-direction:column;align-items:stretch}.vor018-panel button,.vor018-panel select{width:100%}}
 @media(prefers-reduced-motion:reduce){.vor018-panel *{transition:none!important;animation:none!important}}
+
+
+/* Live customer contact queue: restricted Owner MFA workspace */
+.coa-mount{grid-column:1/-1;min-width:0}
+.coa-panel{padding:21px;background:#fff;border:1px solid #ebd3e0;border-radius:18px;color:#57263f;min-width:0}
+.coa-panel h2{font-size:23px;margin:0 0 10px;color:#7e2050}
+.coa-panel p{color:#77536b;font-size:13px;line-height:1.7}
+.coa-panel button{background:#81214e;border:1px solid #742048;color:#fff;font-weight:760;border-radius:10px;padding:10px 14px;cursor:pointer}
+.coa-panel button:disabled{opacity:.48;cursor:not-allowed}
+.coa-panel button:focus-visible,.coa-panel select:focus-visible,.coa-panel textarea:focus-visible{outline:3px solid #b65b89;outline-offset:3px}
+.coa-panel .coa-status,.coa-panel .coa-totals{background:#fff3f8;border:1px solid #edcfe0;border-radius:11px;padding:12px 15px}
+.coa-queue{display:grid;gap:17px;margin-top:18px}
+.coa-case{padding:19px;border:1px solid #eed5e2;border-radius:15px;background:#fffafd;min-width:0}
+.coa-case h3{font-size:17px;margin:0;color:#74224b}
+.coa-case p{margin:5px 0 16px}
+.coa-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.coa-item{padding:10px 12px;border:1px solid #eacbdc;border-radius:10px;background:white;min-width:0}
+.coa-item span{display:block;color:#8a6981;font-size:11px}
+.coa-item strong{display:block;color:#572c42;font-size:13px;font-weight:700;overflow-wrap:anywhere}
+.coa-controls{border-top:1px solid #ecd5e1;padding-top:15px;margin-top:16px;display:grid;grid-template-columns:1fr 2fr;gap:12px}
+.coa-controls label{display:flex;flex-direction:column;gap:7px;color:#63425a;font-size:12px;font-weight:750}
+.coa-controls select,.coa-controls textarea{width:100%;border:1px solid #d9b5c8;border-radius:10px;background:white;color:#542843;padding:10px}
+.coa-controls button{grid-column:1/-1;justify-self:start}
+@media(max-width:750px){.coa-panel{padding:14px}.coa-grid,.coa-controls{grid-template-columns:1fr}.coa-controls button{width:100%}}
