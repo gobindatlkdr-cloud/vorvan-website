@@ -499,6 +499,7 @@ function dashboard(area){
 }
 function draw(){
  if(!root)return;
+ document.body.classList.toggle("cp-authenticated",state.phase!=="login");
  root.replaceChildren();
  const area=show("div","","cp-app-inner");
  if(state.phase==="login")loginScreen(area);
