@@ -82,9 +82,9 @@ select 'PASS: owner-scoped profile and enquiries; anonymous denied; immutable co
 
 
 -- Mobile OTP / applicant details isolation tests: synthetic auth users only.
-insert into auth.users(id) values
- ('00000000-0000-4000-8000-000000000003'),
- ('00000000-0000-4000-8000-000000000004');
+insert into auth.users(id,phone,phone_confirmed_at) values
+ ('00000000-0000-4000-8000-000000000003','+919200000000',now()),
+ ('00000000-0000-4000-8000-000000000004','+919300000000',now());
 set role authenticated;
 select set_config('request.jwt.claim.sub','00000000-0000-4000-8000-000000000003',false);
 select set_config('request.jwt.claims','{"phone":"+919200000000","is_anonymous":false}',false);
