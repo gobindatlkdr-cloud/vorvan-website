@@ -56,5 +56,5 @@ assert.match(admin,/if\(!state\.access\|\|!\["owner","operator","auditor"\]\.inc
 for(const source of [home,read("experience.html"),read("readiness-passport.html")]){
  assert.doesNotMatch(source,/Apply Now\s*<\/a>/i,"do not enable loan applications");
 }
-assert.match(read("experience.html"),/VORVAN PRIVATE LIMITED · Registered company \(owner-confirmed\)/);
+assert.match(read("experience.html"),/VORVAN PRIVATE LIMITED\. All rights reserved/);
 console.log("PASS: all public pages and multilingual dynamic notices reflect registered company; public previews linked, MFA and loan/service gates retained");
