@@ -29,7 +29,7 @@ jobs:
             home=$(html "" || true)
             if grep -q 'id="loan-categories"' <<< "$home" &&
                grep -q 'Partner With Us' <<< "$home" &&
-               grep -q 'Registered company (owner-confirmed)' <<< "$home" &&
+               grep -q 'VORVAN PRIVATE LIMITED' <<< "$home" &&
                ! grep -q 'Incorporation pending' <<< "$home"; then
               site_ready=1;break
             fi
@@ -136,17 +136,55 @@ jobs:
           [[ "$ready" == "1" ]] || { echo "FAIL: published registered company homepage/passport not observed";exit 1; }
           for asset in "experience.html" "readiness-passport.html" "vyn-coach-sandbox.html" \
             "admin.html" "assets/readiness-passport.js?v=20261111-registered-company" \
-            "assets/admin.js?v=20261111-registered-company"; do
+            "assets/admin.js?v=20261112-customer-enquiries"; do
             status=$(curl --location --silent --show-error --max-time 20 -o /dev/null -w '%{http_code}' "$BASE/$asset")
             [[ "$status" == "200" ]] || { echo "$asset returned HTTP $status";exit 1; }
           done
           dynamic=$(curl --fail --location --silent --show-error --max-time 20 "$BASE/assets/readiness-passport.js?v=20261111-registered-company")
-          admin_js=$(curl --fail --location --silent --show-error --max-time 20 "$BASE/assets/admin.js?v=20261111-registered-company")
-          grep -Fq 'VORVAN PRIVATE LIMITED is registered (owner-confirmed)' <<< "$dynamic" || exit 1
+          admin_js=$(curl --fail --location --silent --show-error --max-time 20 "$BASE/assets/admin.js?v=20261112-customer-enquiries")
+          grep -Fq 'VORVAN PRIVATE LIMITED is registered' <<< "$dynamic" || exit 1
           grep -Fq 'নিবন্ধিত কোম্পানি' <<< "$dynamic" || exit 1
           grep -Fq 'पंजीकृत कंपनी' <<< "$dynamic" || exit 1
           ! grep -Eqi 'pre-incorporation|incorporation pending|registration pending' <<< "$dynamic" || exit 1
-          grep -Fq 'COI verification pending in vault' <<< "$admin_js" || exit 1
+          grep -Fq 'COI evidence pending vault verification' <<< "$admin_js" || exit 1
           grep -Fq 'incorporation_required:' <<< "$admin_js" || exit 1
           ! grep -Eqi 'pre-incorporation|incorporation pending' <<< "$admin_js" || exit 1
           echo 'PASS: live company registration wording, three public demos, MFA Admin and regulated-service gates'
+
+      - name: Confirm customer-first login page, contact-only intake and confidential enquiry gateway
+        if: github.event_name == 'push'
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="https://vorvan.co.in"
+          API="https://kukfpsqujlutlgwndplh.supabase.co/functions/v1/customer-operations"
+          ready=0
+          for attempt in $(seq 1 24); do
+            home=$(curl --fail --silent --show-error --max-time 20 "$BASE/?customer=20261112" || true)
+            page=$(curl --fail --silent --show-error --max-time 20 "$BASE/customer.html?customer=20261112" || true)
+            if grep -Fq 'href="customer.html"' <<< "$home" &&
+               grep -Fq 'CIBIL EDUCATION' <<< "$home" &&
+               grep -Fq 'assets/customer-portal.js?v=20261111-customer-v1' <<< "$page"; then
+              ready=1;break
+            fi
+            echo "Customer publication pending ($attempt/24)"
+            sleep 5
+          done
+          [[ "$ready" == "1" ]] || { echo "Customer login page was not published";exit 1; }
+          grep -Fq 'name="robots" content="noindex,follow"' <<< "$page"
+          grep -Fq 'VORVAN PRIVATE LIMITED' <<< "$page"
+          grep -Fq 'No Aadhaar, PAN' <<< "$page"
+          for asset in "assets/customer-portal.js?v=20261111-customer-v1" \
+            "assets/customer-journey-engine.js" "assets/customer-portal.css?v=20261111-customer-v1" \
+            "assets/customer-admin-queue.js" "assets/admin.js?v=20261112-customer-enquiries"; do
+            code=$(curl --location --silent --show-error --max-time 20 -o /dev/null -w '%{http_code}' "$BASE/$asset")
+            [[ "$code" == "200" ]] || { echo "$asset HTTP $code";exit 1; }
+          done
+          client=$(curl --fail --location --silent --show-error --max-time 20 "$BASE/assets/customer-portal.js?v=20261111-customer-v1")
+          grep -Fq 'vorvan_customer_intake_profiles' <<< "$client"
+          grep -Fq 'vorvan_customer_enquiries' <<< "$client"
+          grep -Fq 'fictional' <<< "$client"
+          status=$(curl --location --silent --show-error --max-time 20 \
+            -o /dev/null -w '%{http_code}' "$API/enquiries")
+          [[ "$status" == "401" ]] || { echo "Customer owner-only Admin gateway exposed or unavailable: HTTP $status";exit 1; }
+          echo "PASS: customer login and secure enquiry frontend published, Owner AAL2 endpoint anonymous 401; actual OTP delivery still needs human UAT"
