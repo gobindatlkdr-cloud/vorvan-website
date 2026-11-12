@@ -43,7 +43,7 @@ for(const name of pages.filter(p=>!["experience.html","404.html"].includes(p))){
  assert.equal(mailboxLinks.length,1,name+" must have exactly one contextual footer mailbox");
  const expected=["partners.html","partner-desk.html","lsp-api-integration.html","lender-api-readiness.html","institutional-partnership-brief.html"].includes(name)?"partnerships@vorvan.co.in":["privacy.html","terms.html"].includes(name)?"legal@vorvan.co.in":["solutions.html"].includes(name)?"support@vorvan.co.in":"info@vorvan.co.in";
  assert.equal(mailboxLinks[0][1],expected,name+" must route context to correct team");
- assert.match(footer,/Registered company/);
+ assert.match(footer,/VORVAN PRIVATE LIMITED/);
 }
 const css=fs.readFileSync("assets/refresh.css","utf8");
 assert.match(css,/\.vv-loan-grid/);
