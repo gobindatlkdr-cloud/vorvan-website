@@ -1,0 +1,56 @@
+/** Mobile Applicant Login launch guard, personal-data minimisation and release layout. */
+"use strict";
+const assert=require("node:assert/strict"),fs=require("node:fs");
+const read=p=>fs.readFileSync(p,"utf8");
+const page=read("customer.html"),client=read("assets/customer-portal.js");
+const db=read("backend/migrations/20261112_applicant_mobile_otp_profile.sql");
+const edge=read("backend/customer-operations/index.ts");
+const admin=read("assets/customer-admin-queue.js"),css=read("assets/customer-portal.css");
+const home=read("index.html"),privacy=read("privacy.html");
+assert.match(page,/Applicant Login/);assert.match(page,/Kindly Login/);
+assert.match(page,/script-src 'self'/);assert.match(page,/noindex,follow/);
+assert.match(page,/assets\/customer-portal\.js\?v=20261112-mobile-applicant/);
+assert.doesNotMatch(page,/Verify your email|Email my login link/);
+assert.match(client,/const SMS_PROVIDER_READY=false/);
+assert.match(client,/\/auth\/v1\/otp/);
+assert.match(client,/phone,create_user:true,channel:"sms"/);
+assert.match(client,/\/auth\/v1\/verify/);
+assert.match(client,/type:"sms"/);
+assert.match(client,/user\.phone_confirmed_at/);
+assert.match(client,/^\s*const CONSENT="applicant_mobile_v1_2026_11_12"/m);
+assert.match(client,/if\(!SMS_PROVIDER_READY\)/);
+assert.match(client,/send\.disabled=!SMS_PROVIDER_READY/);
+assert.match(client,/if\(!state\.user\)return/);
+assert.match(client,/state\.phase=state\.profile\?"dashboard":"profile"/);
+assert.match(client,/Applicant Details Form/);
+for(const field of ["father_name","address_line","locality","district","state_name","postal_code",
+ "employment_subtype","employer_name","department_name","designation","business_type","business_name"]){
+ assert.ok(client.includes(field),"missing applicant JS field "+field);
+ assert.ok(db.includes(field),"missing database field "+field);
+ assert.ok(edge.includes(field),"missing Owner allowlist "+field);
+ assert.ok(admin.includes(field),"missing Owner UI field "+field);
+}
+assert.match(client,/central_government/);assert.match(client,/state_government/);
+assert.match(client,/private_company/);assert.match(client,/public_sector/);
+assert.match(client,/manufacturing/);assert.match(client,/retail/);
+assert.match(db,/alter column email drop not null/);
+assert.match(db,/consent_version='applicant_mobile_v1_2026_11_12'/);
+assert.match(db,/auth\.jwt\(\)->>'phone'/);
+assert.match(db,/revoke update\(phone\)/);
+assert.match(db,/father_name is not null/);
+assert.match(db,/postal_code is not null/);
+assert.match(db,/vorvan_applicant_mobile_form_complete/);
+assert.match(db,/vorvan_intake_customer_own_insert/);
+assert.match(db,/vorvan_intake_customer_own_update/);
+assert.match(css,/\.cp-gateway-visual/);assert.match(css,/\.cp-dynamic-work/);
+assert.match(css,/\.cp-authenticated/);
+assert.match(admin,/Applicant profiles · verified contact intake/);
+assert.match(edge,/claims\.aal!=="aal2"/);
+assert.match(edge,/rows\[0\]\?\.admin_role!=="owner"/);
+assert.match(edge,/real_credit_scores:0/);
+assert.doesNotMatch(client,/localStorage|sessionStorage|service_role|sb_secret_/);
+assert.doesNotMatch(client,/\/rest\/v1\/loan_applications/);
+assert.match(privacy,/father's name/);
+assert.match(home,/href="customer\.html" class="vv-customer-cta"/);
+assert.match(home,/href="partners\.html" class="vv-nav-cta"/);
+console.log("PASS: OTP-gated Applicant Login, mandatory conditional profile fields, owner-only PII and no fake SMS/credit product");
