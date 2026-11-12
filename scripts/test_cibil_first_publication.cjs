@@ -59,7 +59,7 @@ assert.match(edge,/owner_only:true/);
 assert.match(edge,/real_credit_scores:0/);
 assert.match(edge,/loan_approved:false/);
 assert.match(queue,/owner AAL2|OWNER AAL2|Owner \/ AAL2 MFA/);
-assert.match(queue,/Customer Login & Loan Enquiries/);
+assert.match(queue,/Applicant Profiles & Loan Enquiries/);
 assert.match(css,/\.vv-credit-help/);
 assert.match(css,/\.vv-help-grid/);
 assert.match(css,/\.vv-help-illustration/);
