@@ -51,7 +51,7 @@ for(const rule of [/incorporation pending/i,/pre[\s-]*incorporation/i])assert.do
 assert.match(admin,/incorporation_required:/,"backend vault approval lock preserved");
 assert.match(admin,/COI verification pending in vault/);
 assert.match(read("admin.html"),/id="mfa-form"/);
-assert.match(read("admin.html"),/assets\/admin\.js\?v=20261111-registered-company/);
+assert.match(read("admin.html"),/assets\/admin\.js\?v=20261112-customer-enquiries/);
 assert.match(admin,/if\(!state\.access\|\|!\["owner","operator","auditor"\]\.includes\(validatedRole\)\)/);
 for(const source of [home,read("experience.html"),read("readiness-passport.html")]){
  assert.doesNotMatch(source,/Apply Now\s*<\/a>/i,"do not enable loan applications");
