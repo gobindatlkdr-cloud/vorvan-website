@@ -44,7 +44,7 @@ Deno.test("Illustrative low and 700+ bands never create actual lender offers",()
  yes(low.viewLoans().ok);yes(high.viewLoans().ok);
  const l=low.chooseCategory({category_id:"personal"});
  const h=high.chooseCategory({category_id:"business"});
- eq(l.ok,true);eq(h.ok,true);
+ if(!l.ok||!h.ok)throw Error("fictional category selection unexpectedly blocked");
  eq(l.can_explore_demo,false);eq(h.can_explore_demo,true);
  eq(l.real_offer,false);eq(h.application_enabled,false);
  eq(high.snapshot().real_loan_offers,0);
@@ -54,7 +54,7 @@ Deno.test("Four loan categories and issue-reporting guidance are static, no reco
  eq(CATEGORIES.length,4);eq(ISSUES.length,5);
  for(const issue of ISSUES){
   const r=d.reportIssue({issue_id:issue.id});
-  yes(r.ok,"known issue");
+  if(!r.ok)throw Error("fixed educational issue was unexpectedly blocked");
   eq(r.record_created,false);eq(r.expert_assigned,false);eq(r.notification_sent,false);
  }
  eq(d.snapshot().support_case_submitted,false);
@@ -63,7 +63,7 @@ Deno.test("Four loan categories and issue-reporting guidance are static, no reco
 Deno.test("Three and six-month Guide plans are previews, free and never billed",()=>{
  const d=start();yes(d.reveal().ok);eq(GUIDE_PLANS.length,2);eq(ROADMAP.length,3);
  for(const plan of GUIDE_PLANS){
-  const result=d.selectGuide({plan_id:plan.id});eq(result.ok,true);
+  const result=d.selectGuide({plan_id:plan.id});if(!result.ok)throw Error("fictional Guide option denied");
   eq(result.charged,false);eq(result.subscription_created,false);
  }
  eq(d.snapshot().real_subscriptions,0);
