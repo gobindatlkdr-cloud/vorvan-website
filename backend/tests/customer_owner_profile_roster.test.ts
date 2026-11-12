@@ -51,7 +51,8 @@ Deno.test("Only Owner can mount confidential profile roster and list is not made
   yes(all(root).some(x=>x.textContent==="Fictional Person"),"account visible even without enquiries");
   yes(all(root).some(x=>x.textContent==="No customer loan information enquiries yet."),"enquiry list separate");
   yes(all(root).some(x=>x.textContent.includes("No credit scores stored.")),"explicit separation");
-  mount.dispose?.();equal(root.children.length,0,"dispose clears PII DOM");
+  if(mount.ok&&"dispose" in mount)mount.dispose();else throw Error("missing dispose");
+  equal(root.children.length,0,"dispose clears PII DOM");
  }finally{
   if(previous===undefined)delete (globalThis as unknown as {document?:unknown}).document;
   else (globalThis as unknown as {document:unknown}).document=previous;
