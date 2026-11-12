@@ -25,6 +25,13 @@
 3. Perform verified recipient UAT (OTP request, rate limit, wrong/expired OTP, ownership, profile form both salaried and business, Admin Owner read, logout/relogin and user A/B isolation). Security, DPDP consent/retention/legal review and privacy rights before production.
 4. Only after provider + regulatory + security prerequisites, change `SMS_PROVIDER_READY` to true in a separate reviewed release, run CI and actual SMS deliverability verification. Keep true status from customer-facing notice until proven.
 
+## Verified infrastructure — 12 November 2026
+
+- GitHub PR #56 source Static Security & Integrity **SUCCESS**, including disposable PostgreSQL 17 verified phone/legacy owner RLS tests: [run #43146962642](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/43146962642). PR source Live URL workflow **SUCCESS** [#43146962669](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/43146962669); the new applicant page is not live until main merge and Pages deployment.
+- Connected Supabase project `vorvan-dev-india`: migration `vorvan_applicant_phone_verified_profile_20261112` applied **successfully**. Read-only schema verification confirms new columns, optional email, Owner-scoped helper and actual phone immutability; `anon_can_read=false`, `customer_can_change_phone=false`.
+- `customer-operations` Edge **v3 ACTIVE, verify_jwt=true** deployed; old v2 source compared and found the only changes were the two explicit Owner profile-field allowlists and explanatory comments. The Owner/AAL2 server-side permission checks remain intact.
+- **Not verified/never claimed:** SMS OTP sent, an actual customer's mobile verified, a new person saved a profile, real customer-versus-customer E2E, independent VAPT or SMS DLT sender configuration. SMS gate **OFF**. No customer profile rows created by this release.
+
 ## Release classification
 **Website applicant first-screen:** ready to publish as *SMS activation pending* and no live profile intake. **Database schema:** secured migration, once independently applied and verified. **Real SMS OTP and end-to-end applicant onboarding:** BLOCKED on external provider/DLT, legal and UAT. **Credit bureau, lender, subscription and payment:** OFF.
 
