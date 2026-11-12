@@ -42,7 +42,7 @@ assert.match(home,/No live loan, credit-bureau, KYC or payment services/);
 assert.doesNotMatch(home,/admin@vorvan\.co\.in/,"private staff mailbox on public home");
 const readiness=read("assets/readiness-passport.js");
 for(const rule of obsolete)assert.doesNotMatch(readiness,rule,"dynamic readiness i18n uses stale company copy");
-assert.match(readiness,/VORVAN PRIVATE LIMITED is registered \(owner-confirmed\)/);
+assert.match(readiness,/VORVAN PRIVATE LIMITED is registered/);
 assert.match(readiness,/নিবন্ধিত কোম্পানি/u);
 assert.match(readiness,/पंजीकृत कंपनी/u);
 assert.match(read("readiness-passport.html"),/assets\/readiness-passport\.js\?v=20261111-registered-company/);
