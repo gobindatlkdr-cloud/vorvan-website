@@ -19,6 +19,10 @@ jobs:
         run: node --check assets/site.js && node --check assets/admin.js && node --check assets/assistant.js && node --check assets/institutional-inquiry.js
       - name: Registered-company publication, multilingual dynamic copy and secure demo entry points
         run: node scripts/test_registered_company_publication.cjs
+      - name: CIBIL-first marketing, verified customer contact RLS and owner enquiry queue regression
+        run: node scripts/test_cibil_first_publication.cjs
+      - name: Owner-only live customer profile roster AAL2, separate enquiries and minimisation tests
+        run: deno test --allow-read backend/tests/customer_owner_profile_roster.test.ts
       - name: Check live SEO audit script syntax
         run: python3 -m py_compile scripts/audit_live_seo.py
       - name: Test authenticator QR rendering with synthetic SVG fixtures
