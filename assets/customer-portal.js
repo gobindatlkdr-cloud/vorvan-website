@@ -1,6 +1,6 @@
 /** VORVAN live customer contact/enquiry portal.
  * Email-authenticated Supabase RLS, contact data only. Sample scores are offline fiction.
- * No localStorage/sessionStorage, service key, CIBIL bureau, lender or payment APIs.
+ * Login tokens exist only in page memory. No secret credentials, bureau, lender or payment APIs.
  */
 import {createCustomerJourney,FIXTURES,CATEGORIES,GUIDE_PLANS,ROADMAP,ISSUES,DEMO_PASSCODE}
  from "./customer-journey-engine.js";
