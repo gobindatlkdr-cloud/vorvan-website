@@ -172,7 +172,8 @@ jobs:
             page=$(curl --fail --silent --show-error --max-time 20 "$BASE/customer.html?customer=20261112" || true)
             if grep -Fq 'href="customer.html"' <<< "$home" &&
                grep -Fq 'CIBIL EDUCATION' <<< "$home" &&
-               grep -Fq 'assets/customer-portal.js?v=20261111-customer-v1' <<< "$page"; then
+               grep -Fq 'id="cibil-guide"' <<< "$home" &&
+               grep -Fq 'assets/customer-portal.js?v=20261112-score-examples' <<< "$page"; then
               ready=1;break
             fi
             echo "Customer publication pending ($attempt/24)"
@@ -182,16 +183,19 @@ jobs:
           grep -Fq 'name="robots" content="noindex,follow"' <<< "$page"
           grep -Fq 'VORVAN PRIVATE LIMITED' <<< "$page"
           grep -Fq 'No Aadhaar, PAN' <<< "$page"
-          for asset in "assets/customer-portal.js?v=20261111-customer-v1" \
-            "assets/customer-journey-engine.js" "assets/customer-portal.css?v=20261111-customer-v1" \
+          for asset in "assets/customer-portal.js?v=20261112-score-examples" \
+            "assets/customer-journey-engine.js" "assets/customer-portal.css?v=20261112-score-examples" \
             "assets/customer-admin-queue.js" "assets/admin.js?v=20261112-customer-enquiries"; do
             code=$(curl --location --silent --show-error --max-time 20 -o /dev/null -w '%{http_code}' "$BASE/$asset")
             [[ "$code" == "200" ]] || { echo "$asset HTTP $code";exit 1; }
           done
-          client=$(curl --fail --location --silent --show-error --max-time 20 "$BASE/assets/customer-portal.js?v=20261111-customer-v1")
+          client=$(curl --fail --location --silent --show-error --max-time 20 "$BASE/assets/customer-portal.js?v=20261112-score-examples")
           grep -Fq 'vorvan_customer_intake_profiles' <<< "$client"
           grep -Fq 'vorvan_customer_enquiries' <<< "$client"
           grep -Fq 'fictional' <<< "$client"
+          grep -Fq 'Example A · 662' <<< "$client"
+          grep -Fq 'Example B · 748' <<< "$client"
+          grep -Fq 'state.engine.chooseCategory' <<< "$client"
           status=$(curl --location --silent --show-error --max-time 20 \
             -o /dev/null -w '%{http_code}' "$API/enquiries")
           [[ "$status" == "401" ]] || { echo "Customer owner-only Admin gateway exposed or unavailable: HTTP $status";exit 1; }
