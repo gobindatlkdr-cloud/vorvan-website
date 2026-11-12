@@ -100,7 +100,7 @@ Deno.test("Public customer page has strong no-real-CIBIL, no-payment and consent
  const sql=await Deno.readTextFile("backend/migrations/20261111_customer_contact_enquiry_rls.sql");
  yes(page.includes("Verified email login"),"auth experience");
  yes(page.includes("Loan Categories"),"category navigation");
- yes(page.includes("not a loan application"),"non-binding notice");
+ yes(page.includes("non-binding loan information enquiry")||page.includes("non-binding loan information enquiries"),"non-binding notice");
  yes(page.includes("privacy.html"),"privacy rights");
  yes(client.includes('"/auth/v1/verify"'),"email token verify");
  yes(client.includes("email_confirmed_at"),"verified email checks");
