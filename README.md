@@ -31,3 +31,10 @@ The reference website for the November 2026 refresh was Credila, for navigation 
 ## Operations
 
 Public partnership queries use the separate bank/NBFC institutional route. Staff perform normal admin work through approved access controls. Before any regulated financial feature is activated, independently verify incorporation documents and obtain all applicable lender/API, privacy, security, legal and owner approvals through separately reviewed changes and testing.
+
+## Public customer contact / loan information pilot (12 November 2026)
+
+- `/customer.html` introduces secure email-verified customer sign-in, customer-owned contact profiles and **non-binding** four-category loan information enquiries. Owner-only Admin AAL2 queue allows manual status updates, with private SQL audit. This is not loan origination.
+- Customer contact records are stored in restricted Supabase RLS tables. The 3/6-month CIBIL Guide, 30/60/90 educational activities and example credit score are fictional, offline and not saved as financial records.
+- No live bureau pull, approved lender offer, payments, expert dispute filing, KYC, loan application or disbursal. See `docs/CUSTOMER_FIRST_INTAKE_ENQUIRY_RELEASE_20261112.md` for outstanding compliance and Auth email verification.
+
