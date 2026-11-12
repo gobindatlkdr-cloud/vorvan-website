@@ -296,7 +296,7 @@ function vaultPanel(parent){
  async function refresh(){
   const r=await vaultRequest("/"),c=r.company||{};company.replaceChildren();list.replaceChildren();events.replaceChildren();
   const top=el("div","vault-summary");
-  top.append(el("strong","",c.incorporation_status==="incorporated"?"Company registration verified in vault":"Registered company (owner-confirmed) · COI verification pending in vault"));
+  top.append(el("strong","",c.incorporation_status==="incorporated"?"Company registration verified in vault":"VORVAN PRIVATE LIMITED · COI evidence pending vault verification"));
   for(const [key,yes,no] of [["ca_documents_verified","CA documents verified","CA verification pending"],["mca_fee_paid","MCA fee verified","MCA payment not verified in vault"],["coi_issued","COI verified in vault","COI not verified in vault"]])top.append(el("span","",c[key]?yes:no));
   if(c.cin)top.append(el("span","","CIN: "+c.cin));company.append(top);
   const docs=r.documents||[];tell("Secure checklist loaded — "+docs.length+" records; "+docs.filter(d=>d.stage==="verified").length+" verified.",true);
