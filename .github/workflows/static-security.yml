@@ -21,6 +21,8 @@ jobs:
         run: node scripts/test_registered_company_publication.cjs
       - name: CIBIL-first marketing, verified customer contact RLS and owner enquiry queue regression
         run: node scripts/test_cibil_first_publication.cjs
+      - name: Applicant mobile OTP gate and conditional-profile security regression
+        run: node scripts/test_applicant_phone_flow.cjs
       - name: Check live SEO audit script syntax
         run: python3 -m py_compile scripts/audit_live_seo.py
       - name: Test authenticator QR rendering with synthetic SVG fixtures
@@ -218,6 +220,7 @@ jobs:
           psql -v ON_ERROR_STOP=1 -h localhost -U postgres -d vorvan_sandbox \
             -f backend/sandbox/customer_intake_rls_setup.sql \
             -f backend/migrations/20261111_customer_contact_enquiry_rls.sql \
+            -f backend/migrations/20261112_applicant_mobile_otp_profile.sql \
             -f backend/sandbox/customer_intake_rls_tests.sql
           echo 'PASS: isolated customer contact profile, auth owner RLS, enquiry and atomic staff audit'
           echo 'PASS: isolated VOR-011 atomic audit and retry-key tests; no production Supabase access'

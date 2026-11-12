@@ -7,3 +7,7 @@ as $$ select coalesce(nullif(current_setting('request.jwt.claims',true),'')::jso
 grant execute on function auth.jwt() to authenticated;
 create or replace function private.touch_updated_at() returns trigger language plpgsql
 as $$ begin new.updated_at=now();return new;end $$;
+
+-- Mock only: GoTrue phone ownership/confirmation columns used by the scoped authz function.
+alter table auth.users add column if not exists phone text;
+alter table auth.users add column if not exists phone_confirmed_at timestamptz;

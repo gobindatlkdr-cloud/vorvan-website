@@ -173,7 +173,7 @@ jobs:
             if grep -Fq 'href="customer.html"' <<< "$home" &&
                grep -Fq 'CIBIL EDUCATION' <<< "$home" &&
                grep -Fq 'id="cibil-guide"' <<< "$home" &&
-               grep -Fq 'assets/customer-portal.js?v=20261112-score-examples' <<< "$page"; then
+               grep -Fq 'assets/customer-portal.js?v=20261112-mobile-applicant' <<< "$page"; then
               ready=1;break
             fi
             echo "Customer publication pending ($attempt/24)"
@@ -182,20 +182,25 @@ jobs:
           [[ "$ready" == "1" ]] || { echo "Customer login page was not published";exit 1; }
           grep -Fq 'name="robots" content="noindex,follow"' <<< "$page"
           grep -Fq 'VORVAN PRIVATE LIMITED' <<< "$page"
-          grep -Fq 'No Aadhaar, PAN' <<< "$page"
-          for asset in "assets/customer-portal.js?v=20261112-score-examples" \
-            "assets/customer-journey-engine.js" "assets/customer-portal.css?v=20261112-score-examples" \
+          grep -Fq 'Applicant Login' <<< "$page"
+          grep -Fq 'Kindly Login' <<< "$page"
+          grep -Fq 'PAN, Aadhaar' <<< "$page"
+          for asset in "assets/customer-portal.js?v=20261112-mobile-applicant" \
+            "assets/customer-journey-engine.js" "assets/customer-portal.css?v=20261112-mobile-applicant" \
             "assets/customer-admin-queue.js" "assets/admin.js?v=20261112-customer-enquiries"; do
             code=$(curl --location --silent --show-error --max-time 20 -o /dev/null -w '%{http_code}' "$BASE/$asset")
             [[ "$code" == "200" ]] || { echo "$asset HTTP $code";exit 1; }
           done
-          client=$(curl --fail --location --silent --show-error --max-time 20 "$BASE/assets/customer-portal.js?v=20261112-score-examples")
+          client=$(curl --fail --location --silent --show-error --max-time 20 "$BASE/assets/customer-portal.js?v=20261112-mobile-applicant")
           grep -Fq 'vorvan_customer_intake_profiles' <<< "$client"
           grep -Fq 'vorvan_customer_enquiries' <<< "$client"
           grep -Fq 'fictional' <<< "$client"
           grep -Fq 'Example A · 662' <<< "$client"
           grep -Fq 'Example B · 748' <<< "$client"
           grep -Fq 'state.engine.chooseCategory' <<< "$client"
+          grep -Fq 'const SMS_PROVIDER_READY=false' <<< "$client"
+          grep -Fq 'phone_confirmed_at' <<< "$client"
+          grep -Fq 'applicant_mobile_v1_2026_11_12' <<< "$client"
           status=$(curl --location --silent --show-error --max-time 20 \
             -o /dev/null -w '%{http_code}' "$API/enquiries")
           [[ "$status" == "401" ]] || { echo "Customer owner-only Admin gateway exposed or unavailable: HTTP $status";exit 1; }

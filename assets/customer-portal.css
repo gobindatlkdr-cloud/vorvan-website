@@ -21,3 +21,67 @@
 .cp-example-outcome p{color:#735468;line-height:1.72;max-width:780px}
 .cp-loan-explanation{border-left:3px solid #b35381;padding-left:11px;font-size:12px!important;line-height:1.6;color:#81546e!important}
 @media(max-width:620px){.cp-scenario-switch{flex-direction:column;align-items:stretch}.cp-scenario-choice{width:100%}}
+
+/* Applicant OTP-first screen — OneScore/Paisabazaar interaction principles, original VORVAN burgundy artwork. */
+.cp-applicant-page{background:#fff;color:var(--cp-ink)}
+.cp-header{position:relative}
+.cp-header-secure{font-size:11px;letter-spacing:.14em;font-weight:850;color:#88446c}
+.cp-gateway{background:linear-gradient(130deg,#fffafd 0%,#fff 58%,#f9e4ef 100%);min-height:calc(100vh - 77px)}
+.cp-gateway-grid{display:grid;grid-template-columns:minmax(390px,.9fr) minmax(400px,1.1fr);gap:64px;align-items:center;padding-top:64px;padding-bottom:65px}
+.cp-gateway-form{max-width:580px;width:100%}
+.cp-gateway-form>.cp-eyebrow{color:#9a2f66}
+.cp-gateway-form>h1{font-size:clamp(40px,4.2vw,62px);margin:10px 0 0;line-height:1.15;letter-spacing:-.055em;color:#47102e}
+.cp-gateway-subtitle{font-size:20px;color:#865770;font-weight:750;margin:9px 0 25px}
+.cp-gateway-form .cp-app{min-height:0;border:1px solid #efd8e4;border-radius:22px;box-shadow:0 22px 80px #591a3824;background:white}
+.cp-gateway-form .cp-app-inner{padding:28px 29px}
+.cp-gateway-form .cp-login-header>h2{display:none}
+.cp-login-header>h3{font-size:24px;color:#42132f;letter-spacing:-.035em;margin:8px 0 5px}
+.cp-login-header>p{margin:0 0 19px;color:#79536b;font-size:13px;line-height:1.7}
+.cp-login-form{display:grid;gap:14px}
+.cp-login-form .cp-button{width:100%;min-height:52px}
+.cp-phone-input{display:flex;overflow:hidden;align-items:center;border:1px solid #dec0d0;border-radius:12px;background:#fffafb}
+.cp-country-code{padding:14px 16px;color:#681b42;border-right:1px solid #e7cdda;font-weight:850}
+.cp-phone-input input{border:0!important;background:transparent!important;border-radius:0!important;min-width:0;flex:1}
+.cp-phone-input:focus-within{outline:2px solid #b65a89;outline-offset:1px}
+.cp-otp-state{padding:13px 15px;background:#fff1f7;border:1px solid #e8c3d5;border-radius:12px;margin-top:20px}
+.cp-otp-state strong{font-size:13px;color:#8d2254}
+.cp-otp-state p{color:#785268;font-size:12px;line-height:1.6;margin:5px 0 0}
+.cp-gateway-legal{font-size:12px;line-height:1.7;color:#866578;max-width:550px;margin:17px 0}
+.cp-gateway-legal a{text-decoration:underline;color:#8d2355}
+.cp-gateway-visual{position:relative;background:radial-gradient(ellipse at 80% 80%,#a33867 0%,#751a48 45%,#3d102d 100%);min-height:580px;color:#fff;border-radius:32px;overflow:hidden;padding:52px 42px 25px}
+.cp-visual-kicker{font-size:11px;letter-spacing:.21em;color:#ffbfd9;font-weight:850}
+.cp-gateway-visual h2{font-size:clamp(31px,3vw,43px);line-height:1.17;letter-spacing:-.055em;margin:15px 0}
+.cp-gateway-visual h2 span{color:#ffcfdf}
+.cp-gateway-visual>p{max-width:475px;font-size:14px;line-height:1.75;color:#f5dbe7}
+.cp-illustration{position:relative;height:325px;margin:8px auto}
+.cp-halo{position:absolute;width:300px;height:300px;border:1px solid #ffffff25;border-radius:50%;top:5px;left:50%;transform:translateX(-50%)}
+.cp-halo-two{width:242px;height:242px;top:35px}
+.cp-device{position:absolute;left:50%;top:10px;transform:translateX(-50%) rotate(-6deg);width:245px;height:302px;border:9px solid #261022;border-radius:28px;background:#fff;color:#41112b;box-shadow:22px 30px 0 #18081b66;overflow:hidden}
+.cp-device-top{display:flex;justify-content:space-between;padding:13px 18px;background:#fff3f8;color:#78204b;font-size:10px;font-weight:850}
+.cp-device-top>span:last-child{font-size:9px;color:#b14e7f}
+.cp-device-body{padding:23px 18px}
+.cp-device-body small{font-size:10px;color:#91516e;font-weight:800}
+.cp-device-body>strong{display:block;font-size:36px;line-height:1.2;color:#821e4e;margin:7px 0}
+.cp-device-body>p{margin:0 0 20px;color:#604457;font-size:12px}
+.cp-visual-progress{height:7px;background:#f1d9e6;border-radius:20px;overflow:hidden;margin-bottom:19px}
+.cp-visual-progress span{display:block;width:26%;height:100%;background:#a72c63}
+.cp-device-row{display:flex;justify-content:space-between;border:1px solid #f1dbe5;border-radius:9px;margin:8px 0;padding:8px 10px;font-size:11px}
+.cp-device-row b{color:#a53166}
+.cp-float-shield,.cp-float-card{position:absolute;background:#fff;color:#792149;padding:10px 14px;border-radius:12px;font-size:11px;font-weight:800;box-shadow:0 12px 34px #25081855}
+.cp-float-shield{top:90px;right:3%}
+.cp-float-card{bottom:30px;left:3%}
+.cp-visual-note{color:#f2c3d8;font-size:11px;line-height:1.6;text-align:center}
+.cp-authenticated .cp-gateway-grid{grid-template-columns:1fr;padding-top:35px;max-width:960px}
+.cp-authenticated .cp-gateway-form{max-width:none}
+.cp-authenticated .cp-gateway-visual,.cp-authenticated .cp-gateway-form>.cp-eyebrow,.cp-authenticated .cp-gateway-form>h1,.cp-authenticated .cp-gateway-subtitle{display:none}
+.cp-authenticated .cp-gateway-form .cp-login-header{display:none}
+.cp-dynamic-work{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;padding:17px;background:#fff6fb;border:1px solid #efd5e2;border-radius:14px}
+.cp-dynamic-work[hidden]{display:none}
+.cp-dynamic-work>.cp-field[hidden]{display:none}
+.cp-profile-form{max-width:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.cp-profile-form .cp-dynamic-work,.cp-profile-form .cp-consent,.cp-profile-form>.cp-button{grid-column:1/-1}
+.cp-profile-form .cp-field input[readonly]{background:#f2edf1}
+@media(max-width:1000px){.cp-gateway-grid{gap:25px;grid-template-columns:minmax(0,1fr) minmax(0,.9fr)}.cp-gateway-visual{padding:40px 26px;min-height:590px}.cp-float-card{left:0}.cp-float-shield{right:0}}
+@media(max-width:750px){.cp-gateway-grid{grid-template-columns:1fr;padding-top:36px;gap:24px}.cp-gateway-form{margin:0 auto}.cp-gateway-visual{min-height:490px}.cp-illustration{height:250px}.cp-device{transform:translateX(-50%) scale(.8) rotate(-6deg);transform-origin:top center}.cp-halo{width:225px;height:225px}.cp-halo-two{width:180px;height:180px;top:25px}}
+@media(max-width:580px){.cp-gateway-form .cp-app-inner{padding:20px}.cp-gateway-form>h1{font-size:43px}.cp-gateway-subtitle{font-size:19px}.cp-gateway-visual{padding:30px 19px;min-height:515px}.cp-profile-form,.cp-dynamic-work{grid-template-columns:1fr}.cp-header-secure{font-size:9px}.cp-gateway-grid{padding-bottom:36px}}
+@media(prefers-reduced-motion:reduce){.cp-device{transform:translateX(-50%)}}

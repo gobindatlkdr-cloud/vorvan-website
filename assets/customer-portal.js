@@ -1,15 +1,19 @@
-/** VORVAN live customer contact/enquiry portal.
- * Email-authenticated Supabase RLS, contact data only. Sample scores are offline fiction.
- * Login tokens exist only in page memory. No secret credentials, bureau, lender or payment APIs.
+/** VORVAN Applicant: phone-OTP gated contact intake, then fictional CIBIL education.
+ * SMS provider activation is REQUIRED. No fake OTP, financial data or passwords.
+ * Sensitive records stay in verified-auth Supabase RLS and never persist in browser storage.
  */
 import {createCustomerJourney,FIXTURES,CATEGORIES,GUIDE_PLANS,ROADMAP,ISSUES,DEMO_PASSCODE}
  from "./customer-journey-engine.js";
 const API="https://kukfpsqujlutlgwndplh.supabase.co";
 const PUB="sb_publishable_6KyGNqt8CGNlE8vCBdtalA_Ayhfo-Rj";
-const CONSENT="contact_enquiry_v1_2026_11_11";
+const CONSENT="applicant_mobile_v1_2026_11_12";
+// Fail CLOSED until a real Indian DLT-compliant SMS sender is configured in Supabase Auth.
+// Releasing a signup form is not permission to claim SMS delivery.
+const SMS_PROVIDER_READY=false;
+const PROFILE_COLS="user_id,full_name,father_name,phone,email,address_line,locality,district,state_name,postal_code,work_category,work_details,employment_subtype,employer_name,department_name,designation,business_type,business_name,consent_version,consent_accepted_at";
 const root=document.getElementById("customer-portal");
 const state={token:"",user:null,profile:null,enquiries:[],phase:"login",view:"score",
- email:"",otpRequested:false,busy:false,engine:createCustomerJourney(),
+ mobile:"",otpRequested:false,busy:false,engine:createCustomerJourney(),
  issueResult:null,selectedCategory:null,demoFixture:"demo_salaried",lastError:""};
 const show=(tag,text="",cls="")=>{
  const n=document.createElement(tag);n.textContent=text;if(cls)n.className=cls;return n;
@@ -20,25 +24,25 @@ const button=(name,fn,cls="cp-button")=>{
 };
 const feedback=show("p","","cp-feedback");feedback.setAttribute("role","status");feedback.setAttribute("aria-live","polite");
 const notice=(s)=>show("p",s,"cp-note");
-const details=(label,val)=>add(show("div","","cp-details-item"),show("span",label),show("strong",val));
 const picker=(label,options)=>{
  const select=show("select");select.setAttribute("aria-label",label);
  for(const [value,name] of options){const option=show("option",name);option.value=value;select.append(option)}
  if(options.length)select.value=options[0][0];return select;
 };
-const field=(label,input)=>add(show("label","","cp-field"),show("span",label),input);
+const field=(label,control)=>add(show("label","","cp-field"),show("span",label),control);
 function input(type,placeholder,maxLength=120){
  const x=show("input");x.type=type;x.placeholder=placeholder;x.maxLength=maxLength;
  x.autocomplete=type==="email"?"email":type==="tel"?"tel":"off";return x;
 }
 const busy=(yes)=>{state.busy=yes};
 function explain(message){feedback.textContent=message}
-function fail(err,defaultText="This action could not be completed. Try again."){
- const code=err?.code||err?.message||"";
- if(/rate limit|over_email_send_rate_limit|429|frequency/i.test(code))explain("Too many email requests. Please try again later.");
- else if(/invalid.*otp|otp_expired|token.*expired/i.test(code))explain("The verification code is invalid or expired. Request a new email.");
- else if(/duplicate|23505/i.test(code))explain("This entry already exists. Refresh your customer dashboard.");
- else if(/row.*security|42501|permission denied/i.test(code))explain("Security rules prevented this action. Please sign in again and contact support if it continues.");
+function fail(err,defaultText="Unable to complete this action."){
+ const code=String(err?.code||err?.message||"");
+ if(/rate limit|over_sms_send_rate_limit|429|frequency/i.test(code))explain("Too many OTP requests. Try again after the provider's cooldown.");
+ else if(/invalid.*otp|otp_expired|token.*expired/i.test(code))explain("Invalid or expired SMS OTP. Check the code and try again.");
+ else if(/sms|phone.*disabled|provider|not configured/i.test(code))explain("Mobile OTP delivery has not been activated. No account/profile information was saved.");
+ else if(/duplicate|23505/i.test(code))explain("This profile already exists. Sign in again.");
+ else if(/row.*security|42501|permission denied/i.test(code))explain("Security rules prevented saving. Contact support if this continues.");
  else explain(defaultText);
 }
 function authHeaders(withToken=false){
@@ -52,53 +56,60 @@ async function request(url,method="GET",payload=null,requiresAuth=true){
  if(payload!==null&&url.startsWith("/rest/v1/"))headers.prefer="return=representation";
  const res=await fetch(API+url,{method,headers,cache:"no-store",
   body:payload===null?undefined:JSON.stringify(payload)});
- const text=await res.text();
- let data;
- try{data=text?JSON.parse(text):null}catch{data=null}
+ const raw=await res.text();
+ let data;try{data=raw?JSON.parse(raw):null}catch{data=null}
  if(!res.ok)throw {code:data?.code||data?.error_code||data?.msg||data?.message||"remote_error",status:res.status};
  return data;
 }
 function sessionClear(){
  state.token="";state.user=null;state.profile=null;state.enquiries=[];
- state.phase="login";state.view="score";state.otpRequested=false;
- state.engine=createCustomerJourney();state.issueResult=null;state.selectedCategory=null;state.demoFixture="demo_salaried";
- state.lastError="";
+ state.phase="login";state.view="score";state.otpRequested=false;state.mobile="";
+ state.engine=createCustomerJourney();state.issueResult=null;
+ state.selectedCategory=null;state.demoFixture="demo_salaried";state.lastError="";
 }
-async function requestLogin(email){
- const normalized=email.trim().toLowerCase();
- if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(normalized)||normalized.length>254){
-  explain("Enter a valid email address.");return;
- }
+function phoneNumber(value){
+ const normalized=String(value||"").replace(/\s+/g,"");
+ if(!/^[6-9][0-9]{9}$/.test(normalized))return null;
+ return "+91"+normalized;
+}
+async function requestLogin(rawNumber){
+ if(!SMS_PROVIDER_READY){explain("Mobile OTP activation is pending. The SMS provider and DLT sender must be configured first; no OTP has been sent.");return}
+ const phone=phoneNumber(rawNumber);
+ if(!phone){explain("Enter a valid 10-digit Indian mobile number.");return}
  if(state.busy)return;
  busy(true);
  try{
-  const target=encodeURIComponent("https://vorvan.co.in/customer.html");
-  await request("/auth/v1/otp?redirect_to="+target,"POST",{email:normalized,create_user:true},false);
-  state.email=normalized;state.otpRequested=true;
-  explain("Verification request accepted. Check your email for a login link or code. Delivery depends on the email provider.");
-  draw();
- }catch(err){fail(err,"Unable to request an email login right now.");}
+  await request("/auth/v1/otp","POST",{phone,create_user:true,channel:"sms"},false);
+  state.mobile=phone;state.otpRequested=true;
+  draw();explain("OTP request accepted by the authentication service. Please enter the code sent to your mobile; delivery is not guaranteed.");
+ }catch(err){fail(err,"SMS OTP could not be requested.");}
  finally{busy(false)}
 }
-async function verifyCode(code){
+async function verifyCode(rawCode){
+ if(!SMS_PROVIDER_READY){explain("SMS OTP authentication is currently unavailable.");return}
  if(state.busy)return;
- if(!/^\d{6}$/.test(code)){explain("Enter the six-digit code if your email contains one, or use the login link.");return}
+ const code=String(rawCode||"").trim();
+ if(!/^[0-9]{6}$/.test(code)||!phoneNumber(state.mobile.slice(3))){
+  explain("Enter the six-digit code sent to the same verified mobile number.");return
+ }
  busy(true);
  try{
-  const data=await request("/auth/v1/verify","POST",{email:state.email,token:code,type:"email"},false);
+  const data=await request("/auth/v1/verify","POST",{phone:state.mobile,token:code,type:"sms"},false);
   if(!data?.access_token)throw {code:"no_session"};
   state.token=data.access_token;
   await bootstrap();
- }catch(err){fail(err,"Email verification could not be completed. Please use the link or request a new code.");}
+ }catch(err){state.token="";fail(err,"SMS OTP verification failed.");}
  finally{busy(false)}
 }
 async function bootstrap(){
+ // Auth /user is the only source of phone ownership; never trust a phone field typed in a form.
  const user=await request("/auth/v1/user");
- if(!user||typeof user.id!=="string"||!user.email||
-   !(user.email_confirmed_at||user.confirmed_at))throw {code:"unverified_email"};
- state.user={id:user.id,email:user.email};
+ if(!user||typeof user.id!=="string"||
+   !/^\+91[6-9][0-9]{9}$/.test(String(user.phone||""))||!user.phone_confirmed_at)
+   throw {code:"unverified_phone"};
+ state.user={id:user.id,phone:user.phone};
  const profiles=await request("/rest/v1/vorvan_customer_intake_profiles?user_id=eq."+
-  encodeURIComponent(user.id)+"&select=user_id,full_name,email,phone,work_category,work_details,consent_version,consent_accepted_at&limit=1");
+  encodeURIComponent(user.id)+"&select="+PROFILE_COLS+"&limit=1");
  state.profile=Array.isArray(profiles)&&profiles.length?profiles[0]:null;
  state.phase=state.profile?"dashboard":"profile";
  if(state.profile)await loadEnquiries();
@@ -117,81 +128,159 @@ async function logout(){
    headers:{apikey:PUB,authorization:"Bearer "+tok},cache:"no-store"}).catch(()=>{});
 }
 function loginScreen(area){
- area.append(add(show("div","","cp-panel-head"),show("span","STEP 01 / SECURE ACCESS","cp-eyebrow"),
-  show("h3","Start with your email"),show("p","We verify your email before collecting and saving your personal contact or work information.")));
- const form=show("form","","cp-form");const email=input("email","you@example.com",254);
- email.required=true;email.value=state.email;
- form.append(field("Email address",email));
- const send=show("button","Email my login link or code →","cp-button");send.type="submit";
- form.append(send);form.addEventListener("submit",event=>{event.preventDefault();requestLogin(email.value)});
+ area.classList.add("cp-auth-screen");
+ area.append(add(show("div","","cp-login-header"),show("span","SECURE CUSTOMER ACCESS","cp-eyebrow"),
+  show("h2","Applicant Login"),show("h3","Kindly Login"),
+  show("p","Enter your mobile number to receive an SMS verification code. After verification, complete the Applicant Details form.")));
+ const form=show("form","","cp-form cp-login-form");
+ const container=show("div","","cp-phone-input");
+ const code=show("span","+91","cp-country-code");
+ const phone=input("tel","Enter 10-digit mobile number",10);
+ phone.inputMode="numeric";phone.pattern="[6-9][0-9]{9}";phone.autocomplete="tel-national";phone.required=true;phone.value=state.mobile.slice(3);
+ container.append(code,phone);
+ form.append(field("Mobile Number",container));
+ const send=show("button","Send OTP →","cp-button");send.type="submit";
+ send.disabled=!SMS_PROVIDER_READY;
+ form.append(send);
+ form.addEventListener("submit",event=>{event.preventDefault();requestLogin(phone.value)});
  area.append(form);
  if(state.otpRequested){
-  const codeForm=show("form","","cp-form cp-otp");
-  codeForm.append(show("p","If the email includes a six-digit code, enter it here. Otherwise click the sign-in link in your email."));
-  const code=input("text","Six-digit email code",6);
-  code.inputMode="numeric";code.autocomplete="one-time-code";code.pattern="[0-9]{6}";
-  codeForm.append(field("Email verification code",code));
-  const submit=show("button","Verify my email →","cp-button");submit.type="submit";
-  codeForm.append(submit);codeForm.addEventListener("submit",e=>{e.preventDefault();verifyCode(code.value)});
-  area.append(codeForm);
+  const otp=show("form","","cp-form cp-otp");
+  otp.append(show("p","Enter the six-digit SMS OTP sent to "+state.mobile.replace(/^(\+91\d\d)\d{6}/,"$1******")+" ."));
+  const codeInput=input("text","6-digit OTP",6);codeInput.inputMode="numeric";
+  codeInput.autocomplete="one-time-code";codeInput.pattern="[0-9]{6}";codeInput.required=true;
+  otp.append(field("Mobile OTP",codeInput));
+  const verify=show("button","Verify & Continue →","cp-button");verify.type="submit";
+  otp.append(verify);otp.addEventListener("submit",e=>{e.preventDefault();verifyCode(codeInput.value)});
+  area.append(otp);
  }
- area.append(notice("Your login is email-verified. Phone OTP is not currently enabled; do not submit passwords, PAN, Aadhaar, bank account details or credit reports. Sessions are held in memory and end when this page is reloaded."));
+ area.append(add(show("div","","cp-otp-state"),
+  show("strong",SMS_PROVIDER_READY?"SMS OTP authentication available":"SMS OTP activation pending"),
+  show("p",SMS_PROVIDER_READY?
+    "Do not share OTPs or passwords. Mobile ownership is verified by the authentication provider.":
+    "We are configuring a compliant SMS sender. OTP sending and applicant submission are disabled until the provider is activated. No test or fake OTP can unlock the form.")));
+ area.append(notice("OTP delivery and DLT provider setup are pending. No personal profile is collected before verified mobile login. Do not enter PAN, Aadhaar, bank details, passwords or salary amounts."));
 }
 function profileScreen(area){
- area.append(add(show("div","","cp-panel-head"),show("span","STEP 02 / CUSTOMER PROFILE","cp-eyebrow"),
-  show("h3",state.profile?"Update your contact details":"Tell us a little about yourself"),
-  show("p","Save your verified contact details and working information so the VORVAN team can follow up on enquiries. No CIBIL score is stored.")));
+ if(!state.user)return;
+ area.append(add(show("div","","cp-panel-head"),
+  show("span","STEP 02 · MOBILE VERIFIED","cp-eyebrow"),
+  show("h3",state.profile?"Update Applicant Details":"Applicant Details Form"),
+  show("p","Your phone "+state.user.phone+" is verified. Save the following details with explicit consent before opening the credit guide or loan enquiry.")));
  const form=show("form","","cp-form cp-profile-form");
- const name=input("text","Your full name",100);name.required=true;name.minLength=2;
- const email=show("input");email.type="email";email.value=state.user.email;email.disabled=true;
- const phone=input("tel","10-digit Indian mobile",10);phone.required=true;phone.inputMode="tel";phone.pattern="[6-9][0-9]{9}";
- const work=picker("Employment or work category",[
-  ["salaried","Salaried employee"],["self_employed","Self-employed / Business"],["student","Student"],
-  ["homemaker","Homemaker"],["other","Other"]
- ]);
- const detailsInput=input("text","Occupation, job type or business activity (not salary)",160);
- detailsInput.required=true;detailsInput.minLength=3;
- const previously=state.profile;
- if(previously){name.value=previously.full_name;phone.value=previously.phone;
-  work.value=previously.work_category;detailsInput.value=previously.work_details}
- const emailWrap=field("Verified email (cannot be edited here)",email);
- const consent=show("input");consent.type="checkbox";consent.id="cp-consent";consent.required=!previously;
- const label=show("label","I agree that VORVAN PRIVATE LIMITED may securely store my name, verified email, self-reported phone and working information to manage my enquiries and contact me about them. No credit score or lender data is collected.");
- label.setAttribute("for","cp-consent");
- form.append(field("Full name",name),emailWrap,field("Mobile number (self-reported; not SMS verified)",phone),
-  field("Employment category",work),field("Work / occupation details",detailsInput));
- if(!previously)form.append(add(show("div","","cp-consent"),consent,label));
- const save=show("button",previously?"Update profile →":"Save profile & continue →","cp-button");save.type="submit";form.append(save);
+ const previous=state.profile||{};
+ const textField=(caption,placeholder,max=100,value="")=>{
+  const x=input("text",placeholder,max);x.value=value||"";x.required=true;x.minLength=2;
+  return [field(caption,x),x];
+ };
+ const [nameWrap,name]=textField("Applicant Full Name","Full name",100,previous.full_name);
+ const [fatherWrap,father]=textField("Father's Name","Father's full name",100,previous.father_name);
+ const [addressWrap,address]=textField("Full Address","House/road/village or locality",200,previous.address_line);
+ address.minLength=6;
+ const [localWrap,locality]=textField("Town / Village","Town or village",80,previous.locality);
+ const [districtWrap,district]=textField("District","District",80,previous.district);
+ const [stateWrap,stateName]=textField("State","State",80,previous.state_name||"West Bengal");
+ const pin=input("text","6-digit PIN",6);pin.inputMode="numeric";pin.required=true;pin.pattern="[1-9][0-9]{5}";pin.value=previous.postal_code||"";
+ const email=input("email","Optional email ID",254);email.value=previous.email||"";
+ if(state.profile){email.readOnly=true}
+ const work=picker("Occupation type",[
+  ["salaried","Salaried"],["self_employed","Business / Self-employed"],
+  ["student","Student"],["homemaker","Homemaker"],["other","Other"]
+ ]);work.value=previous.work_category||"salaried";
+ const detailsInput=input("text","Brief role / profession (no salary amount)",160);
+ detailsInput.minLength=3;detailsInput.required=true;detailsInput.value=previous.work_details||"";
+ const employment=picker("Salaried job type",[
+  ["private_company","Private Company"],["central_government","Central Government"],
+  ["state_government","State Government"],["public_sector","Public Sector / PSU"],
+  ["other_salaried","Other Salaried"]
+ ]);employment.value=previous.employment_subtype||"private_company";
+ const company=input("text","Company / employer name",140);company.value=previous.employer_name||"";
+ const department=input("text","Government department",140);department.value=previous.department_name||"";
+ const designation=input("text","Job title / designation",100);designation.value=previous.designation||"";
+ const businessType=picker("Business category",[
+  ["retail","Retail"],["services","Services"],["manufacturing","Manufacturing"],
+  ["trading","Trading / Wholesale"],["professional","Professional / Freelance"],
+  ["agriculture","Agriculture"],["other_business","Other Business"]
+ ]);businessType.value=previous.business_type||"retail";
+ const businessName=input("text","Business / firm name",140);businessName.value=previous.business_name||"";
+ const salariedFields=show("div","","cp-dynamic-work");
+ const companyWrap=field("Company / Employer Name",company);
+ const deptWrap=field("Government Department",department);
+ salariedFields.append(field("Select salaried category",employment),companyWrap,deptWrap,
+   field("Designation / Post",designation));
+ const businessFields=show("div","","cp-dynamic-work");
+ businessFields.append(field("Type of Business",businessType),field("Business / Firm Name",businessName));
+ const updateWork=()=>{
+  const salaried=work.value==="salaried",biz=work.value==="self_employed";
+  salariedFields.hidden=!salaried;businessFields.hidden=!biz;
+  const gov=["central_government","state_government"].includes(employment.value);
+  companyWrap.hidden=!salaried||gov;deptWrap.hidden=!salaried||!gov;
+  company.required=salaried&&!gov;department.required=salaried&&gov;
+  designation.required=salaried;businessName.required=biz;
+  for(const e of [company,department,designation,employment])e.disabled=!salaried;
+  for(const e of [businessType,businessName])e.disabled=!biz;
+ };
+ work.addEventListener("change",updateWork);employment.addEventListener("change",updateWork);
+ form.append(nameWrap,fatherWrap,addressWrap,localWrap,districtWrap,stateWrap,
+  field("Postal PIN Code",pin),field("Email ID (optional · not OTP verified)",email),
+  field("Employment / Applicant Category",work),field("Occupation Details",detailsInput),
+  salariedFields,businessFields);
+ updateWork();
+ const consent=show("input");consent.type="checkbox";consent.id="applicant-data-consent";
+ consent.required=!state.profile;
+ if(!state.profile){
+  const label=show("label","I agree that VORVAN PRIVATE LIMITED may store my verified mobile, full name, father's name, contact email (if given), address and occupation details to manage my account and respond to my loan-information enquiries. I understand no CIBIL score or loan application is created.");
+  label.setAttribute("for","applicant-data-consent");
+  form.append(add(show("div","","cp-consent"),consent,label));
+ }
+ const submit=show("button",state.profile?"Save Updated Details →":"Submit Applicant Details →","cp-button");
+ submit.type="submit";form.append(submit);
  form.addEventListener("submit",async event=>{
   event.preventDefault();if(state.busy)return;
-  if(!previously&&!consent.checked){explain("Please read and accept the contact/enquiry privacy consent.");return}
-  const payload={full_name:name.value.trim(),phone:phone.value.trim(),work_category:work.value,
-    work_details:detailsInput.value.trim()};
-  if(payload.full_name.length<2||payload.full_name.length>100||
-    !/^[6-9]\d{9}$/.test(payload.phone)||payload.work_details.length<3||
-    payload.work_details.length>160){explain("Please complete all profile fields using valid values.");return}
+  if(!state.profile&&!consent.checked){explain("Please accept the applicant contact-data consent.");return;}
+  const payload={
+   full_name:name.value.trim(),father_name:father.value.trim(),
+   address_line:address.value.trim(),locality:locality.value.trim(),district:district.value.trim(),
+   state_name:stateName.value.trim(),postal_code:pin.value.trim(),
+   work_category:work.value,work_details:detailsInput.value.trim(),
+   employment_subtype:work.value==="salaried"?employment.value:null,
+   employer_name:work.value==="salaried"&&!["central_government","state_government"].includes(employment.value)?company.value.trim():null,
+   department_name:work.value==="salaried"&&["central_government","state_government"].includes(employment.value)?department.value.trim():null,
+   designation:work.value==="salaried"?designation.value.trim():null,
+   business_type:work.value==="self_employed"?businessType.value:null,
+   business_name:work.value==="self_employed"?businessName.value.trim():null
+  };
+  const profileText=[payload.full_name,payload.father_name,payload.address_line,payload.locality,
+   payload.district,payload.state_name,payload.work_details,
+   payload.employer_name,payload.department_name,payload.designation,payload.business_name]
+    .filter(Boolean);
+  if(!/^[1-9][0-9]{5}$/.test(payload.postal_code)||profileText.some(x=>/[<>\x00-\x1f]/.test(x))||
+    payload.full_name.length<2||payload.father_name.length<2||payload.address_line.length<6||
+    payload.work_details.length<3||!form.checkValidity()){
+    explain("Complete the applicant fields correctly. Do not include sensitive identifiers.");return;
+  }
   busy(true);
   try{
-   if(previously){
-    const result=await request("/rest/v1/vorvan_customer_intake_profiles?user_id=eq."+
-     encodeURIComponent(state.user.id)+"&select=user_id,full_name,email,phone,work_category,work_details,consent_version,consent_accepted_at",
-     "PATCH",payload);
-    if(!Array.isArray(result)||result.length!==1)throw {code:"profile_update_conflict"};
-    state.profile=result[0];
+   let result;
+   if(state.profile){
+    result=await request("/rest/v1/vorvan_customer_intake_profiles?user_id=eq."+
+      encodeURIComponent(state.user.id)+"&select="+PROFILE_COLS,"PATCH",payload);
    }else{
-    const result=await request("/rest/v1/vorvan_customer_intake_profiles?select="+
-     "user_id,full_name,email,phone,work_category,work_details,consent_version,consent_accepted_at",
-     "POST",{...payload,user_id:state.user.id,email:state.user.email,consent_version:CONSENT});
-    if(!Array.isArray(result)||result.length!==1)throw {code:"profile_insert_failed"};
-    state.profile=result[0];
+    // Only Supabase-verified auth.user.phone is accepted. Typed phone never becomes identity.
+    result=await request("/rest/v1/vorvan_customer_intake_profiles?select="+PROFILE_COLS,
+      "POST",{...payload,user_id:state.user.id,
+       phone:state.user.phone.slice(3),email:email.value.trim()||null,consent_version:CONSENT});
    }
-   state.phase="dashboard";state.view="score";draw();
-   explain("Your contact profile was saved in the secure database. It is visible to authorized owner staff.");
-  }catch(err){fail(err,"Your profile could not be saved securely. Nothing else was submitted.");}
+   if(!Array.isArray(result)||result.length!==1)throw {code:"profile_save_failed"};
+   state.profile=result[0];state.phase="dashboard";state.view="score";
+   await loadEnquiries();draw();
+   explain("Applicant profile securely saved. Your Owner-only VORVAN Admin queue can now view the record.");
+  }catch(err){fail(err,"Unable to save Applicant Details. No loan enquiry was sent.");}
   finally{busy(false)}
  });
- area.append(form,notice("Contact and occupation data are used for enquiry follow-up, not for live credit scoring or automatic lender marketing. View the Privacy Notice for correction/deletion requests."));
+ area.append(form,notice("Your details are stored as contact information only, without income figures, PAN, Aadhaar or bureau scores. Use legal@vorvan.co.in to request correction or deletion. See the Privacy Notice."));
 }
+
 function ensureDemo(){
  if(!state.profile)return;
  const demo=state.engine.snapshot();
@@ -386,8 +475,8 @@ function requestsPanel(area){
 }
 function dashboard(area){
  const top=show("div","","cp-session");
- top.append(add(show("div"),show("span","VERIFIED EMAIL · PROFILE SAVED","cp-kicker"),
-   show("h3","Welcome, "+state.profile.full_name),show("p",state.profile.email+" · Phone is self-reported")));
+ top.append(add(show("div"),show("span","VERIFIED MOBILE · APPLICANT PROFILE SAVED","cp-kicker"),
+   show("h3","Welcome, "+state.profile.full_name),show("p","Mobile: "+state.user.phone+" · Contact email: "+(state.profile.email||"Not provided"))));
  top.append(button("Sign out",logout,"cp-button cp-secondary"));
  area.append(top);
  const nav=show("nav","","cp-tabs");nav.setAttribute("aria-label","Customer journey");
@@ -410,6 +499,7 @@ function dashboard(area){
 }
 function draw(){
  if(!root)return;
+ document.body.classList.toggle("cp-authenticated",state.phase!=="login");
  root.replaceChildren();
  const area=show("div","","cp-app-inner");
  if(state.phase==="login")loginScreen(area);
@@ -418,20 +508,7 @@ function draw(){
  area.append(feedback);root.append(area);
 }
 async function start(){
- try{
-  const hash=new URLSearchParams(window.location.hash.replace(/^#/,""));
-  const error=hash.get("error");
-  if(hash.has("access_token")){
-   const value=hash.get("access_token");
-   window.history.replaceState(null,"",window.location.pathname);
-   if(value&&value.length<4100){state.token=value;await bootstrap();return;}
-  }
-  if(error){
-   window.history.replaceState(null,"",window.location.pathname);
-   draw();explain("The email sign-in link could not be verified. Please request another.");
-   return;
-  }
- }catch{/* User can request a fresh email if callback is unusable */}
+ // Phone OTP never authenticates from a URL fragment. No magic-link fallback.
  draw();
 }
 start();
