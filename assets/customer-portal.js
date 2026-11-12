@@ -10,7 +10,7 @@ const CONSENT="contact_enquiry_v1_2026_11_11";
 const root=document.getElementById("customer-portal");
 const state={token:"",user:null,profile:null,enquiries:[],phase:"login",view:"score",
  email:"",otpRequested:false,busy:false,engine:createCustomerJourney(),
- issueResult:null,selectedCategory:null,lastError:""};
+ issueResult:null,selectedCategory:null,demoFixture:"demo_salaried",lastError:""};
 const show=(tag,text="",cls="")=>{
  const n=document.createElement(tag);n.textContent=text;if(cls)n.className=cls;return n;
 };
@@ -61,7 +61,7 @@ async function request(url,method="GET",payload=null,requiresAuth=true){
 function sessionClear(){
  state.token="";state.user=null;state.profile=null;state.enquiries=[];
  state.phase="login";state.view="score";state.otpRequested=false;
- state.engine=createCustomerJourney();state.issueResult=null;state.selectedCategory=null;
+ state.engine=createCustomerJourney();state.issueResult=null;state.selectedCategory=null;state.demoFixture="demo_salaried";
  state.lastError="";
 }
 async function requestLogin(email){
@@ -197,7 +197,7 @@ function ensureDemo(){
  const demo=state.engine.snapshot();
  if(demo.score_viewed)return;
  state.engine.restart();
- const fixture="demo_salaried"; // Identical invented example for every user, independent of personal/work information.
+ const fixture=state.demoFixture; // User-selected fictional training scenario; NEVER derived from saved customer data.
  const started=state.engine.begin({mode:"fictional_browser_only",fixture_id:fixture,training_acknowledged:true});
  if(!started.ok)return;
  state.engine.verify({mode:"fictional_browser_only",demo_passcode:DEMO_PASSCODE});
@@ -208,6 +208,17 @@ function scorePanel(area){
   show("h3","Credit score comes before loan choices"),
   show("p","Real CIBIL data is not connected. The score below belongs to a fictional example and does not reflect your personal financial history."));
  area.append(header);
+ const scenarios=show("div","","cp-scenario-switch");
+ scenarios.append(show("p","Choose a fictional training example. These scores are never calculated from your saved profile and never stored."));
+ for(const [id,label] of [["demo_salaried","Example A · 662 (guide first)"],["demo_business","Example B · 748 (explore categories)"]]){
+  const item=button(label,()=>{
+   if(state.demoFixture===id)return;
+   state.demoFixture=id;state.engine.restart();state.issueResult=null;state.selectedCategory=null;
+   draw();explain("Fictional example changed. No personal credit data was accessed.");
+  },"cp-scenario-choice"+(state.demoFixture===id?" is-active":""));
+  item.setAttribute("aria-pressed",String(state.demoFixture===id));scenarios.append(item);
+ }
+ area.append(scenarios);
  const s=state.engine.snapshot();
  if(!s.score_viewed){
   area.append(add(show("div","","cp-start-score"),show("span","NO CREDIT BUREAU LOOKUP","cp-kicker"),
@@ -283,16 +294,40 @@ function loanPanel(area){
  area.append(add(show("div","","cp-panel-head"),show("span","STEP 05 / LOAN INFORMATION ENQUIRY","cp-eyebrow"),
   show("h3","Which loan are you exploring?"),
   show("p","You can ask about Personal, Business, Education or Short-Term Loan. The form is a real enquiry to VORVAN, not a loan application, approval or lender referral.")));
+ const demo=state.engine.snapshot();
+ const educational=show("div","","cp-example-outcome");
+ const sample=demo.fictional_profile;
+ if(sample){
+  const low=sample.score<700;
+  educational.append(show("span","ILLUSTRATIVE CATEGORY EXPLANATION","cp-kicker"),
+   show("h4",low?"Example below 700: learning plan before offers":"Example 700+: categories can be explored"),
+   show("p",low?
+    "This fictional score indicates a learning-first path. Choose a CIBIL Guide preview; no real lender offer or personal eligibility is inferred.":
+    "The fictional 700+ example can explore category explanations. A score alone never determines lender eligibility, approval or an offer."));
+  if(low)educational.append(button("Review 3/6-month CIBIL Guide →",()=>{state.view="guide";draw()},"cp-button cp-secondary"));
+  area.append(educational);
+ }
  const categoryGrid=show("div","","cp-loans");
  for(const category of CATEGORIES){
   const isActive=state.selectedCategory===category.id;
   const b=button(category.label+" ↗",()=>{state.selectedCategory=category.id;draw();
    explain("Loan information category selected. Complete the secure enquiry form below.");},
    "cp-loan-choice"+(isActive?" is-active":""));
-  const box=add(show("article","","cp-loan-card"),show("h4",category.label),show("p",category.description),b);
+  let illustration=null;
+  if(state.engine.snapshot().score_viewed){
+   state.engine.viewLoans();
+   illustration=state.engine.chooseCategory({category_id:category.id});
+  }
+  const label=illustration?.ok?illustration.can_explore_demo?
+   "Illustrative category match · No real offer":"Guide / review needed · No real offer":"Informational category";
+  const box=add(show("article","","cp-loan-card"),
+   show("span",label,"cp-kicker"),show("h4",category.label),
+   show("p",category.description),b);
+  if(illustration?.ok)box.append(show("p",illustration.reason,"cp-loan-explanation"));
   categoryGrid.append(box);
  }
  area.append(categoryGrid);
+ area.append(notice("The category explanations above use fictional scores only. You may send a genuine information enquiry for any loan category; VORVAN does not decide eligibility or send it to a lender."));
  const option=picker("Loan information category",CATEGORIES.map(c=>[c.id,c.label]));
  option.value=state.selectedCategory||"personal";
  const topic=picker("Type of information request",[
