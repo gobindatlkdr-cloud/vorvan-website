@@ -18,15 +18,16 @@ export function mountCustomerOperations(root,context){
  if(!root||typeof root.replaceChildren!=="function"||
    !context||context.role!=="owner"||typeof context.accessToken!=="string"||
    context.accessToken.length<100)return {ok:false};
- let active=true;let entries=[];let running=false;
+ let active=true;let entries=[];let profiles=[];let running=false;
  const pane=el("section","","coa-panel");
  const title=el("h2","Customer Login & Loan Enquiries");
  const warning=el("p","Confidential customer contact records. Verified Owner / AAL2 MFA only. Non-binding loan information enquiries; no CIBIL scores, lending decisions or application records.");
- const reload=el("button","Refresh customer enquiries");reload.type="button";
+ const reload=el("button","Refresh customer profiles & enquiries");reload.type="button";
  const message=el("p","Loading owner-only customer records…","coa-status");
  message.setAttribute("role","status");message.setAttribute("aria-live","polite");
  const total=el("p","","coa-totals");const queue=el("div","","coa-queue");
- add(pane,title,warning,reload,message,total,queue);
+ const roster=el("section","","coa-roster");roster.setAttribute("aria-label","Verified customer profile roster");
+ add(pane,title,warning,reload,message,total,roster,queue);
  root.replaceChildren(pane);
  async function api(path,method="GET",data=null){
   const response=await fetch(API+path,{method,cache:"no-store",headers:{
@@ -41,7 +42,25 @@ export function mountCustomerOperations(root,context){
  }
  const feedback=text=>{message.textContent=text};
  function render(){
-  queue.replaceChildren();total.textContent=entries.length+" visible recent enquiries (maximum 80). No credit scores are stored.";
+  roster.replaceChildren();
+  roster.append(el("h3","Customer profiles · registered contact information"));
+  roster.append(el("p",profiles.length+" visible recent customer contact profiles (maximum 80), including accounts without enquiries. Never stores CIBIL scores."));
+  for(const profile of profiles){
+   const card=el("article","","coa-case");
+   card.append(el("h4",profile.full_name||"Profile unavailable"));
+   const grid=el("div","","coa-grid");
+   add(grid,info("Verified email",profile.email),info("Self-reported mobile",profile.phone),
+    info("Employment category",String(profile.work_category||"").replaceAll("_"," ")),
+    info("Working details",profile.work_details),
+    info("Contact consent version",profile.consent_version),
+    info("Consented",profile.consent_accepted_at),
+    info("Joined",profile.created_at));
+   card.append(grid);roster.append(card);
+  }
+  if(!profiles.length)roster.append(el("p","No verified customer contact profiles saved yet."));
+  queue.replaceChildren();
+  queue.append(el("h3","Loan information enquiries · manual staff review"));
+  total.textContent=profiles.length+" customer profiles · "+entries.length+" recent enquiries (max 80 each). No credit scores stored.";
   for(const item of entries){
    const profile=item.profile;
    const card=el("article","","coa-case");
@@ -94,20 +113,22 @@ export function mountCustomerOperations(root,context){
   if(!active||running&&showProgress)return;
   if(showProgress)feedback("Loading verified owner queue…");
   try{
-   const data=await api("/enquiries");
+   const [profileData,enquiryData]=await Promise.all([api("/profiles"),api("/enquiries")]);
    if(!active)return;
-   if(!data.ok||!Array.isArray(data.items)||data.owner_only!==true)throw Error("not_authorized");
-   entries=data.items;render();
+   if(!profileData.ok||profileData.owner_only!==true||!Array.isArray(profileData.items)||
+     !enquiryData.ok||enquiryData.owner_only!==true||!Array.isArray(enquiryData.items))
+     throw Error("not_authorized");
+   profiles=profileData.items;entries=enquiryData.items;render();
    if(showProgress)feedback("Customer queue refreshed securely.");
   }catch(e){
    if(!active)return;
-   entries=[];queue.replaceChildren();total.textContent="";
+   entries=[];profiles=[];queue.replaceChildren();roster.replaceChildren();total.textContent="";
    feedback("Unable to open confidential customer queue. Verify Owner MFA access and backend availability.");
   }
  }
  reload.addEventListener("click",()=>load());
  load();
  return {ok:true,dispose:()=>{
-  active=false;entries=[];root.replaceChildren();
+  active=false;entries=[];profiles=[];root.replaceChildren();
  }};
 }
