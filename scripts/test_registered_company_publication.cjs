@@ -30,7 +30,7 @@ for(const page of publicPages){
 }
 for(const page of ["index.html","about.html","contact.html","partners.html","solutions.html","privacy.html","terms.html",
  "readiness-passport.html","admin.html"]){
- assert.match(read(page),/Registered company/i,page+" missing corporate status");
+ assert.match(read(page),/VORVAN PRIVATE LIMITED/i,page+" missing professional corporate identity");
 }
 const home=read("index.html");
 assert.match(home,/id="product-previews"/);
