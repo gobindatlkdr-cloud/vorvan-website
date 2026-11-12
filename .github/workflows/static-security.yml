@@ -182,6 +182,10 @@ jobs:
           node --check assets/customer-portal.js
           node --check assets/customer-admin-queue.js
           deno check assets/customer-journey-engine.js assets/customer-portal.js assets/customer-admin-queue.js backend/customer-operations/index.ts
+      - name: MSG91 Supabase pre-auth Send SMS hook HMAC, DLT gate and fail-closed provider contract tests
+        run: deno test backend/tests/msg91_sms_hook.test.ts
+      - name: MSG91 Send SMS hook Deno type-check
+        run: deno check backend/msg91-send-sms/handler.ts backend/msg91-send-sms/index.ts
       - name: Type-check authenticated AI guidance backend
         run: deno check backend/ai-guidance/index.ts backend/admin-console/index.ts backend/site-assistant/index.ts backend/admin-mfa-recovery/index.ts backend/compliance-vault/index.ts backend/institutional-inquiries/index.ts
 
