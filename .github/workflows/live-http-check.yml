@@ -184,7 +184,7 @@ jobs:
           grep -Fq 'VORVAN PRIVATE LIMITED' <<< "$page"
           grep -Fq 'Applicant Login' <<< "$page"
           grep -Fq 'Kindly Login' <<< "$page"
-          grep -Fq 'No Aadhaar, PAN' <<< "$page"
+          grep -Fq 'PAN, Aadhaar' <<< "$page"
           for asset in "assets/customer-portal.js?v=20261112-mobile-applicant" \
             "assets/customer-journey-engine.js" "assets/customer-portal.css?v=20261112-mobile-applicant" \
             "assets/customer-admin-queue.js" "assets/admin.js?v=20261112-customer-enquiries"; do
