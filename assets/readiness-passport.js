@@ -39,7 +39,7 @@ const labels={
   noExplanations:"No answers yet. Choose any topic above to begin this fictional exercise.",
   edit:"← Edit answers",restart:"Restart fictional demo",
   releaseKicker:"RELEASE BOUNDARY",releaseTitle:"Built for learning, not lending.",
-  releaseText:"VORVAN PRIVATE LIMITED is registered; this educational feature remains in development. It is not customer registration, financial advice, a loan offer, a CIBIL score or a lender application. Secure customer login and legally approved consent are not active.",
+  releaseText:"VORVAN PRIVATE LIMITED is registered; this educational feature remains in development. This fictional preview is not customer registration, financial advice, a loan offer, a CIBIL score or a lender application. Secure customer login and legally approved consent are not active.",
   explore:"Explore loan categories ↗",
   footer:"VORVAN PRIVATE LIMITED · No live lending, credit-bureau, KYC or payment services.",
   error:"This fictional demonstration cannot show a result. Restart the page. No answers have been uploaded."
