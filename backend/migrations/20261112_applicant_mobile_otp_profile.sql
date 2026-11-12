@@ -23,7 +23,7 @@ alter table public.vorvan_customer_intake_profiles
   add constraint vorvan_applicant_consent_version
     check (consent_version in ('contact_enquiry_v1_2026_11_11','applicant_mobile_v1_2026_11_12')),
   add constraint vorvan_applicant_email_format
-    check (email is null or (email ~* '^[^[:space:]@]+@[^[:space:]@]+\\.[^[:space:]@]+$' and char_length(email)<=254)),
+    check (email is null or (email ~* '^[^[:space:]@]+@[^[:space:]@]+[.][^[:space:]@]+$' and char_length(email)<=254)),
   add constraint vorvan_applicant_father_name
     check (father_name is null or (char_length(trim(father_name)) between 2 and 100 and father_name !~ '[<>[:cntrl:]]')),
   add constraint vorvan_applicant_address
