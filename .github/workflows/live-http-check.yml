@@ -199,4 +199,6 @@ jobs:
           status=$(curl --location --silent --show-error --max-time 20 \
             -o /dev/null -w '%{http_code}' "$API/enquiries")
           [[ "$status" == "401" ]] || { echo "Customer owner-only Admin gateway exposed or unavailable: HTTP $status";exit 1; }
-          echo "PASS: customer login and secure enquiry frontend published, Owner AAL2 endpoint anonymous 401; actual OTP delivery still needs human UAT"
+          profile_status=$(curl --location --silent --show-error --max-time 20             -o /dev/null -w '%{http_code}' "$API/profiles")
+          [[ "$profile_status" == "401" ]] || { echo "Owner-only customer profile roster exposed or unavailable: HTTP $profile_status";exit 1; }
+          echo "PASS: published CIBIL-first website; customer contact/enquiry and profile owner endpoints anonymous 401; actual OTP still needs human UAT"

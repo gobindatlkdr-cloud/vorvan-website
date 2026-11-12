@@ -30,6 +30,14 @@ The existing Supabase Edge function `customer-operations` requires a valid user 
 - Professional review of privacy notice / DPDP applicability and retention is still pending. Credit-score disputes must follow official lender/bureau procedures.
 - This release **does not create a duplicate database**: the existing customer profile/enquiry tables and constraints were inspected and reused (0 real customer rows at inspection). The Supabase Auth email-link setup needs an actual test with a controlled mailbox before a fully verified end-to-end claim.
 
+## Verified source, deployment and remaining UAT
+
+- **[Implementation PR #54](https://github.com/gobindatlkdr-cloud/vorvan-website/pull/54)** merged into main at commit `6a28f965d28f517a813841b5949ec69866fa6b07`; conflicted superseded PR #53 closed without merging.
+- **[Source Static Security CI #43142268639](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/43142268639)** and [source Live URL #43142268749](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/43142268749) SUCCESS, including Owner profile roster source/DOM tests, CIBIL-first homepage and existing PostgreSQL consent/enquiry RLS.
+- **Post-merge main:** [Static Security #43142545527](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/43142545527), [GitHub Pages #43142545500](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/43142545500), [Live Website #43142545552](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/43142545552), [sitemap diagnostic #43142545607](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/43142545607) all SUCCESS. Live workflow checks the new homepage CIBIL marketing, customer portal JS 662/748 examples and existing Owner enquiry anonymous 401.
+- **Supabase deployed:** `customer-operations` Edge function upgraded safely from v1 to **v2 ACTIVE, verify_jwt=true** after verifying the old source matches the new source with the sole addition of `GET /profiles`; original company Owner/AAL2 ACL, no-store and origin restrictions preserved. The new endpoint's anonymous **401** is checked separately in a dedicated live workflow update; until that passes, do not claim the anonymous check was independently completed.
+- Real person OTP email delivery, actual profile insert, Owner AAL2 browser clickthrough and real customer-vs-customer isolation **not yet tested**; production security/DPDP legal review remains required. All actual CIBIL, lender offer, repair, AI financial decision and payment functions remain blocked.
+
 ## Verification and rollback
 
 - Add new site regression covering CIBIL-first public marketing, real Auth/own-row RLS, no real score/loan API, verified owner-only Admin roster, and consumer disclosures.
