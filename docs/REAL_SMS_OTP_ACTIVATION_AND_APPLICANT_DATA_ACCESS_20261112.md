@@ -9,6 +9,10 @@
 - Both applicant tables have RLS enabled. `anon` has no SELECT grants; the customer cannot UPDATE their verified mobile. Owner-only `customer-operations` Edge function uses JWT + private Owner ACL + **AAL2 MFA**, and its current version is v3 with `verify_jwt=true`. Applicant CIBIL score is never saved in the profile database.
 - The first screen is `https://vorvan.co.in/customer.html`, mobile-only. **SMS_PROVIDER_READY=false** in public source; OTP button is deliberately disabled. Actual applicant profile submission has not been UAT-tested. No claim of active SMS or fully verified onboarding.
 
+## Website design preview — published, no real applicant data
+
+**Verified publication evidence (12 November 2026):** [PR #57](https://github.com/gobindatlkdr-cloud/vorvan-website/pull/57) merged into main at `c09e37beaa37e5e59afb343b29e81bd11b6176e6`; [GitHub Pages #43149665714](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/43149665714) **SUCCESS**, [Live custom-domain verification #43149665855](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/43149665855) **SUCCESS** including a no-network/no-data visual preview check, [Static Security and PostgreSQL RLS #43149665816](https://github.com/gobindatlkdr-cloud/vorvan-website/actions/runs/43149665816) **SUCCESS**. Sample preview is public at https://vorvan.co.in/applicant-form-preview.html but deliberately not in sitemap or main navigation. This verifies the **read-only design**, NOT real mobile OTP or successful applicant data processing.
+
 ## Real SMS OTP: external decisions / user permission required
 VORVAN must have an actual **SMS delivery account**, an applicable **Indian DLT Principal Entity (PE) registration**, approved header, approved content template and provider balance/billing, plus access to Supabase **Auth → Providers → Phone** settings. **Do not put API secrets in chat or public GitHub**; enter them only into the provider dashboard or Supabase secure secret settings with controlled access.
 
