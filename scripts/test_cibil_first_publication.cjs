@@ -20,7 +20,7 @@ for(const text of ["CIBIL Guide","30 / 60 / 90-day","Unknown account","Education
  if(text==="Unknown account")assert.match(home,/Unknown account/i);
  else assert.ok(home.includes(text),"missing homepage "+text);
 }
-assert.match(home,/Customer login and secure contact\/enquiry saving are available/);
+assert.match(home,/customer login and secure contact\/enquiry saving are available/i);
 assert.doesNotMatch(home,/Customer login and live bureau access remain disabled/);
 assert.match(customer,/id="customer-portal"/);
 assert.match(customer,/assets\/customer-portal\.js\?v=20261112-score-examples/);
