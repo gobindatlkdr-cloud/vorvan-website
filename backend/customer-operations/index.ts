@@ -114,6 +114,18 @@ Deno.serve(async(req:Request)=>{
  if(owner==="mfa_required")return deny(req,403,"mfa_required");
  if(owner==="denied")return deny(req,403,"owner_only");
  if(owner==="unavailable")return deny(req,503,"auth_unavailable");
+ if(req.method==="GET"&&route==="/profiles"){
+  // New email-verified customers are visible to the Owner even before any loan enquiry.
+  // Never include password, OTP, bureau score, PAN or identifiers beyond permitted contact fields.
+  const q=await service("/rest/v1/vorvan_customer_intake_profiles?select="+
+   "user_id,full_name,email,phone,work_category,work_details,consent_version,consent_accepted_at,created_at"+
+   "&order=created_at.desc&limit=80");
+  if(!q?.ok)return deny(req,503,"profile_queue_unavailable");
+  const profiles=await q.json();
+  if(!Array.isArray(profiles))return deny(req,503,"invalid_profile_response");
+  return json(req,200,{ok:true,owner_only:true,items:profiles,limited_to:80,
+   real_credit_scores:0,credit_reports:0,lender_applications:0});
+ }
  if(req.method==="GET"&&route==="/enquiries"){
   const q=await service("/rest/v1/vorvan_customer_enquiries?select="+
    "id,user_id,loan_category,enquiry_topic,message,status,staff_reply,created_at,updated_at"+
