@@ -14,7 +14,7 @@ const AREAS={
  privacy:["Privacy Requests & Export (Sandbox)","Synthetic fixed-choice access/correction/delete/export/consent-withdrawal lifecycle — never live processing"],
  payments:["Subscription & Payment (Sandbox)","Fictional three/six-month plans, simulated payment events, refunds and blocked checkout"],
  adapters:["Lender & Bureau API Mocks","Two fictional lender contracts, fixed bureau response fixtures, scoped offline adapter monitor"],
- customers:["Customer Operations","Confidential account operations stay locked until approved"],
+ customers:["Customer Profiles & Enquiries","Owner-only verified customer contacts and manually reviewed non-binding loan information enquiries"],
  readiness:["Readiness Operations (Sandbox)","Synthetic 30/60/90-day template queues, simulated role scopes and locked go-live gates"],
  support:["Support & Grievances","Issue tracking and business correspondence work queue"],
  security:["Security & Audit","Authentication controls, checks and administrative change history"],
@@ -23,7 +23,7 @@ const AREAS={
  compliance:["Legal & Compliance","Review checklist, consents, contracts and compliance readiness"]
 };
 const $=(id)=>document.getElementById(id);
-const state={access:"",refresh:"",role:"",tasks:[],modules:[],counters:{},area:"overview",mfaFactor:"",mfaSetup:false,user:null,events:[],readinessSandbox:null,supportSandbox:null,governanceSandbox:null,privacySandbox:null,paymentSandbox:null,adapterSandbox:null};
+const state={access:"",refresh:"",role:"",tasks:[],modules:[],counters:{},area:"overview",mfaFactor:"",mfaSetup:false,user:null,events:[],readinessSandbox:null,supportSandbox:null,governanceSandbox:null,privacySandbox:null,paymentSandbox:null,adapterSandbox:null,customerOpsDispose:null};
 function visible(id,yes){$(id).hidden=!yes}
 function message(id,msg,ok=false){const el=$(id);el.textContent=msg;el.classList.toggle("ok",ok)}
 function el(tag,cl,text){const x=document.createElement(tag);if(cl)x.className=cl;if(text!==undefined)x.textContent=String(text);return x}
@@ -36,7 +36,7 @@ async function auth(path,method="GET",body=undefined,session=true){
  return result;
 }
 function setTokens(result){if(result.access_token){state.access=result.access_token;state.refresh=result.refresh_token||state.refresh}}
-function clearSession(){state.access="";state.refresh="";state.mfaFactor="";state.user=null;state.tasks=[];state.modules=[];state.role="";state.readinessSandbox=null;state.supportSandbox=null;state.governanceSandbox=null;state.privacySandbox=null;state.paymentSandbox=null;state.adapterSandbox=null;$("password").value="";$("signup-password").value="";$("signup-confirm").value="";$("mfa-code").value="";$("mfa-secret").textContent="";$("mfa-qr").removeAttribute("src");visible("mfa-setup",false);visible("dashboard-view",false);visible("mfa-view",false);visible("signup-view",false);visible("login-view",true);visible("logout",false)}
+function clearSession(){state.access="";state.refresh="";state.mfaFactor="";state.user=null;state.tasks=[];state.modules=[];state.role="";state.readinessSandbox=null;state.supportSandbox=null;state.governanceSandbox=null;state.privacySandbox=null;state.paymentSandbox=null;state.adapterSandbox=null;if(state.customerOpsDispose){state.customerOpsDispose();state.customerOpsDispose=null;} $("password").value="";$("signup-password").value="";$("signup-confirm").value="";$("mfa-code").value="";$("mfa-secret").textContent="";$("mfa-qr").removeAttribute("src");visible("mfa-setup",false);visible("dashboard-view",false);visible("mfa-view",false);visible("signup-view",false);visible("login-view",true);visible("logout",false)}
 async function login(event){
  event.preventDefault();message("login-message","");
  const password=$("password").value;
@@ -296,7 +296,7 @@ function vaultPanel(parent){
  async function refresh(){
   const r=await vaultRequest("/"),c=r.company||{};company.replaceChildren();list.replaceChildren();events.replaceChildren();
   const top=el("div","vault-summary");
-  top.append(el("strong","",c.incorporation_status==="incorporated"?"Company registration verified in vault":"Registered company (owner-confirmed) · COI verification pending in vault"));
+  top.append(el("strong","",c.incorporation_status==="incorporated"?"Company registration verified in vault":"VORVAN PRIVATE LIMITED · COI evidence pending vault verification"));
   for(const [key,yes,no] of [["ca_documents_verified","CA documents verified","CA verification pending"],["mca_fee_paid","MCA fee verified","MCA payment not verified in vault"],["coi_issued","COI verified in vault","COI not verified in vault"]])top.append(el("span","",c[key]?yes:no));
   if(c.cin)top.append(el("span","","CIN: "+c.cin));company.append(top);
   const docs=r.documents||[];tell("Secure checklist loaded — "+docs.length+" records; "+docs.filter(d=>d.stage==="verified").length+" verified.",true);
@@ -359,6 +359,29 @@ function vaultPanel(parent){
 
 function infoPanel(area){
  const container=el("div","panel-grid");
+ if(area==="customers"){
+  const notice=el("article","panel-box");
+  append(notice,el("span","status","CONFIDENTIAL CONTACT ENQUIRIES · OWNER MFA ONLY"),
+   el("h2","","Customer Profiles & Loan Enquiries"),
+   el("p","","Verified customer email, self-reported phone and working details with manual enquiry handling. Real CIBIL, loan approval and lender integrations remain OFF."));
+  const mount=el("div","coa-mount","Checking owner role and loading confidential customer records…");
+  container.append(notice,mount);
+  const token=state.access,role=state.role;
+  if(!token||role!=="owner"){
+   mount.textContent="Owner role with verified AAL2 MFA is required to view personal customer enquiries.";
+   return container;
+  }
+  import("./customer-admin-queue.js").then(mod=>{
+   if(state.area!=="customers"||state.access!==token||state.role!=="owner")return;
+   const r=mod.mountCustomerOperations(mount,{role:"owner",accessToken:token});
+   if(!r.ok){mount.textContent="Customer queue unavailable.";return;}
+   state.customerOpsDispose=r.dispose;
+  }).catch(()=>{
+   if(state.area==="customers")mount.textContent="Unable to open customer queue. Existing Admin authentication remains active.";
+  });
+  return container;
+ }
+
  if(area==="adapters"){
   const notice=el("article","panel-box");
   append(notice,el("span","status","OFFLINE FICTIONAL CONTRACTS · ZERO BUREAU HITS"),
@@ -618,9 +641,10 @@ function institutionalInbox(container){
 }
 
 function render(){
+ if(state.customerOpsDispose){state.customerOpsDispose();state.customerOpsDispose=null;}
  const [title,subtitle]=AREAS[state.area];$("page-title").textContent=title;$("page-subtitle").textContent=subtitle;$("panel-content").replaceChildren(infoPanel(state.area));$("new-task-toggle").disabled=state.role==="auditor";
  for(const b of document.querySelectorAll("#panel-nav button")){b.classList.toggle("selected",b.dataset.area===state.area)}
- const syntheticOnly=state.area==="readiness"||state.area==="governance"||state.area==="privacy"||state.area==="payments"||state.area==="adapters";
+ const syntheticOnly=state.area==="readiness"||state.area==="governance"||state.area==="privacy"||state.area==="payments"||state.area==="adapters"||state.area==="customers";
  $("new-task-toggle").hidden=syntheticOnly;document.querySelector(".worklist").hidden=syntheticOnly;
  $("task-area").value=syntheticOnly?"overview":state.area;if(!syntheticOnly)tasks();
 }

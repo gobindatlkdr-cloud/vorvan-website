@@ -876,3 +876,33 @@ body{background:#fff;color:#342b37}
 @media(max-width:820px){.vv-partner-focus-inner{align-items:start;flex-direction:column}.vv-loan-showcase{padding:65px 0}.vv-contact-split{gap:30px}}
 @media(max-width:560px){.vv-loan-grid,.vv-loan-details,.vv-contact-grid,.vv-contact-split,.vv-footer-focused{grid-template-columns:1fr}.vv-loan-card{min-height:244px}.vv-detail-card{min-height:335px;padding:28px}.vv-contact-card{padding:28px}.vv-loan-intro h2{font-size:39px}.vv-loan-showcase{padding:59px 0}}
 @media(prefers-reduced-motion:reduce){.vv-loan-card{transition:none}.vv-loan-card:hover{transform:none}}
+
+
+/* VORVAN customer-first release: one burgundy brand; preserve prior layout and partner route */
+:root{--vv-ink:#35162b;--vv-quiet:#75596c;--vv-blue:#8c2052;--vv-blue2:#5a1838;--vv-peach:#ffebf2;--vv-lime:#fce7f0;--vv-cyan:#fbe7ef;--vv-rose:#fce5ef}
+.vv-nav-cta{background:#4b1733!important;color:#fff!important}
+.vv-customer-cta{padding:11px 15px;border:1px solid #9b3565;color:#7a1d49!important;border-radius:100px;white-space:nowrap;font-weight:850}
+.vv-customer-cta:hover{background:#fff0f7}
+.vv-hero{background:linear-gradient(145deg,#fffafd,#fff2f7)}
+.vv-hero h1 span{color:#8b2251}
+.vv-hero .vv-button{background:#81204c}
+.vv-hero .vv-outline{background:#fff;color:#81204c}
+.vv-small-tag{background:#f8deea;color:#7c2450}
+.vv-customer-flow{padding:79px 0;background:#fff;color:#36172b}
+.vv-flow-header{display:grid;grid-template-columns:1.2fr .9fr;gap:40px;align-items:end;margin-bottom:33px}
+.vv-flow-header h2{font-size:clamp(32px,3.9vw,53px);letter-spacing:-.05em;line-height:1.12;margin:12px 0 0}
+.vv-flow-header em{font-style:normal;color:#a22960}
+.vv-flow-header p{color:#806377;max-width:480px;font-size:14px;line-height:1.9;margin:0}
+.vv-flow-track{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:0 0 30px}
+.vv-flow-track article{border:1px solid #eed6e2;background:linear-gradient(180deg,#fff,#fff7fb);border-radius:20px;padding:24px 19px;position:relative;min-height:205px}
+.vv-flow-track article:not(:last-child)::after{content:"→";position:absolute;right:-13px;top:25px;color:#ab557e;font-size:24px;z-index:1}
+.vv-flow-track article>span{display:inline-grid;place-items:center;width:37px;height:37px;color:#fff;background:#87234e;border-radius:12px;font-size:12px;font-weight:850}
+.vv-flow-track h3{font-size:19px;margin:17px 0 8px;letter-spacing:-.03em}
+.vv-flow-track p{font-size:12px;color:#79576b;line-height:1.72;margin:0}
+.vv-customer-flow>.vv-wrap>.vv-button{background:#8b2151;color:#fff}
+.vv-loan-showcase{background:#fff5fa}
+.vv-loan-card{border-color:#ecd3df}
+.vv-loan-card a{color:#86204c}
+@media(max-width:1080px){.vv-flow-track{grid-template-columns:repeat(2,minmax(0,1fr))}.vv-flow-track article:nth-child(2)::after{display:none}.vv-flow-header{grid-template-columns:1fr;gap:15px}}
+@media(max-width:820px){.nav{gap:13px}.nav>a{font-size:11px}.vv-customer-cta{padding:10px 13px}}
+@media(max-width:560px){.vv-customer-flow{padding:53px 0}.vv-flow-track{grid-template-columns:1fr}.vv-flow-track article{min-height:0}.vv-flow-track article::after{display:none!important}.vv-flow-header h2{font-size:36px}}

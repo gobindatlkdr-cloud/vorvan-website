@@ -30,7 +30,7 @@ for(const page of publicPages){
 }
 for(const page of ["index.html","about.html","contact.html","partners.html","solutions.html","privacy.html","terms.html",
  "readiness-passport.html","admin.html"]){
- assert.match(read(page),/Registered company/i,page+" missing corporate status");
+ assert.match(read(page),/VORVAN PRIVATE LIMITED/i,page+" missing professional corporate identity");
 }
 const home=read("index.html");
 assert.match(home,/id="product-previews"/);
@@ -42,19 +42,19 @@ assert.match(home,/No live loan, credit-bureau, KYC or payment services/);
 assert.doesNotMatch(home,/admin@vorvan\.co\.in/,"private staff mailbox on public home");
 const readiness=read("assets/readiness-passport.js");
 for(const rule of obsolete)assert.doesNotMatch(readiness,rule,"dynamic readiness i18n uses stale company copy");
-assert.match(readiness,/VORVAN PRIVATE LIMITED is registered \(owner-confirmed\)/);
+assert.match(readiness,/VORVAN PRIVATE LIMITED is registered/);
 assert.match(readiness,/নিবন্ধিত কোম্পানি/u);
 assert.match(readiness,/पंजीकृत कंपनी/u);
 assert.match(read("readiness-passport.html"),/assets\/readiness-passport\.js\?v=20261111-registered-company/);
 const admin=read("assets/admin.js");
 for(const rule of [/incorporation pending/i,/pre[\s-]*incorporation/i])assert.doesNotMatch(admin,rule);
 assert.match(admin,/incorporation_required:/,"backend vault approval lock preserved");
-assert.match(admin,/COI verification pending in vault/);
+assert.match(admin,/COI evidence pending vault verification/);
 assert.match(read("admin.html"),/id="mfa-form"/);
-assert.match(read("admin.html"),/assets\/admin\.js\?v=20261111-registered-company/);
+assert.match(read("admin.html"),/assets\/admin\.js\?v=20261112-customer-enquiries/);
 assert.match(admin,/if\(!state\.access\|\|!\["owner","operator","auditor"\]\.includes\(validatedRole\)\)/);
 for(const source of [home,read("experience.html"),read("readiness-passport.html")]){
  assert.doesNotMatch(source,/Apply Now\s*<\/a>/i,"do not enable loan applications");
 }
-assert.match(read("experience.html"),/VORVAN PRIVATE LIMITED · Registered company \(owner-confirmed\)/);
+assert.match(read("experience.html"),/VORVAN PRIVATE LIMITED\. All rights reserved/);
 console.log("PASS: all public pages and multilingual dynamic notices reflect registered company; public previews linked, MFA and loan/service gates retained");

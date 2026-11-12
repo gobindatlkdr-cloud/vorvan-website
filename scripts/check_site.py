@@ -50,7 +50,7 @@ for page in PAGES:
             issue(f"{page.name}: site-name social metadata missing")
         if not re.search(r'<title>[^<]{20,85}</title>', html):
             issue(f"{page.name}: descriptive title missing")
-    if page.name in ("admin.html", "404.html", "readiness-passport.html", "vyn-coach-sandbox.html") and not re.search(
+    if page.name in ("admin.html", "404.html", "readiness-passport.html", "vyn-coach-sandbox.html", "customer.html") and not re.search(
         r'<meta name="robots" content="noindex', html
     ):
         issue(f"{page.name}: this page must not be indexed")
@@ -58,6 +58,11 @@ for page in PAGES:
         issue(f"{page.name}: missing Content Security Policy")
     if '<meta name="referrer" content="no-referrer">' not in html:
         issue(f"{page.name}: missing referrer restriction")
+    if page.name == "customer.html":
+        if 'https://kukfpsqujlutlgwndplh.supabase.co' not in html or 'form-action \'self\'' not in html:
+            issue("customer.html: expected restricted Supabase connection and same-origin form")
+        if re.search(r"<(?:iframe|object|embed)\b", html, re.I):
+            issue("customer.html: external frame/embed forbidden")
     if page.name == "vyn-coach-sandbox.html":
         if "connect-src 'none'" not in html or "form-action 'none'" not in html:
             issue("vyn-coach-sandbox.html: outbound network and forms must remain disabled")
@@ -70,8 +75,15 @@ for page in PAGES:
             issue("readiness-passport.html: network and forms must remain disabled")
         if re.search(r'<(?:input|textarea)\b', html, re.I):
             issue("readiness-passport.html: no raw input/PII fields allowed")
-    if page.name == "admin.html":
-        # Admin login/MFA forms are allowed; privileged actions are server-checked.
+    if page.name == "customer.html":
+        if 'https://kukfpsqujlutlgwndplh.supabase.co' not in html:
+            issue("customer.html: restricted Supabase-only connect-src required")
+        if 'type="module" src="assets/customer-portal.js' not in html:
+            issue("customer.html: first-party customer login module required")
+        if 'noindex' not in html:
+            issue("customer.html: login portal must not be indexed")
+    if page.name in ("admin.html", "customer.html"):
+        # Authenticated portal forms are permitted; privileged Admin/Customer DB operations are server/RLS checked.
         if re.search(r"<(?:iframe|object|embed)\b", html, re.I):
             issue("admin.html: frame/embed is not permitted")
         if 'https://kukfpsqujlutlgwndplh.supabase.co' not in html:
@@ -88,7 +100,8 @@ for page in PAGES:
         issue(f"{page.name}: form, frame or embed is not permitted")
     if re.search(r'\s(?:style|on[a-z]+)\s*=', html, re.I):
         issue(f"{page.name}: inline style or event handler blocked by CSP")
-    allowed_script = (r'assets/vyn-coach-ui\.js' if page.name == "vyn-coach-sandbox.html"
+    allowed_script = (r'assets/customer-portal\.js' if page.name == "customer.html"
+        else r'assets/vyn-coach-ui\.js' if page.name == "vyn-coach-sandbox.html"
         else r'assets/readiness-passport\.js' if page.name == "readiness-passport.html"
         else r'assets/(?:site|admin)\.js' if page.name == "admin.html"
         else r'assets/(?:site|assistant|institutional-inquiry)\.js' if page.name == "partners.html"
@@ -113,8 +126,8 @@ for page in PAGES:
             # Only the page's own reviewed canonical URL is permitted externally.
             if href == canonical and f'<link rel="canonical" href="{canonical}">' in html:
                 continue
-        if page.name == "readiness-passport.html":
-            sandbox_canonical = "https://vorvan.co.in/readiness-passport.html"
+        if page.name in ("readiness-passport.html","customer.html"):
+            sandbox_canonical = "https://vorvan.co.in/" + page.name
             if (href == sandbox_canonical and
                 f'<link rel="canonical" href="{sandbox_canonical}">' in html):
                 continue

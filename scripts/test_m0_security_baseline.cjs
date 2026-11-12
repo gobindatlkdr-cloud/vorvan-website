@@ -23,6 +23,6 @@ assert.match(vyn,/official_email:emailForTopic\(topic\)/);
 for(const page of ["index.html","solutions.html","contact.html","partners.html","privacy.html","terms.html"]){
  const source=fs.readFileSync(page,"utf8");
  assert.doesNotMatch(source,/href="admin\.html"|admin@vorvan\.co\.in|Staff access/,page+" publicly exposes private admin");
- assert.match(source,/Registered company/,page+" missing current company disclosure");
+ assert.match(source,/VORVAN PRIVATE LIMITED/,page+" missing registered corporate identity");
 }
 console.log("PASS M0: registered-company copy, bounded request body, MFA and owner controls preserved, Vyn internal mailbox hidden, feature-gated site disclaimers");

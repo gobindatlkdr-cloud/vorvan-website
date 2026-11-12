@@ -166,6 +166,14 @@ jobs:
           node --check assets/lender-bureau-mock.js
           node --check assets/lender-bureau-mock-ui.js
           deno check assets/lender-bureau-mock.js assets/lender-bureau-mock-ui.js
+      - name: Customer login, fictional CIBIL Guide and real owner-scoped loan enquiry source tests
+        run: deno test --allow-read backend/tests/customer_portal_journey.test.ts
+      - name: Customer Auth portal and Admin operations source and type checks
+        run: |
+          node --check assets/customer-journey-engine.js
+          node --check assets/customer-portal.js
+          node --check assets/customer-admin-queue.js
+          deno check assets/customer-journey-engine.js assets/customer-portal.js assets/customer-admin-queue.js backend/customer-operations/index.ts
       - name: Type-check authenticated AI guidance backend
         run: deno check backend/ai-guidance/index.ts backend/admin-console/index.ts backend/site-assistant/index.ts backend/admin-mfa-recovery/index.ts backend/compliance-vault/index.ts backend/institutional-inquiries/index.ts
 
@@ -203,4 +211,9 @@ jobs:
             -f backend/sandbox/vor011_inquiry_fixture.sql \
             -f backend/migrations/vor011_atomic_inquiry_audit.sql \
             -f backend/sandbox/vor011_atomicity_tests.sql
+          psql -v ON_ERROR_STOP=1 -h localhost -U postgres -d vorvan_sandbox \
+            -f backend/sandbox/customer_intake_rls_setup.sql \
+            -f backend/migrations/20261111_customer_contact_enquiry_rls.sql \
+            -f backend/sandbox/customer_intake_rls_tests.sql
+          echo 'PASS: isolated customer contact profile, auth owner RLS, enquiry and atomic staff audit'
           echo 'PASS: isolated VOR-011 atomic audit and retry-key tests; no production Supabase access'
