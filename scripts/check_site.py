@@ -77,8 +77,8 @@ for page in PAGES:
             issue("customer.html: first-party customer login module required")
         if 'noindex' not in html:
             issue("customer.html: login portal must not be indexed")
-    if page.name == "admin.html":
-        # Admin login/MFA forms are allowed; privileged actions are server-checked.
+    if page.name in ("admin.html", "customer.html"):
+        # Authenticated portal forms are permitted; privileged Admin/Customer DB operations are server/RLS checked.
         if re.search(r"<(?:iframe|object|embed)\b", html, re.I):
             issue("admin.html: frame/embed is not permitted")
         if 'https://kukfpsqujlutlgwndplh.supabase.co' not in html:
