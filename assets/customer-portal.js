@@ -197,7 +197,7 @@ function ensureDemo(){
  const demo=state.engine.snapshot();
  if(demo.score_viewed)return;
  state.engine.restart();
- const fixture=state.profile.work_category==="salaried"?"demo_salaried":"demo_business";
+ const fixture="demo_salaried"; // Identical invented example for every user, independent of personal/work information.
  const started=state.engine.begin({mode:"fictional_browser_only",fixture_id:fixture,training_acknowledged:true});
  if(!started.ok)return;
  state.engine.verify({mode:"fictional_browser_only",demo_passcode:DEMO_PASSCODE});
