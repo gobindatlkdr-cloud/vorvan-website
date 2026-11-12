@@ -217,7 +217,7 @@ function scorePanel(area){
    explain("Illustrative score displayed. No CIBIL bureau data was fetched or stored.")}));
   return;
  }
- const score=s.fictional_profile.score;
+ const score=s.fictional_profile.score; // This is independent of the authenticated customer and never stored.
  const visual=show("div","","cp-score-layout");
  visual.append(add(show("div","","cp-score-ring"),show("span","FICTIONAL SCORE"),show("strong",String(score)),
    show("small","Example / 900 · Not a bureau score")));
