@@ -23,6 +23,8 @@ jobs:
         run: node scripts/test_cibil_first_publication.cjs
       - name: Applicant mobile OTP gate and conditional-profile security regression
         run: node scripts/test_applicant_phone_flow.cjs
+      - name: Verify synthetic applicant form visual preview is strictly read-only
+        run: node scripts/test_applicant_preview.cjs
       - name: Check live SEO audit script syntax
         run: python3 -m py_compile scripts/audit_live_seo.py
       - name: Test authenticator QR rendering with synthetic SVG fixtures
