@@ -61,7 +61,7 @@ for page in PAGES:
     if page.name == "customer.html":
         if 'https://kukfpsqujlutlgwndplh.supabase.co' not in html or 'form-action \'self\'' not in html:
             issue("customer.html: expected restricted Supabase connection and same-origin form")
-        if re.search(r"<(?:iframe|object|embed)\\b", html, re.I):
+        if re.search(r"<(?:iframe|object|embed)\b", html, re.I):
             issue("customer.html: external frame/embed forbidden")
     if page.name == "vyn-coach-sandbox.html":
         if "connect-src 'none'" not in html or "form-action 'none'" not in html:
