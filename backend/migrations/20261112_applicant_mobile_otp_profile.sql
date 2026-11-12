@@ -69,6 +69,22 @@ grant update(full_name,work_category,work_details,
   father_name,address_line,locality,district,state_name,postal_code,employment_subtype,
   employer_name,department_name,designation,business_type,business_name)
   on public.vorvan_customer_intake_profiles to authenticated;
+-- A verified phone claim alone is insufficient if a number was linked but not confirmed.
+-- Dedicated UNEXPOSED schema, strict boolean helper: uses the caller's auth.uid only.
+create schema if not exists vorvan_authz;
+revoke all on schema vorvan_authz from public, anon;
+grant usage on schema vorvan_authz to authenticated;
+create or replace function vorvan_authz.owns_verified_phone(raw_phone varchar)
+returns boolean language sql stable security definer set search_path = '' as $fn$
+ select exists(
+  select 1 from auth.users u
+  where u.id = (select auth.uid())
+    and u.phone = '+91'||raw_phone
+    and u.phone_confirmed_at is not null
+ )
+$fn$;
+revoke all on function vorvan_authz.owns_verified_phone(varchar) from public, anon;
+grant execute on function vorvan_authz.owns_verified_phone(varchar) to authenticated;
 -- Phone identity is asserted only by a signed, non-anonymous Supabase GoTrue JWT.
 -- Preserve legacy email users so earlier consented records remain accessible.
 drop policy if exists vorvan_intake_customer_own_insert on public.vorvan_customer_intake_profiles;
@@ -78,7 +94,7 @@ create policy vorvan_intake_customer_own_insert on public.vorvan_customer_intake
    and coalesce((auth.jwt()->>'is_anonymous')::boolean,false)=false
    and (
      (consent_version='applicant_mobile_v1_2026_11_12'
-       and (auth.jwt()->>'phone')='+91'||phone)
+       and (auth.jwt()->>'phone')='+91'||phone and vorvan_authz.owns_verified_phone(phone))
      or
      (consent_version='contact_enquiry_v1_2026_11_11'
        and email is not null
@@ -94,7 +110,7 @@ create policy vorvan_intake_customer_own_update on public.vorvan_customer_intake
   (select auth.uid())=user_id and coalesce((auth.jwt()->>'is_anonymous')::boolean,false)=false
   and (
     (consent_version='applicant_mobile_v1_2026_11_12'
-      and (auth.jwt()->>'phone')='+91'||phone)
+      and (auth.jwt()->>'phone')='+91'||phone and vorvan_authz.owns_verified_phone(phone))
     or (consent_version='contact_enquiry_v1_2026_11_11'
       and email is not null and lower(email)=lower(coalesce((auth.jwt()->>'email'),'')))
   )
