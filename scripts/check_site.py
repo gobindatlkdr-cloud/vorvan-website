@@ -105,7 +105,6 @@ for page in PAGES:
         else r'assets/readiness-passport\.js' if page.name == "readiness-passport.html"
         else r'assets/(?:site|admin)\.js' if page.name == "admin.html"
         else r'assets/(?:site|assistant|institutional-inquiry)\.js' if page.name == "partners.html"
-        else r'assets/customer-portal\.js' if page.name == 'customer.html'
         else r'assets/(?:site|assistant)\.js')
     for script in re.findall(r'<script\b[^>]*>', html, re.I):
         if not re.search(r'src="' + allowed_script + r'(?:\?v=[A-Za-z0-9_-]+)?"', script):
