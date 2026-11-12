@@ -207,3 +207,29 @@ jobs:
           profile_status=$(curl --location --silent --show-error --max-time 20             -o /dev/null -w '%{http_code}' "$API/profiles")
           [[ "$profile_status" == "401" ]] || { echo "Owner-only customer profile roster exposed or unavailable: HTTP $profile_status";exit 1; }
           echo "PASS: published CIBIL-first website; customer contact/enquiry and profile owner endpoints anonymous 401; actual OTP still needs human UAT"
+
+      - name: Verify fictional Applicant Details design preview is public but cannot collect or submit data
+        if: github.event_name == 'push'
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="https://vorvan.co.in"
+          ready=0
+          for attempt in $(seq 1 24); do
+            page=$(curl --fail --location --silent --show-error --max-time 20 "$BASE/applicant-form-preview.html?check=20261112" || true)
+            if grep -Fq 'Applicant Details Form' <<< "$page" &&
+               grep -Fq 'SYNTHETIC DESIGN PREVIEW' <<< "$page" &&
+               grep -Fq "connect-src 'none'" <<< "$page"; then
+              ready=1;break
+            fi
+            sleep 5
+          done
+          [[ "$ready" == "1" ]] || { echo "Applicant sample preview not published";exit 1; }
+          grep -Fq "script-src 'none'" <<< "$page"
+          grep -Fq "form-action 'none'" <<< "$page"
+          ! grep -Eqi '<(form|script|iframe|object|embed|input|textarea|select)([[:space:]]|>)' <<< "$page" || {
+             echo 'Unexpected dynamic data collection in sample preview';exit 1;
+          }
+          code=$(curl --location --silent --show-error --max-time 20 -o /dev/null -w '%{http_code}' "$BASE/assets/applicant-preview.css?v=20261112")
+          [[ "$code" == "200" ]] || { echo "Preview stylesheet HTTP $code";exit 1; }
+          echo 'PASS: applicant form design preview is published without network, scripts, forms or real applicant data.'
