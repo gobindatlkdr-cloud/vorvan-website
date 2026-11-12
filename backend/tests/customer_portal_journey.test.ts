@@ -98,12 +98,12 @@ Deno.test("Public customer page has strong no-real-CIBIL, no-payment and consent
  const client=await Deno.readTextFile("assets/customer-portal.js");
  const admin=await Deno.readTextFile("assets/admin.js");
  const sql=await Deno.readTextFile("backend/migrations/20261111_customer_contact_enquiry_rls.sql");
- yes(page.includes("Verified email login"),"auth experience");
- yes(page.includes("Loan Categories"),"category navigation");
- yes(page.includes("non-binding loan information enquiry")||page.includes("non-binding loan information enquiries"),"non-binding notice");
+ yes(page.includes("Applicant Login"),"mobile-first Applicant Login");
+ yes(page.includes("Kindly Login"),"phone-first heading");
+ yes(client.includes("non-binding enquiry")||client.includes("non-binding loan information enquiry"),"non-binding notice");
  yes(page.includes("privacy.html"),"privacy rights");
- yes(client.includes('"/auth/v1/verify"'),"email token verify");
- yes(client.includes("email_confirmed_at"),"verified email checks");
+ yes(client.includes('"/auth/v1/verify"'),"phone OTP verification endpoint");
+ yes(client.includes("phone_confirmed_at"),"verified mobile checks");
  yes(client.includes("vorvan_customer_intake_profiles"),"persist profile");
  yes(client.includes("vorvan_customer_enquiries"),"persist query");
  yes(client.includes("state.engine=createCustomerJourney()"),"no real score retrieval");
