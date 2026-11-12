@@ -126,8 +126,8 @@ for page in PAGES:
             # Only the page's own reviewed canonical URL is permitted externally.
             if href == canonical and f'<link rel="canonical" href="{canonical}">' in html:
                 continue
-        if page.name == "readiness-passport.html":
-            sandbox_canonical = "https://vorvan.co.in/readiness-passport.html"
+        if page.name in ("readiness-passport.html","customer.html"):
+            sandbox_canonical = "https://vorvan.co.in/" + page.name
             if (href == sandbox_canonical and
                 f'<link rel="canonical" href="{sandbox_canonical}">' in html):
                 continue
