@@ -10,3 +10,14 @@
 @media(max-width:900px){.cp-intro-grid{grid-template-columns:1fr;gap:28px}.cp-intro-art{max-width:460px}.cp-explain{grid-template-columns:repeat(2,minmax(0,1fr))}.cp-score-layout{grid-template-columns:1fr}.cp-profile-form{grid-template-columns:1fr}}
 @media(max-width:580px){.cp-wrap{width:min(100% - 30px,1200px)}.cp-header-inner{min-height:69px}.cp-header nav{gap:12px}.cp-header nav a{font-size:11px}.cp-intro-grid{padding:45px 0}.cp-intro h1{font-size:40px}.cp-intro p{font-size:14px}.cp-intro-art{transform:none;padding:17px}.cp-art-circle{width:180px;height:180px}.cp-workspace{padding:45px 0}.cp-app-inner{padding:17px}.cp-session{flex-direction:column;align-items:start}.cp-tabs{flex-wrap:nowrap;overflow-x:auto}.cp-tab{white-space:nowrap}.cp-guide-grid,.cp-loans,.cp-explain,.cp-roadmap{grid-template-columns:1fr}.cp-score-ring{width:180px;height:180px}.cp-actions .cp-button{width:100%}.cp-enquiry-form{padding:14px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+/* Two clear fictional score scenarios and explanations; no inferred customer eligibility. */
+.cp-scenario-switch{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:10px 0 22px;padding:16px;border-radius:15px;border:1px solid #edd4e1;background:#fff8fb}
+.cp-scenario-switch>p{flex-basis:100%;font-size:13px;color:#75485f;margin:0 0 3px}
+.cp-scenario-choice{border:1px solid #dcaec6;border-radius:30px;padding:10px 15px;background:#fff;color:#761b4a;font-weight:800;font-size:12px}
+.cp-scenario-choice.is-active{background:#761b4a;color:white;border-color:#761b4a}
+.cp-example-outcome{border:1px solid #ead1e0;background:#fff7fb;border-radius:18px;padding:22px;margin:12px 0 22px}
+.cp-example-outcome h4{font-size:21px;line-height:1.25;margin:8px 0}
+.cp-example-outcome p{color:#735468;line-height:1.72;max-width:780px}
+.cp-loan-explanation{border-left:3px solid #b35381;padding-left:11px;font-size:12px!important;line-height:1.6;color:#81546e!important}
+@media(max-width:620px){.cp-scenario-switch{flex-direction:column;align-items:stretch}.cp-scenario-choice{width:100%}}

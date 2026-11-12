@@ -1,0 +1,72 @@
+/** VORVAN CIBIL-first website release and real customer contact enquiry safety.
+ * No PII fixtures or actual customer accounts in tests.
+ */
+"use strict";
+const assert=require("node:assert/strict"),fs=require("node:fs");
+const read=path=>fs.readFileSync(path,"utf8");
+const home=read("index.html"),customer=read("customer.html"),js=read("assets/customer-portal.js");
+const engine=read("assets/customer-journey-engine.js"),admin=read("assets/admin.js");
+const sql=read("backend/migrations/20261111_customer_contact_enquiry_rls.sql");
+const queue=read("assets/customer-admin-queue.js"),edge=read("backend/customer-operations/index.ts");
+const css=read("assets/refresh.css"),customerCss=read("assets/customer-portal.css");
+assert.match(home,/href="customer\.html" class="vv-customer-cta"/,"Prominent customer login must be separate from partner button");
+assert.match(home,/href="partners\.html" class="vv-nav-cta"/,"Partner With Us must remain available");
+assert.match(home,/id="vv-flow-title"/);
+assert.match(home,/id="cibil-guide"/);
+assert.match(home,/See a problem/);
+assert.match(home,/id="vv-loans-title"/);
+for(const text of ["CIBIL Guide","30 / 60 / 90-day","Unknown account","Education Loan","Personal Loan","Business Loan","Short-Term Loan"]){
+ // The explicit unknown account issue lives in the customer journey; homepage markets it without capturing private records.
+ if(text==="Unknown account")assert.match(home,/Unknown account/i);
+ else assert.ok(home.includes(text),"missing homepage "+text);
+}
+assert.match(home,/customer login and secure contact\/enquiry saving are available/i);
+assert.doesNotMatch(home,/Customer login and live bureau access remain disabled/);
+assert.match(customer,/id="customer-portal"/);
+assert.match(customer,/assets\/customer-portal\.js\?v=20261112-score-examples/);
+assert.match(customer,/connect-src https:\/\/kukfpsqujlutlgwndplh\.supabase\.co/);
+assert.match(customer,/script-src 'self'/);
+assert.match(customer,/noindex,follow/);
+assert.match(js,/\/auth\/v1\/otp/);
+assert.match(js,/\/auth\/v1\/verify/);
+assert.match(js,/\/auth\/v1\/user/);
+assert.match(js,/email_confirmed_at\|\|user\.confirmed_at/);
+assert.match(js,/\/rest\/v1\/vorvan_customer_intake_profiles/);
+assert.match(js,/\/rest\/v1\/vorvan_customer_enquiries/);
+assert.match(js,/state\.demoFixture/);
+assert.match(js,/demo_business/);
+assert.match(js,/Example A · 662/);
+assert.match(js,/Example B · 748/);
+assert.match(js,/state\.engine\.chooseCategory/);
+assert.match(js,/You may send a genuine information enquiry for any loan category/);
+assert.match(engine,/real_bureau_requests:0/);
+assert.match(engine,/real_loan_offers:0/);
+assert.match(engine,/real_applications:0/);
+assert.match(engine,/real_subscriptions:0/);
+assert.doesNotMatch(js,/localStorage|sessionStorage|service_role|sb_secret_/);
+assert.doesNotMatch(js,/\/rest\/v1\/loan_applications/);
+assert.match(sql,/alter table public\.vorvan_customer_intake_profiles enable row level security/);
+assert.match(sql,/alter table public\.vorvan_customer_enquiries enable row level security/);
+assert.match(sql,/coalesce\(\(auth\.jwt\(\)->>'is_anonymous'\)::boolean,false\)=false/);
+assert.match(sql,/grant insert\(user_id,full_name,email,phone,work_category,work_details,consent_version\)/);
+assert.match(sql,/grant insert\(user_id,loan_category,enquiry_topic,message\)/);
+assert.match(sql,/revoke all on public\.vorvan_customer_enquiries from public, anon, authenticated/);
+assert.match(admin,/if\(area==="customers"\)/);
+assert.match(admin,/state\.role!=="owner"/);
+assert.match(edge,/claims\.aal!=="aal2"/);
+assert.match(edge,/rows\[0\]\?\.admin_role!=="owner"/);
+assert.match(edge,/owner_only:true/);
+assert.match(edge,/real_credit_scores:0/);
+assert.match(edge,/loan_approved:false/);
+assert.match(queue,/owner AAL2|OWNER AAL2|Owner \/ AAL2 MFA/);
+assert.match(queue,/Customer Login & Loan Enquiries/);
+assert.match(css,/\.vv-credit-help/);
+assert.match(css,/\.vv-help-grid/);
+assert.match(css,/\.vv-help-illustration/);
+assert.match(customerCss,/\.cp-scenario-switch/);
+assert.match(customerCss,/\.cp-example-outcome/);
+assert.match(read("privacy.html"),/12 November 2026/);
+assert.match(read("terms.html"),/12 November 2026/);
+assert.doesNotMatch(home,/href="admin\.html"/,"private admin must not appear in public navigation");
+assert.doesNotMatch(home,/Apply Now\s*<\/a>/i,"no loan application CTA");
+console.log("PASS: CIBIL-first marketing and verified email/customer profile/owner inbox, separate fictional score vs real enquiry, no real lending");
