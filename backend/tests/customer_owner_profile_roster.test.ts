@@ -23,7 +23,9 @@ Deno.test("Customer owner roster backend requires verified AAL2 and confirms acc
  yes(edge.includes("limit=80"),"Bounded profile list");
  yes(edge.includes("real_credit_scores:0"),"No CIBIL content");
  yes(edge.includes('"cache-control":"private, no-store, max-age=0"'),"No browser/proxy caching");
- yes(!/route==="\\/profiles"[\\s\\S]*?console\\.log/.test(edge),"No PII log");
+ const start=edge.indexOf('route==="/profiles"');
+ const end=edge.indexOf('route==="/enquiries"',start);
+ yes(start>=0&&end>start&&!edge.slice(start,end).includes("console.log"),"No PII log");
 });
 Deno.test("Only Owner can mount confidential profile roster and list is not made public",async()=>{
  const previous=(globalThis as unknown as {document?:unknown}).document;
