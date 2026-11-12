@@ -1,5 +1,5 @@
 # VORVAN — Cumulative Development & Pending Ledger
-Updated: **11 November 2026**. Source of ticket IDs: Developer Handover v1 (09 Nov 2026), section 15.
+Updated: **12 November 2026**. Source of ticket IDs: Developer Handover v1 (09 Nov 2026), section 15.
 Current 20-ticket tally after VOR-018 synthetic source addition: **17 PARTIAL · 0 PENDING · 3 BLOCKED · 0 DONE**. This is not a production readiness score.
 Status key: **DONE** = source + verification evidence; **PARTIAL** = substantive work exists but exit criteria missing; **PENDING** = required exit evidence not available; **BLOCKED** = external approvals/contract needed. Do not relabel pending work as complete without new evidence.
 
@@ -79,6 +79,8 @@ Status key: **DONE** = source + verification evidence; **PARTIAL** = substantive
 - **Credit journey:** Homepage customer login and four loan category information cards; fictional sample score, CIBIL Guide 3/6-month and 30/60/90-day learning preview, simulated issue-reporting help. No score stored, real bureau access, lender matching, payments or regulated lending.
 - **Exit evidence:** Source PR + GitHub CI/Postgres RLS must pass, Owner Edge gateway deployment must be verified, customer login email delivery/redirect tested in live browser, privacy wording/retention counsel-reviewed, VAPT and genuine customer-vs-customer security/UAT confirmed. Until then customer authentication/intake remains a **controlled pilot**, not production-complete. See [customer release report](CUSTOMER_FIRST_INTAKE_ENQUIRY_RELEASE_20261112.md).
 - **20 milestone labels remain unchanged:** 17 PARTIAL · 0 PENDING · 3 BLOCKED. Existing lender/bureau/loan go-live release gates remain blocked.
+
+- **CIBIL-first marketing and Owner customer roster — 12 November 2026:** Original burgundy GoodScore-informed educational design with credit issue cards, CIBIL Guide 3/6-month previews, customer login and two fixed fictional 662/748 demo scenarios. Four loan-category enquiries remain non-binding, never linked to the fictional score. Existing Supabase Auth and live RLS contact/enquiry tables are reused. New Owner/AAL2-only `GET /profiles` lists consented customer contacts even without an enquiry; `GET /enquiries` remains an independently reviewed queue. [Full release report](CUSTOMER_CIBIL_FIRST_SITE_AND_OWNER_ROSTER_20261112.md). No real bureau/loan, AI financial decision, gateway, marketing resale, or unsupported expert dispute processing. Legal, OTP delivery E2E, tenant/vulnerability assessment and approved lender partnerships remain pending. CI/Edge deployment evidence must be verified.
 
 ## Incorporation and financial service release gates
 - **VORVAN PRIVATE LIMITED: registered/incorporated per owner confirmation on 10 November 2026.** Exact COI/CIN and PAN are not published or independently verified in this developer report. Company registration does **not** constitute RBI lending licence, an active lender agreement, bureau access or permission to collect customer financial data. Keep all regulated financial services disabled pending applicable approvals.
