@@ -140,15 +140,23 @@ jobs:
             status=$(curl --location --silent --show-error --max-time 20 -o /dev/null -w '%{http_code}' "$BASE/$asset")
             [[ "$status" == "200" ]] || { echo "$asset returned HTTP $status";exit 1; }
           done
-          dynamic=$(curl --fail --location --silent --show-error --max-time 20 "$BASE/assets/readiness-passport.js?v=20261111-registered-company")
-          admin_js=$(curl --fail --location --silent --show-error --max-time 20 "$BASE/assets/admin.js?v=20261112-customer-enquiries")
-          grep -Fq 'VORVAN PRIVATE LIMITED is registered' <<< "$dynamic" || exit 1
-          grep -Fq 'নিবন্ধিত কোম্পানি' <<< "$dynamic" || exit 1
-          grep -Fq 'पंजीकृत कंपनी' <<< "$dynamic" || exit 1
-          ! grep -Eqi 'pre-incorporation|incorporation pending|registration pending' <<< "$dynamic" || exit 1
-          grep -Fq 'COI evidence pending vault verification' <<< "$admin_js" || exit 1
-          grep -Fq 'incorporation_required:' <<< "$admin_js" || exit 1
-          ! grep -Eqi 'pre-incorporation|incorporation pending' <<< "$admin_js" || exit 1
+          js_ready=0
+          for attempt in $(seq 1 24); do
+            dynamic=$(curl --fail --location --silent --show-error --max-time 20 "$BASE/assets/readiness-passport.js?v=20261112-check-$attempt" || true)
+            admin_js=$(curl --fail --location --silent --show-error --max-time 20 "$BASE/assets/admin.js?v=20261112-check-$attempt" || true)
+            if grep -Fq 'VORVAN PRIVATE LIMITED is registered' <<< "$dynamic" &&
+               grep -Fq 'নিবন্ধিত কোম্পানি' <<< "$dynamic" &&
+               grep -Fq 'पंजीकृत कंपनी' <<< "$dynamic" &&
+               ! grep -Eqi 'pre-incorporation|incorporation pending|registration pending' <<< "$dynamic" &&
+               grep -Fq 'COI evidence pending vault verification' <<< "$admin_js" &&
+               grep -Fq 'incorporation_required:' <<< "$admin_js" &&
+               ! grep -Eqi 'pre-incorporation|incorporation pending' <<< "$admin_js"; then
+              js_ready=1;break
+            fi
+            echo "Waiting for refreshed company disclosure scripts ($attempt/24)"
+            sleep 5
+          done
+          [[ "$js_ready" == "1" ]] || { echo "Updated Admin/Passport script content not observed";exit 1; }
           echo 'PASS: live company registration wording, three public demos, MFA Admin and regulated-service gates'
 
       - name: Confirm customer-first login page, contact-only intake and confidential enquiry gateway
