@@ -115,10 +115,10 @@ Deno.serve(async(req:Request)=>{
  if(owner==="denied")return deny(req,403,"owner_only");
  if(owner==="unavailable")return deny(req,503,"auth_unavailable");
  if(req.method==="GET"&&route==="/profiles"){
-  // New email-verified customers are visible to the Owner even before any loan enquiry.
-  // Never include password, OTP, bureau score, PAN or identifiers beyond permitted contact fields.
+  // New phone-verified applicants appear in the Owner roster even before any loan enquiry.
+  // Only explicitly consented contact and occupation fields. No OTP, PAN, salary, bureau score or financial data.
   const q=await service("/rest/v1/vorvan_customer_intake_profiles?select="+
-   "user_id,full_name,email,phone,work_category,work_details,consent_version,consent_accepted_at,created_at"+
+   "user_id,full_name,email,phone,father_name,address_line,locality,district,state_name,postal_code,work_category,work_details,employment_subtype,employer_name,department_name,designation,business_type,business_name,consent_version,consent_accepted_at,created_at"+
    "&order=created_at.desc&limit=80");
   if(!q?.ok)return deny(req,503,"profile_queue_unavailable");
   const profiles=await q.json();
@@ -137,7 +137,7 @@ Deno.serve(async(req:Request)=>{
   let profiles:unknown[]=[];
   if(ids.length){
    const p=await service("/rest/v1/vorvan_customer_intake_profiles?select="+
-    "user_id,full_name,email,phone,work_category,work_details,consent_version,consent_accepted_at"+
+    "user_id,full_name,email,phone,father_name,address_line,locality,district,state_name,postal_code,work_category,work_details,employment_subtype,employer_name,department_name,designation,business_type,business_name,consent_version,consent_accepted_at"+
     "&user_id=in.("+ids.join(",")+")&limit=80");
    if(!p?.ok)return deny(req,503,"profile_queue_unavailable");
    profiles=await p.json();
