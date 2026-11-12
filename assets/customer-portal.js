@@ -1,6 +1,6 @@
 /** VORVAN Applicant: phone-OTP gated contact intake, then fictional CIBIL education.
  * SMS provider activation is REQUIRED. No fake OTP, financial data or passwords.
- * Sensitive records stay in verified-auth Supabase RLS, never localStorage.
+ * Sensitive records stay in verified-auth Supabase RLS and never persist in browser storage.
  */
 import {createCustomerJourney,FIXTURES,CATEGORIES,GUIDE_PLANS,ROADMAP,ISSUES,DEMO_PASSCODE}
  from "./customer-journey-engine.js";
