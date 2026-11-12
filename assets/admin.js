@@ -362,8 +362,8 @@ function infoPanel(area){
  if(area==="customers"){
   const notice=el("article","panel-box");
   append(notice,el("span","status","CONFIDENTIAL CONTACT ENQUIRIES · OWNER MFA ONLY"),
-   el("h2","","Customer Profiles & Loan Enquiries"),
-   el("p","","Verified customer email, self-reported phone and working details with manual enquiry handling. Real CIBIL, loan approval and lender integrations remain OFF."));
+   el("h2","","Applicant Profiles & Loan Enquiries"),
+   el("p","","Phone-verified applicant name, father, address, optional contact email, job/business details and manual enquiry handling; SMS provider activation pending. Real CIBIL, loan approval and lender integrations remain OFF."));
   const mount=el("div","coa-mount","Checking owner role and loading confidential customer records…");
   container.append(notice,mount);
   const token=state.access,role=state.role;
