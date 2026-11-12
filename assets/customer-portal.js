@@ -358,7 +358,7 @@ function dashboard(area){
  const nav=show("nav","","cp-tabs");nav.setAttribute("aria-label","Customer journey");
  const tabs=[["score","Score preview"],["guide","CIBIL Guide"],["issues","Credit issues"],["loans","Loan enquiry"],["requests","My enquiries"],["profile","My details"]];
  for(const [id,name] of tabs){
-  const x=button(name,()=>{state.view=id;draw()},"cp-tab"+(state.view===id?" is-active":""));
+  const x=button(name,()=>{if(!state.engine.snapshot().score_viewed&&["guide","issues","loans"].includes(id)){state.view="score";draw();explain("View the fictional score example first, then continue to CIBIL Guide or loan enquiries.");return;}state.view=id;draw()},"cp-tab"+(state.view===id?" is-active":""));
   if(state.view===id)x.setAttribute("aria-current","page");nav.append(x);
  }
  area.append(nav);
