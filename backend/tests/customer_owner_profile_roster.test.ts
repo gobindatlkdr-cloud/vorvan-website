@@ -68,7 +68,7 @@ Deno.test("Owner endpoint does not expose PAN, Aadhaar, borrower bureau scores, 
  const start=source.indexOf('if(req.method==="GET"&&route==="/profiles")');
  const end=source.indexOf('if(req.method==="GET"&&route==="/enquiries")',start);
  const block=source.slice(start,end);
- yes(block.includes("user_id,full_name,email,phone,work_category,work_details,consent_version,consent_accepted_at,created_at"),"only needed fields");
+ yes(block.includes("user_id,full_name,email,phone,father_name,address_line,locality,district,state_name,postal_code"),"applicant contact fields explicitly allowlisted");
  for(const x of ["aadhaar","bureau_score","bank_account","loan_application","pan,","date_of_birth"]){
   yes(!block.includes(x),"unnecessary field in profile API: "+x);
  }
