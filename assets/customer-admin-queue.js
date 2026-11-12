@@ -20,7 +20,7 @@ export function mountCustomerOperations(root,context){
    context.accessToken.length<100)return {ok:false};
  let active=true;let entries=[];let profiles=[];let running=false;
  const pane=el("section","","coa-panel");
- const title=el("h2","Customer Login & Loan Enquiries");
+ const title=el("h2","Applicant Profiles & Loan Enquiries");
  const warning=el("p","Confidential customer contact records. Verified Owner / AAL2 MFA only. Non-binding loan information enquiries; no CIBIL scores, lending decisions or application records.");
  const reload=el("button","Refresh customer profiles & enquiries");reload.type="button";
  const message=el("p","Loading owner-only customer records…","coa-status");
@@ -43,14 +43,24 @@ export function mountCustomerOperations(root,context){
  const feedback=text=>{message.textContent=text};
  function render(){
   roster.replaceChildren();
-  roster.append(el("h3","Customer profiles · registered contact information"));
+  roster.append(el("h3","Applicant profiles · verified contact intake"));
   roster.append(el("p",profiles.length+" visible recent customer contact profiles (maximum 80), including accounts without enquiries. Never stores CIBIL scores."));
   for(const profile of profiles){
    const card=el("article","","coa-case");
    card.append(el("h4",profile.full_name||"Profile unavailable"));
    const grid=el("div","","coa-grid");
-   add(grid,info("Verified email",profile.email),info("Self-reported mobile",profile.phone),
+   add(grid,info("Mobile",profile.phone),info("Mobile verification",profile.consent_version==="applicant_mobile_v1_2026_11_12"?"Phone OTP verified at signup":"Legacy self-reported"),
+    info("Contact email (not verified)",profile.email),
+    info("Father's name",profile.father_name),info("Address",profile.address_line),
+    info("Town / Village",profile.locality),info("District",profile.district),
+    info("State",profile.state_name),info("PIN",profile.postal_code),
     info("Employment category",String(profile.work_category||"").replaceAll("_"," ")),
+    info("Employment subtype",String(profile.employment_subtype||"").replaceAll("_"," ")),
+    info("Employer / Company",profile.employer_name),
+    info("Government department",profile.department_name),
+    info("Designation / Post",profile.designation),
+    info("Business type",String(profile.business_type||"").replaceAll("_"," ")),
+    info("Business / Firm name",profile.business_name),
     info("Working details",profile.work_details),
     info("Contact consent version",profile.consent_version),
     info("Consented",profile.consent_accepted_at),
@@ -68,8 +78,19 @@ export function mountCustomerOperations(root,context){
       item.loan_category.replaceAll("_"," ")),
     el("p","Enquiry "+item.id+" · "+item.status.replaceAll("_"," ")+" · "+new Date(item.created_at).toLocaleString()));
    const grid=el("div","","coa-grid");
-   add(grid,info("Verified email",profile?.email),info("Self-reported mobile",profile?.phone),
+   add(grid,info("Mobile",profile?.phone),
+    info("Contact email (self-reported)",profile?.email),
+    info("Father's name",profile?.father_name),
+    info("Full address",profile?.address_line),
+    info("Location",profile?.locality&&profile?.district&&profile?.postal_code?
+      profile.locality+", "+profile.district+", "+(profile.state_name||"")+", PIN "+profile.postal_code:"Not provided"),
     info("Work category",profile?.work_category?.replaceAll("_"," ")),
+    info("Employment subtype",profile?.employment_subtype?.replaceAll("_"," ")),
+    info("Employer",profile?.employer_name),
+    info("Government department",profile?.department_name),
+    info("Designation",profile?.designation),
+    info("Business type",profile?.business_type?.replaceAll("_"," ")),
+    info("Business / Firm",profile?.business_name),
     info("Occupation / working details",profile?.work_details),
     info("Enquiry topic",item.enquiry_topic.replaceAll("_"," ")),
     info("Customer question",item.message||"No additional message"),
